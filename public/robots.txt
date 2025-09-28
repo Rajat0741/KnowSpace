@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Allow crawling of all CSS and JS files
+Allow: /src/
+Allow: /assets/
+Allow: /*.css
+Allow: /*.js
+
+# Sitemap location (add your sitemap URL when available)
+# Sitemap: https://yourdomain.com/sitemap.xml
+
+# Common directories to disallow (adjust based on your needs)
+Disallow: /api/
+Disallow: /admin/
+Disallow: /.git/
+Disallow: /node_modules/

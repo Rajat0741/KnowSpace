@@ -1,0 +1,173 @@
+/* Clean and modern tab container */
+.tab-container {
+  position: relative;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode container */
+.dark .tab-container {
+  background: #111827;
+  border: 1px solid #374151;
+}
+
+/* Individual tab styling - clean and simple */
+.tab-base {
+  position: relative;
+  background: transparent;
+  color: #6b7280;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* Dark mode tab base */
+.dark .tab-base {
+  color: #9ca3af;
+}
+
+/* Tab hover effects - subtle and clean */
+.tab-base:hover {
+  color: #374151;
+  background: #f9fafb;
+}
+
+.dark .tab-base:hover {
+  color: #e5e7eb;
+  background: #1f2937;
+}
+
+/* Selected tab styling - clean primary color */
+.tab-selected {
+  background: #3b82f6;
+  color: white;
+  font-weight: 600;
+}
+
+.dark .tab-selected {
+  background: #2563eb;
+  color: white;
+}
+
+/* Selected tab text styling */
+.tab-selected-text {
+  color: white;
+  font-weight: 600;
+}
+
+/* Text transition effects */
+.tab-text {
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 10;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: visible;
+  min-width: fit-content;
+  display: inline-block;
+}
+
+/* Focus states for accessibility */
+.tab-base:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Active state */
+.tab-base:active {
+  transform: scale(0.98);
+}
+
+/* Ripple effect on click - simple */
+.tab-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.3);
+  transform: translate(-50%, -50%);
+  animation: ripple 0.4s ease-out;
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to {
+    width: 60px;
+    height: 60px;
+    opacity: 0;
+  }
+}
+
+/* Simple animation on load */
+.tab-animate-in {
+  animation: tab-fade-in 0.3s ease-out forwards;
+  opacity: 0;
+  transform: translateY(5px);
+}
+
+@keyframes tab-fade-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered animation delays - reduced */
+.tab-animate-in:nth-child(1) { animation-delay: 0ms; }
+.tab-animate-in:nth-child(2) { animation-delay: 25ms; }
+.tab-animate-in:nth-child(3) { animation-delay: 50ms; }
+.tab-animate-in:nth-child(4) { animation-delay: 75ms; }
+.tab-animate-in:nth-child(5) { animation-delay: 100ms; }
+.tab-animate-in:nth-child(6) { animation-delay: 125ms; }
+.tab-animate-in:nth-child(7) { animation-delay: 150ms; }
+.tab-animate-in:nth-child(8) { animation-delay: 175ms; }
+.tab-animate-in:nth-child(9) { animation-delay: 200ms; }
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .tab-container {
+    padding: 0.375rem;
+    border-radius: 0.5rem;
+  }
+  
+  .tab-base {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .tab-base {
+    font-size: 0.625rem;
+    padding: 0.375rem 0.5rem;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .tab-base,
+  .tab-animate-in {
+    animation: none;
+    transition: none;
+  }
+  
+  .tab-base:hover {
+    transform: none;
+  }
+  
+  .tab-base:active {
+    transform: none;
+  }
+}
