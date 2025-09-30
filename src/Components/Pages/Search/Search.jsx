@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { Input } from "@/Components/ui/input";
 import Button from "@/Components/ui/button";
 import { SkeletonCard } from "@/Components/ui/SkeletonCard";
@@ -11,26 +12,56 @@ const Search = () => {
   const [users, setUsers] = useState([]);
   const [searching, setSearching] = useState(false);
   const [searchAttempted, setSearchAttempted] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const LIMIT = 40;
 
   const handleSearch = async () => {
-    if (!searchTerm.trim()) return;
-
+    if (searchTerm.trim().length < 3) return;
     setSearching(true);
-  setSearchAttempted(true);
-    
+    setSearchAttempted(true);
+    setOffset(0);
+    setUsers([]);
+    setHasMore(false);
     try {
       // Fetching user details based on search term
       const response = await service.searchUsers({
         name: searchTerm.trim(),
-        limit: 50,
+        limit: LIMIT,
         offset: 0
       });
       const parsed = typeof response === 'string' ? JSON.parse(response) : response;
-      const { users } = parsed;
-      setUsers(users || []);
+      const { users: fetchedUsers = [], pagination } = parsed;
+      setUsers(fetchedUsers);
+      setOffset(fetchedUsers.length);
+      setHasMore(pagination?.hasMore ?? false);
     } catch (error) {
       console.error("Error searching users:", error);
       setUsers([]);
+      setHasMore(false);
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  // Fetch more users for infinite scroll
+  const fetchMoreUsers = async () => {
+    if (!searchTerm.trim()) return;
+    setSearching(true);
+    try {
+      const response = await service.searchUsers({
+        name: searchTerm.trim(),
+        limit: LIMIT,
+        offset: offset
+      });
+      const parsed = typeof response === 'string' ? JSON.parse(response) : response;
+      const { users: fetchedUsers = [], pagination } = parsed;
+      setUsers((prev) => [...prev, ...fetchedUsers]);
+      setOffset((prev) => prev + fetchedUsers.length);
+      setHasMore(pagination?.hasMore ?? false);
+    } catch (error) {
+      console.error("Error fetching more users:", error);
+      setHasMore(false);
     } finally {
       setSearching(false);
     }
@@ -38,8 +69,10 @@ const Search = () => {
 
   const clearFilters = () => {
     setSearchTerm("");
-  setSearchAttempted(false);
-    setUsers([]); // Ensure users is empty
+    setSearchAttempted(false);
+    setUsers([]);
+    setHasMore(false);
+    setOffset(0);
   };
 
   return (
@@ -88,7 +121,7 @@ const Search = () => {
               <div className="relative flex-1">
                 <Input
                   type="text"
-                  placeholder="Search by name, bio, or keywords..."
+                  placeholder="Search by name, bio, or keywords... (min 3 chars)"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
@@ -97,7 +130,7 @@ const Search = () => {
               </div>
               <Button
                 onClick={handleSearch}
-                disabled={!searchTerm.trim() || searching}
+                disabled={searchTerm.trim().length < 3 || searching}
                 className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-md md:rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-sm"
               >
                 {searching ? (
@@ -138,51 +171,33 @@ const Search = () => {
           </div>
         </div>
 
-        {/* Compact Results */}
-  {searchAttempted && (
-          <div className="mb-3 md:mb-4">
-            <div className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg border border-blue-200/20 dark:border-purple-800/20 rounded-md md:rounded-lg p-2 md:p-3 shadow-md">
-              <p className="text-xs md:text-sm font-medium">
-                {searching ? (
-                  <span className="text-blue-600 dark:text-blue-400">
-                    Searching for users...
-                  </span>
-                ) : (users && users.length > 0) ? (
-                  <span className="text-green-600 dark:text-green-400">
-                    Found {users.length} user{users.length !== 1 ? 's' : ''}
-                  </span>
-                ) : (
-                  <span className="text-orange-600 dark:text-orange-400">
-                    No users found
-                  </span>
-                )}
-              </p>
-            </div>
-          </div>
-        )}
-
         {/* Compact Users Grid */}
-        {searching ? (
-          <div className="bg-white/40 dark:bg-gray-900/40 backdrop-blur-lg border border-blue-200/20 dark:border-purple-800/20 rounded-lg md:rounded-xl p-3 md:p-4 shadow-md">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4">
-              {[...Array(6)].map((_, i) => (
-                <SkeletonCard key={i} className="bg-gradient-to-br from-blue-100/50 to-purple-100/50 dark:from-blue-900/30 dark:to-purple-900/30" />
-              ))}
-            </div>
-          </div>
-        ) : (
-          searchAttempted && (
-            <div className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-blue-200/15 dark:border-purple-800/15 rounded-lg md:rounded-xl p-3 md:p-4 shadow-md">
+        {searchAttempted && (
+          <div className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-blue-200/15 dark:border-purple-800/15 rounded-lg md:rounded-xl p-5 md:p-8 shadow-md overflow-visible">
+            <InfiniteScroll
+              dataLength={users.length}
+              next={fetchMoreUsers}
+              hasMore={hasMore}
+              loader={
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4">
+                  {[...Array(4)].map((_, i) => (
+                    <SkeletonCard key={i} className="h-64 bg-gradient-to-br from-blue-100/50 to-purple-100/50 dark:from-blue-900/30 dark:to-purple-900/30" />
+                  ))}
+                </div>
+              }
+              scrollThreshold={0.85}
+              style={{ overflow: 'visible' }}
+            >
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4">
                 {(users && users.length > 0) ? (
                   users.map((user) => (
-                    <div 
-                      key={user?.$id || Math.random()}
-                    >
-                      <UserProfileListItem 
-                        user={user}
-                      />
+                    <div key={user?.$id || Math.random()}>
+                      <UserProfileListItem user={user} />
                     </div>
+                  ))
+                ) : searching ? (
+                  [...Array(4)].map((_, i) => (
+                    <SkeletonCard key={i} className="h-60 bg-gradient-to-br from-blue-100/50 to-purple-100/50 dark:from-blue-900/30 dark:to-purple-900/30" />
                   ))
                 ) : (
                   <div className="col-span-full text-center py-6 md:py-8">
@@ -201,8 +216,8 @@ const Search = () => {
                   </div>
                 )}
               </div>
-            </div>
-          )
+            </InfiniteScroll>
+          </div>
         )}
       </div>
     </div>

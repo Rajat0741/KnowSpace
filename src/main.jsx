@@ -6,10 +6,21 @@ import { Provider } from 'react-redux'
 import store from './store/store'
 import { SidebarProvider } from './Components/ui/Custom/Side-bar/sidebar'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SignupPage, Login, Home, PostForm, Profile, Post, EditPost, VerifyEmail, Search, Settings, ResetPassword, NotFound } from './Components/Pages'
 import UserProfilePage from './Components/Pages/UserProfilePage'
 import Protected from './AuthenticatedRouting/AuthLayout'
 import LazyRoute from './Components/ui/LazyRoute'
+
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 10, // 10 minutes (formerly cacheTime)
+    },
+  },
+})
 
 const router = createBrowserRouter([
   {
@@ -126,10 +137,12 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <SidebarProvider>
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    </SidebarProvider>
+    <QueryClientProvider client={queryClient}>
+      <SidebarProvider>
+        <Provider store={store}>
+          <RouterProvider router={router} />
+        </Provider>
+      </SidebarProvider>
+    </QueryClientProvider>
   </StrictMode>,
 )

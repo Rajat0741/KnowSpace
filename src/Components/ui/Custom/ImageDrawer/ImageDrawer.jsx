@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { Drawer } from "vaul";
 // Optimized individual icon imports to reduce bundle size
 import Globe from "lucide-react/dist/esm/icons/globe";
@@ -6,7 +6,8 @@ import Search from "lucide-react/dist/esm/icons/search";
 import Filter from "lucide-react/dist/esm/icons/filter";
 import X from "lucide-react/dist/esm/icons/x";
 import Download from "lucide-react/dist/esm/icons/download";
-import useFetchImage from "@/hooks/useFetchImage";
+import InfiniteScroll from 'react-infinite-scroll-component';
+import usePixabayInfinite from '@/hooks/usePixabayInfinite';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/Components/ui/dropdown-menu";
 import { Input } from "@/Components/ui/input";
 import Button from "@/Components/ui/button";
@@ -37,26 +38,45 @@ export default function VaulDrawer({
   const [searchQuery, setSearchQuery] = useState("nature");
   const [category, setCategory] = useState("");
   const [order, setOrder] = useState("popular");
-  const [page, setPage] = useState(1);
-  const [allImages, setAllImages] = useState([]);
+  const [inputValue, setInputValue] = useState("nature");
   const [selectedImages, setSelectedImages] = useState(new Set());
   const [isOpen, setIsOpen] = useState(false);
   const scrollContainerRef = useRef(null);
   
-  const { images, loading, error } = useFetchImage({
-    query: searchQuery,
-    order,
-    category,
-    perPage: 20,
-    page
-  });
+
+  const {
+    data,
+    error,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = usePixabayInfinite({ query: searchQuery, category, order });
+  
+
+  // Flatten pages into a single images array (memoized)
+  const images = useMemo(() => (data ? data.pages.flatMap(p => p.hits) : []), [data]);
+  const loading = isLoading;
 
   // Utility functions
   const resetSearch = useCallback(() => {
-    setPage(1);
-    setAllImages([]);
+    // clear selections and scroll to top when performing a new search
     setSelectedImages(new Set());
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo?.(0, 0);
+    }
   }, []);
+
+  const doSearch = useCallback(() => {
+    // Apply trimmed input as the active search query
+    setSearchQuery((inputValue || '').trim());
+  }, [inputValue]);
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter') {
+      doSearch();
+    }
+  }, [doSearch]);
 
   const clearSelections = useCallback(() => {
     setSelectedImages(new Set());
@@ -71,29 +91,19 @@ export default function VaulDrawer({
     }
   }, []);
 
-  // Add new images to the existing list when page changes
-  useEffect(() => {
-    if (page === 1) {
-      setAllImages(images);
-    } else {
-      setAllImages(prev => [...prev, ...images]);
-    }
-  }, [images, page]);
+  // images is our single source of truth derived from react-query pages
 
   // Reset when search query changes
   useEffect(() => {
     resetSearch();
   }, [searchQuery, order, category, resetSearch]);
 
-  const handleScroll = useCallback(() => {
-    if (!scrollContainerRef.current || loading) return;
-    
-    const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
-    
-    if (scrollTop + clientHeight >= scrollHeight - 5) {
-      setPage(prev => prev + 1);
-    }
-  }, [loading]);
+  // default search is initialized to 'nature' via initial state
+
+  // Using InfiniteScroll component for pagination; loadMore triggers fetchNextPage
+  const loadMore = useCallback(() => {
+    if (hasNextPage) fetchNextPage();
+  }, [hasNextPage, fetchNextPage]);
 
   const toggleImageSelection = (image) => {
     setSelectedImages(prev => {
@@ -135,7 +145,7 @@ export default function VaulDrawer({
 
   // Download multiple selected images
   const downloadSelected = async () => {
-    const selectedImageObjects = allImages.filter(img => selectedImages.has(img.id));
+  const selectedImageObjects = images.filter(img => selectedImages.has(img.id));
     
     for (const image of selectedImageObjects) {
       await downloadImage(image);
@@ -147,7 +157,7 @@ export default function VaulDrawer({
   // Select primary image and close drawer
   const selectPrimaryImage = () => {
     if (selectedImages.size >= 1) {
-      const selectedImageObjects = allImages.filter(img => selectedImages.has(img.id));
+  const selectedImageObjects = images.filter(img => selectedImages.has(img.id));
       if (selectedImages.size === 1) {
         onImageSelect?.(selectedImageObjects[0]); // Single image
       } else {
@@ -206,8 +216,9 @@ export default function VaulDrawer({
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search for images..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     className="pl-10"
                   />
                 </div>
@@ -251,6 +262,9 @@ export default function VaulDrawer({
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
+                  <div className="flex items-center">
+                    <Button variant="primary" size="sm" onClick={doSearch} className="ml-2">Search</Button>
+                  </div>
                 </div>
 
                 {/* Selection Status */}
@@ -274,8 +288,8 @@ export default function VaulDrawer({
             {/* Content */}
             <div 
               ref={scrollContainerRef}
+              id="pixabay-scrollable"
               className="flex-1 overflow-y-auto p-6 pt-0"
-              onScroll={handleScroll}
             >
               {error && (
                 <div className="text-center py-8">
@@ -285,19 +299,36 @@ export default function VaulDrawer({
               
               {!error && (
                 <>
-                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-                    {allImages.map((image, index) => (
-                      <ImageCard
-                        key={`${image.id}-${index}`}
-                        image={image}
-                        isSelected={selectedImages.has(image.id)}
-                        onSelect={toggleImageSelection}
-                        onDownload={downloadImage}
-                        onDoubleClick={handleDoubleClickImage}
-                        selectedCount={selectedImages.size}
-                      />
-                    ))}
-                  </div>
+                  <InfiniteScroll
+                    dataLength={images.length}
+                    next={loadMore}
+                    hasMore={Boolean(hasNextPage)}
+                    loader={isFetchingNextPage ? (
+                      <div className="text-center py-8">
+                        <div className="inline-flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                          <span className="text-muted-foreground">Loading more images...</span>
+                        </div>
+                      </div>
+                    ) : null}
+                    scrollableTarget="pixabay-scrollable"
+                    style={{ overflow: 'visible' }}
+                    endMessage={null}
+                  >
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                      {images.map((image, index) => (
+                        <ImageCard
+                          key={`${image.id}-${index}`}
+                          image={image}
+                          isSelected={selectedImages.has(image.id)}
+                          onSelect={toggleImageSelection}
+                          onDownload={downloadImage}
+                          onDoubleClick={handleDoubleClickImage}
+                          selectedCount={selectedImages.size}
+                        />
+                      ))}
+                    </div>
+                  </InfiniteScroll>
 
                   {loading && (
                     <div className="text-center py-8">
@@ -308,7 +339,7 @@ export default function VaulDrawer({
                     </div>
                   )}
                   
-                  {!loading && allImages.length === 0 && searchQuery && (
+                  {!loading && images.length === 0 && searchQuery && (
                     <div className="text-center py-12">
                       <p className="text-muted-foreground">No images found for "{searchQuery}"</p>
                       <p className="text-sm text-muted-foreground mt-2">Try different keywords</p>

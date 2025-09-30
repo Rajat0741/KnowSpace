@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import PostGrid from '../../ui/Custom/PostCard/PostGrid'
 import service from '../../../appwrite/config'
 import { Query } from 'appwrite'
@@ -16,116 +18,41 @@ function Home() {
   // ==========================================
   // STATE MANAGEMENT
   // ==========================================
-  const [loading, setLoading] = useState(true)
-  const [loadingMore, setLoadingMore] = useState(false)
-  const [recentPosts, setRecentPosts] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('all')
-  const [hasMore, setHasMore] = useState(true)
-  const [lastPostId, setLastPostId] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [hasSearched, setHasSearched] = useState(false)
-  const observerRef = useRef()
 
   // ==========================================
-  // DATA FETCHING FUNCTIONS
+  // DATA FETCHING WITH REACT QUERY
   // ==========================================
 
-  /**
-   * Loads posts based on current filters without changing category
-   */
-  const loadPosts = useCallback(() => {
-    setLoading(true)
-    setRecentPosts([])
-    setHasMore(true)
-    setLastPostId(null)
-
-    const queries = [
-      Query.orderDesc('$createdAt'),
-      Query.limit(POSTS_PER_PAGE),
-      Query.equal('status', 'active')
-    ]
-
-    if (selectedCategory !== 'all') {
-      queries.push(Query.equal('category', selectedCategory))
-    }
-
-    if (searchTerm.trim()) {
-      queries.push(Query.contains('title', searchTerm.trim()))
-    }
-
-    service.getPosts(queries)
-      .then((data) => {
-        const posts = data.documents || []
-        setRecentPosts(posts)
-        setHasMore(posts.length === POSTS_PER_PAGE)
-        setLastPostId(posts.length > 0 ? posts[posts.length - 1].$id : null)
-        setLoading(false)
-      })
-      .catch((error) => {
-        console.error('Error loading posts:', error)
-        setLoading(false)
-      })
-  }, [selectedCategory, searchTerm])
-
-  /**
-   * Loads posts based on category selection
-   */
-  const loadFromCategories = useCallback((category) => {
-    setSelectedCategory(category)
-    loadPosts()
-  }, [loadPosts])
-
-  /**
-   * Handles search functionality with debouncing
-   */
-  const handleSearch = useCallback(() => {
-    if (!searchTerm.trim() && selectedCategory === 'all') return
-
-    setHasSearched(true)
-    loadPosts()
-  }, [searchTerm, selectedCategory, loadPosts])
-
-  /**
-   * Loads additional posts for infinite scroll
-   */
-  const loadMorePosts = useCallback(async () => {
-    if (loadingMore || !hasMore || !lastPostId) return
-
-    setLoadingMore(true)
-
-    try {
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isLoading
+  } = useInfiniteQuery({
+    queryKey: ['posts', selectedCategory, searchTerm],
+    queryFn: ({ pageParam = null }) => {
       const queries = [
         Query.orderDesc('$createdAt'),
         Query.limit(POSTS_PER_PAGE),
         Query.equal('status', 'active'),
-        Query.cursorAfter(lastPostId)
+        ...(pageParam ? [Query.cursorAfter(pageParam)] : []),
+        ...(selectedCategory !== 'all' ? [Query.equal('category', selectedCategory)] : []),
+        ...(searchTerm.trim() ? [Query.contains('title', searchTerm.trim())] : []),
       ]
+      return service.getPosts(queries)
+    },
+    getNextPageParam: (lastPage) => {
+      const posts = lastPage.documents || []
+      return posts.length === POSTS_PER_PAGE ? posts[posts.length - 1].$id : undefined
+    },
+    enabled: selectedCategory !== '' || searchTerm !== '',
+  })
 
-      if (selectedCategory !== 'all') {
-        queries.push(Query.equal('category', selectedCategory))
-      }
-
-      if (searchTerm.trim()) {
-        queries.push(Query.contains('title', searchTerm.trim()))
-      }
-
-      const data = await service.getPosts(queries)
-      const newPosts = data.documents || []
-
-      if (newPosts.length > 0) {
-        setRecentPosts(prev => [...prev, ...newPosts])
-        setLastPostId(newPosts[newPosts.length - 1].$id)
-        setHasMore(newPosts.length === POSTS_PER_PAGE)
-      } else {
-        setHasMore(false)
-      }
-    } catch (error) {
-      console.error('Error loading more posts:', error)
-      setHasMore(false)
-    } finally {
-      setLoadingMore(false)
-    }
-  }, [loadingMore, hasMore, lastPostId, selectedCategory, searchTerm])
+  // Flatten posts from all pages
+  const recentPosts = data?.pages.flatMap(page => page.documents || []) || []
 
   // ==========================================
   // EVENT HANDLERS
@@ -138,9 +65,6 @@ function Home() {
     setSearchTerm('')
     setSelectedCategory('all')
     setHasSearched(false)
-    setHasMore(true)
-    setLastPostId(null)
-    loadFromCategories('all')
   }
 
   // ==========================================
@@ -148,54 +72,32 @@ function Home() {
   // ==========================================
 
   /**
-   * Initial data loading
-   */
-  useEffect(() => {
-    // Initial load - set category to 'all' and load posts
-    if (selectedCategory === 'all' && !hasSearched && recentPosts.length === 0) {
-      loadPosts()
-    }
-  }, [loadPosts, selectedCategory, hasSearched, recentPosts.length])
-
-  /**
    * Debounced search effect - triggers search when filters change
    */
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchTerm !== '' || selectedCategory !== 'all') {
-        handleSearch()
+        setHasSearched(true)
       } else if (searchTerm === '' && selectedCategory === 'all' && hasSearched) {
         // Reset to initial state when both filters are cleared
         setHasSearched(false)
-        loadPosts()
       }
     }, 500) // 500ms debounce
 
     return () => clearTimeout(timer)
-  }, [searchTerm, selectedCategory, handleSearch, hasSearched, loadPosts])
+  }, [searchTerm, selectedCategory, hasSearched])
 
   // ==========================================
-  // UTILITY FUNCTIONS
+  // EVENT HANDLERS
   // ==========================================
 
   /**
-   * Intersection Observer for infinite scroll functionality
+   * Handles category selection
    */
-  const lastPostElementRef = useCallback((node) => {
-    if (loading || loadingMore) return
-    if (observerRef.current) observerRef.current.disconnect()
-
-    observerRef.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && hasMore) {
-        loadMorePosts()
-      }
-    }, {
-      threshold: 0.1,
-      rootMargin: '100px'
-    })
-
-    if (node) observerRef.current.observe(node)
-  }, [loading, loadingMore, hasMore, loadMorePosts])
+  const handleCategoryChange = (value) => {
+    const category = value === 'All Categories' ? 'all' : value
+    setSelectedCategory(category)
+  }
 
   return (
     <div className="min-h-scree">
@@ -222,7 +124,7 @@ function Home() {
                   value={selectedCategory === 'all' ? 'All Categories' : selectedCategory}
                   onChange={(e) => {
                     const value = e.target.value === 'All Categories' ? 'all' : e.target.value;
-                    loadFromCategories(value);
+                    handleCategoryChange(value);
                   }}
                   showIcons={true}
                   className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
@@ -280,56 +182,57 @@ function Home() {
           </div>
         )}
       
-      {/* Posts Layout */}
-      {!loading && recentPosts.length > 0 && (
+            {/* Posts Layout */}
+      {!isLoading && recentPosts.length > 0 && (
         <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
-            <PostGrid 
-              posts={recentPosts}
-              layout="grid"
-              showFeatured={true}
-              featuredCount={4}
-            />
-          </div>
-          
-          {/* Infinite Scroll Trigger */}
-          <div ref={lastPostElementRef} className="w-full h-4" />
-          
-          {/* Loading More Indicator */}
-          {loadingMore && (
-            <div className="flex justify-center items-center py-8">
-              <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-6 py-4 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                    Loading more articles...
-                  </span>
+          <InfiniteScroll
+            dataLength={recentPosts.length}
+            next={fetchNextPage}
+            hasMore={hasNextPage}
+            loader={
+              <div className="flex justify-center items-center py-8">
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-6 py-4 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                      Loading more articles...
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-          
-          {/* End of Posts Indicator */}
-          {!hasMore && recentPosts.length > POSTS_PER_PAGE && (
-            <div className="flex justify-center items-center py-8">
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-6 py-4 text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className="text-2xl">🎉</span>
-                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    All caught up!
-                  </span>
+            }
+            endMessage={
+              recentPosts.length > POSTS_PER_PAGE && (
+                <div className="flex justify-center items-center py-8">
+                  <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-6 py-4 text-center">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <span className="text-2xl">🎉</span>
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        All caught up!
+                      </span>
+                    </div>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      You've reached the end of the articles
+                    </span>
+                  </div>
                 </div>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  You've reached the end of the articles
-                </span>
-              </div>
+              )
+            }
+          >
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+              <PostGrid
+                posts={recentPosts}
+                layout="grid"
+                showFeatured={true}
+                featuredCount={4}
+              />
             </div>
-          )}
+          </InfiniteScroll>
         </div>
       )}
       
       {/* Loading State */}
-      {loading && (
+      {isLoading && (
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
           <div className="space-y-8">
             {/* Featured posts skeleton */}
@@ -365,7 +268,7 @@ function Home() {
       )}
       
       {/* Empty State */}
-      {recentPosts.length === 0 && !loading && (
+      {recentPosts.length === 0 && !isLoading && (
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 max-w-md shadow-sm">
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center shadow-inner">
