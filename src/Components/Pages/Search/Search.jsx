@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Input } from "@/Components/ui/input";
 import Button from "@/Components/ui/button";
 import { SkeletonCard } from "@/Components/ui/SkeletonCard";
@@ -8,71 +9,86 @@ import UserProfileListItem from "@/Components/ui/Custom/UserProfileListItem/User
 import service from "../../../appwrite/config";
 
 const Search = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [users, setUsers] = useState([]);
-  const [searching, setSearching] = useState(false);
-  const [searchAttempted, setSearchAttempted] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
-  const [offset, setOffset] = useState(0);
+  const [searchTerm, setSearchTerm] = useState(() => {
+    // Restore from sessionStorage on component mount
+    try {
+      return sessionStorage.getItem('search_active_term') || "";
+    } catch {
+      return "";
+    }
+  });
+  const [activeSearchTerm, setActiveSearchTerm] = useState(() => {
+    // Restore from sessionStorage on component mount
+    try {
+      return sessionStorage.getItem('search_active_term') || "";
+    } catch {
+      return "";
+    }
+  });
   const LIMIT = 40;
 
-  const handleSearch = async () => {
-    if (searchTerm.trim().length < 3) return;
-    setSearching(true);
-    setSearchAttempted(true);
-    setOffset(0);
-    setUsers([]);
-    setHasMore(false);
-    try {
-      // Fetching user details based on search term
-      const response = await service.searchUsers({
-        name: searchTerm.trim(),
-        limit: LIMIT,
-        offset: 0
-      });
-      const parsed = typeof response === 'string' ? JSON.parse(response) : response;
-      const { users: fetchedUsers = [], pagination } = parsed;
-      setUsers(fetchedUsers);
-      setOffset(fetchedUsers.length);
-      setHasMore(pagination?.hasMore ?? false);
-    } catch (error) {
-      console.error("Error searching users:", error);
-      setUsers([]);
-      setHasMore(false);
-    } finally {
-      setSearching(false);
-    }
-  };
+  // Infinite query for search results
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetching
+  } = useInfiniteQuery({
+    queryKey: ['searchUsers', activeSearchTerm],
+    queryFn: async ({ pageParam = 0 }) => {
+      if (!activeSearchTerm.trim()) return { users: [], pagination: { hasMore: false } };
 
-  // Fetch more users for infinite scroll
-  const fetchMoreUsers = async () => {
-    if (!searchTerm.trim()) return;
-    setSearching(true);
-    try {
       const response = await service.searchUsers({
-        name: searchTerm.trim(),
+        name: activeSearchTerm.trim(),
         limit: LIMIT,
-        offset: offset
+        offset: pageParam
       });
       const parsed = typeof response === 'string' ? JSON.parse(response) : response;
-      const { users: fetchedUsers = [], pagination } = parsed;
-      setUsers((prev) => [...prev, ...fetchedUsers]);
-      setOffset((prev) => prev + fetchedUsers.length);
-      setHasMore(pagination?.hasMore ?? false);
+      return {
+        users: parsed.users || [],
+        pagination: parsed.pagination || { hasMore: false },
+        nextOffset: pageParam + (parsed.users?.length || 0)
+      };
+    },
+    getNextPageParam: (lastPage) => {
+      return lastPage.pagination?.hasMore ? lastPage.nextOffset : undefined;
+    },
+    enabled: !!activeSearchTerm.trim(),
+    staleTime: Infinity, // Data never becomes stale - no background refetches
+  });
+
+  // Flatten the paginated data
+  const users = data?.pages.flatMap(page => page.users) || [];
+  const searchAttempted = !!activeSearchTerm;
+
+  const handleSearch = () => {
+    if (searchTerm.trim().length < 3) return;
+    const trimmedTerm = searchTerm.trim();
+    setActiveSearchTerm(trimmedTerm);
+    // Persist to sessionStorage
+    try {
+      sessionStorage.setItem('search_active_term', trimmedTerm);
     } catch (error) {
-      console.error("Error fetching more users:", error);
-      setHasMore(false);
-    } finally {
-      setSearching(false);
+      console.warn('Failed to save search term to sessionStorage:', error);
     }
   };
 
   const clearFilters = () => {
     setSearchTerm("");
-    setSearchAttempted(false);
-    setUsers([]);
-    setHasMore(false);
-    setOffset(0);
+    setActiveSearchTerm("");
+    // Clear from sessionStorage
+    try {
+      sessionStorage.removeItem('search_active_term');
+    } catch (error) {
+      console.warn('Failed to clear search term from sessionStorage:', error);
+    }
+  };
+
+  // Handle Enter key press
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
   };
 
   return (
@@ -124,16 +140,16 @@ const Search = () => {
                   placeholder="Search by name, bio, or keywords... (min 3 chars)"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  onKeyPress={handleKeyPress}
                   className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-purple-200/50 dark:border-purple-700/50 text-black dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-md md:rounded-lg p-2 md:p-3 focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 shadow-sm hover:shadow-md text-sm"
                 />
               </div>
               <Button
                 onClick={handleSearch}
-                disabled={searchTerm.trim().length < 3 || searching}
+                disabled={searchTerm.trim().length < 3 || isFetching}
                 className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-md md:rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-sm"
               >
-                {searching ? (
+                {isFetching ? (
                   <div className="flex items-center gap-1 md:gap-2">
                     <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                     <span className="text-xs md:text-sm">Searching...</span>
@@ -176,8 +192,8 @@ const Search = () => {
           <div className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-blue-200/15 dark:border-purple-800/15 rounded-lg md:rounded-xl p-5 md:p-8 shadow-md overflow-visible">
             <InfiniteScroll
               dataLength={users.length}
-              next={fetchMoreUsers}
-              hasMore={hasMore}
+              next={fetchNextPage}
+              hasMore={hasNextPage}
               loader={
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4">
                   {[...Array(4)].map((_, i) => (
@@ -195,7 +211,7 @@ const Search = () => {
                       <UserProfileListItem user={user} />
                     </div>
                   ))
-                ) : searching ? (
+                ) : isFetching ? (
                   [...Array(4)].map((_, i) => (
                     <SkeletonCard key={i} className="h-60 bg-gradient-to-br from-blue-100/50 to-purple-100/50 dark:from-blue-900/30 dark:to-purple-900/30" />
                   ))

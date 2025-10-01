@@ -41,7 +41,6 @@ function UserProfilePage() {
                         return;
                     }
                 }
-                console.log("Fetched user data:", userData);
                 if (userData?.$id) {
                     // Populate state variables with user data
                     setUserIdState(userData.$id || '');
