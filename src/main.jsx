@@ -16,8 +16,8 @@ import LazyRoute from './Components/ui/LazyRoute'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      gcTime: 1000 * 60 * 10, // 10 minutes (formerly cacheTime)
+      staleTime: Infinity, // Data never becomes stale
+      gcTime: Infinity, // Cache never gets garbage collected
     },
   },
 })
