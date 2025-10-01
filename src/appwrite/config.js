@@ -188,6 +188,72 @@ export class Service {
             fileid
         )
     }
+
+    // Comments functionality
+    async createComment({ userid, username, postid, content }) {
+        try {
+            return await this.databases.createDocument(
+                conf.appWriteDatabaseId,
+                conf.appWriteCommentsCollectionId,
+                ID.unique(),
+                {
+                    userid,
+                    username,
+                    postid,
+                    content
+                }
+            )
+        } catch (error) {
+            console.log("Error creating comment:", error);
+            throw error;
+        }
+    }
+
+    async getCommentsByPostId(postid) {
+        try {
+            return await this.databases.listDocuments(
+                conf.appWriteDatabaseId,
+                conf.appWriteCommentsCollectionId,
+                [
+                    Query.equal('postid', postid),
+                    Query.orderDesc('$createdAt')
+                ]
+            );
+        } catch (error) {
+            console.log("Error fetching comments:", error);
+            return { documents: [] };
+        }
+    }
+
+    async updateComment(commentId, content) {
+        try {
+            return await this.databases.updateDocument(
+                conf.appWriteDatabaseId,
+                conf.appWriteCommentsCollectionId,
+                commentId,
+                {
+                    content
+                }
+            )
+        } catch (error) {
+            console.log("Error updating comment:", error);
+            throw error;
+        }
+    }
+
+    async deleteComment(commentId) {
+        try {
+            await this.databases.deleteDocument(
+                conf.appWriteDatabaseId,
+                conf.appWriteCommentsCollectionId,
+                commentId
+            )
+            return true;
+        } catch (error) {
+            console.log("Error deleting comment:", error);
+            throw error;
+        }
+    }
 }
 
 const service = new Service()

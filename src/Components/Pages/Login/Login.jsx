@@ -18,6 +18,7 @@ import { login as authLogin } from "@/store/authSlice";
 import { useForm } from "react-hook-form";
 import authService from "@/appwrite/auth";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -49,27 +50,25 @@ export default function Login() {
       setIsLoading(true);
       setError("");
       setShowResendButton(false);
-        const session = await authService.login(data)
-        if (session){
+      const session = await authService.login(data)
+      if (session){
         const userData = await authService.getCurrentUser()
         if (userData){
-            // Check if email is verified
-            const isVerified = await authService.isEmailVerified();
-            
-            if (!isVerified) {
-                setError("Please verify your email before logging in. Check your inbox for the verification link.");
-                setShowResendButton(true);
-                // Logout the session since email is not verified
-                await authService.logout();
-                return;
-            }
-            
-            // Email is verified, proceed with login
-            dispatch(authLogin({userData}));
-            navigate("/home")
+          // Check if email is verified
+          const isVerified = await authService.isEmailVerified();
+          if (!isVerified) {
+            setError("Please verify your email before logging in. Check your inbox for the verification link.");
+            setShowResendButton(true);
+            // Logout the session since email is not verified
+            await authService.logout();
+            return;
+          }
+          // Email is verified, proceed with login
+          dispatch(authLogin({userData}));
+          toast.success("Logged in successfully!");
+          navigate("/home")
         }
-    }
-    // eslint-disable-next-line no-unused-vars
+      }
     } catch (error) {
       setError("Invalid Credentials!");
     } finally {

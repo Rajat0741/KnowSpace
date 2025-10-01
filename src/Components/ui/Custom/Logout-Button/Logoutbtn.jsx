@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import authService from "@/appwrite/auth";
 import { logout } from "@/store/authSlice";
 import React, { useState } from 'react'
+import { toast } from 'sonner'
 import { useNavigate } from "react-router-dom";
 // Optimized individual icon imports to reduce bundle size
 import LogOut from "lucide-react/dist/esm/icons/log-out";
@@ -24,11 +25,11 @@ function Logoutbtn({ classname }) {
         setIsLoggingOut(true)
         try {
             await authService.logout()
-            console.log("Logged out successfully")
+            toast.success("Logged out successfully")
             dispatch(logout())
             navigate("/")
         } catch (error) {
-            console.log(`Error in logout: ${error}`)
+            toast.error(`Error in logout: ${error}`)
         } finally {
             setIsLoggingOut(false)
             setShowLogoutConfirm(false)

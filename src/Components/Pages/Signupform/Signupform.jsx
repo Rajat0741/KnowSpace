@@ -13,6 +13,7 @@ import { Input } from "@/Components/ui/input";
 import Button from "@/Components/ui/button";
 import { useForm } from "react-hook-form";
 import authService from "@/appwrite/auth";
+import { toast } from "sonner";
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +35,7 @@ export default function SignupPage() {
       console.log("User data after signup:", userData);
       if (userData) {
         // Account created successfully and verification email sent
-        alert("Account created! Please check your email to verify your account before logging in.");
+        toast.success("Account created! Please check your email to verify your account before logging in.");
         navigate("/");
       } else {
         setError("Failed to create account. Please try again.");

@@ -5,7 +5,7 @@ import { useSidebarContext } from '../ui/Custom/Side-bar/sidebar-utils';
 import { SidebarTrigger } from '../ui/Custom/Side-bar/sidebar';
 import Logoutbtn from '../ui/Custom/Logout-Button/Logoutbtn';
 import Logo from '../ui/Logo';
-import ProfilePicture from '../ui/ProfilePicture';
+import ProfilePicture from '../ui/Custom/ProfilePicture/ProfilePicture';
 import { useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';

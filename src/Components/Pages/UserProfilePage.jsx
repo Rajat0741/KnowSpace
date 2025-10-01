@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useLocation } from 'react-router-dom'
 import { Calendar, User, CheckCircle, XCircle, ArrowLeft, FileText } from 'lucide-react'
-import ProfilePicture from '../ui/ProfilePicture'
+import ProfilePicture from '../ui/Custom/ProfilePicture/ProfilePicture'
 import { SkeletonCard } from '../ui/SkeletonCard'
 import { Postcard } from '../ui/Custom/PostCard'
 import service from '@/appwrite/config'
@@ -31,7 +31,7 @@ function UserProfilePage() {
             try {
                 let userData = user;
                 // If user is not set from navigation, try to fetch by userId
-                if (!userData.registrationDate && userId) {
+                if (!(userData?.registrationDate) && userId) {
                     const response = await service.getUserById(userId);
                     if (response?.user) {
                         userData = response.user;

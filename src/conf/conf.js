@@ -4,6 +4,7 @@ const conf = {
     appWriteDatabaseId: String(import.meta.env.VITE_APPWRITE_DATABASE_ID),
     appWriteCollectionId: String(import.meta.env.VITE_APPWRITE_COLLECTION_ID),
     appWriteBucketId: String(import.meta.env.VITE_APPWRITE_BUCKET_ID),
+    appWriteCommentsCollectionId: String(import.meta.env.VITE_APPWRITE_COMMENTS_COLLECTION_ID),
     
     appBaseUrl: String(import.meta.env.VITE_APP_BASE_URL || 'http://localhost:5173'),
     emailVerificationPath: String(import.meta.env.VITE_EMAIL_VERIFICATION_URL || '/verify-email'),

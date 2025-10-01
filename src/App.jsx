@@ -9,6 +9,7 @@ import { Outlet } from "react-router-dom"
 // Optimized individual icon import to reduce bundle size
 import ArrowUp from "lucide-react/dist/esm/icons/arrow-up";
 import { useRoutePreloader } from "./hooks/useRoutePreloader"
+import { Toaster } from "@/Components/ui/sonner"
 
 function App() {
   const dispatch = useDispatch();
@@ -86,6 +87,7 @@ function App() {
           <ArrowUp className="w-6 h-6" />
         </button>
       </SidebarInset>
+      <Toaster />
     </>
   );
 }

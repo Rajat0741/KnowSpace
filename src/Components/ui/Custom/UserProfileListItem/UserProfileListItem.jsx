@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
-import ProfilePicture from '../ProfilePicture'
+import ProfilePicture from '../ProfilePicture/ProfilePicture'
 
 function UserProfileListItem({ user, className, variant = 'default' }) {
   const [isHovered, setIsHovered] = useState(false)

@@ -3,6 +3,8 @@ import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import service from '@/appwrite/config';
 import { ArrowLeft, Calendar, Tag, Clock, Share2, Edit, Trash2 } from 'lucide-react';
+import CommentsDrawer from '@/Components/ui/Custom/CommentsDrawer/CommentsDrawer';
+import { toast } from 'sonner';
 
 function createPostResource(id, reduxPost, forceRefresh = false) {
   let status = 'pending';
@@ -112,7 +114,7 @@ function PostContent({ resource, wasUpdated = false }) {
       window.location.reload(); // reload to reflect status change
     } catch (error) {
       console.error('Error activating post:', error);
-      alert('Failed to activate post. Please try again.');
+      toast.error('Failed to activate post. Please try again.');
     } finally {
       setIsActivating(false);
     }
@@ -152,7 +154,7 @@ function PostContent({ resource, wasUpdated = false }) {
       navigate('/');
     } catch (error) {
       console.error('Error deleting post:', error);
-      alert('Failed to delete post. Please try again.');
+      toast.error('Failed to delete post. Please try again.');
     } finally {
       setIsDeleting(false);
     }
@@ -245,19 +247,31 @@ function PostContent({ resource, wasUpdated = false }) {
     : null;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      {/* Enhanced background with animated gradient - Settings inspired */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/25 via-indigo-50/20 to-purple-50/30 dark:from-blue-950/15 dark:via-indigo-950/10 dark:to-purple-950/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-transparent to-transparent dark:from-gray-900/70" />
+        {/* Floating orbs */}
+        <div className="absolute inset-0 opacity-20 dark:opacity-10">
+          <div className="absolute top-20 left-20 w-60 h-60 bg-blue-400/15 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-40 right-32 w-80 h-80 bg-purple-400/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute bottom-40 left-1/3 w-72 h-72 bg-indigo-400/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
+        </div>
+      </div>
+
       {/* Hero Section with Featured Image */}
       <div className="relative overflow-hidden">
         <div className={`relative ${getMaxWidth()} mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-300`}>
           {/* Navigation */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sticky top-4 z-10 bg-background/80 backdrop-blur-md rounded-lg p-3 border border-border/30">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sticky top-4 z-10 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-blue-200/30 dark:border-purple-800/30 rounded-2xl p-4 shadow-lg">
             <button
               onClick={handleBackClick}
-              className="group inline-flex items-center gap-2 px-4 py-2.5 bg-card/90 backdrop-blur-sm border border-border/50 rounded-lg hover:bg-card transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="group inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-50/90 to-purple-50/90 dark:from-blue-900/30 dark:to-purple-900/30 backdrop-blur-sm border border-blue-200/50 dark:border-purple-700/50 rounded-lg hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/50 dark:hover:to-purple-900/50 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400/50 dark:focus:ring-purple-500/50 shadow-md hover:shadow-lg"
               aria-label="Go back to previous page"
             >
-              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-              <span className="text-sm font-medium">Back</span>
+              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 text-blue-600 dark:text-purple-400" />
+              <span className="text-sm font-medium text-blue-600 dark:text-purple-400">Back</span>
             </button>
 
             <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
@@ -301,6 +315,9 @@ function PostContent({ resource, wasUpdated = false }) {
                 </div>
               )}
 
+              {/* Comments Drawer */}
+              <CommentsDrawer postId={post.$id} />
+
               {/* Share Icon */}
               <button
                 onClick={openShareModal}
@@ -312,9 +329,9 @@ function PostContent({ resource, wasUpdated = false }) {
 
               {/* Category Badge with Glow */}
               {post.category && (
-                <div className="group inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-primary/20 to-accent/20 backdrop-blur-sm rounded-full border border-primary/30 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 cursor-default">
-                  <Tag className="w-4 h-4 text-primary group-hover:text-primary/80 transition-colors" />
-                  <span className="text-xs sm:text-sm font-medium text-primary group-hover:text-primary/80 transition-colors">{post.category}</span>
+                <div className="group inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 dark:from-blue-500/30 dark:to-purple-500/30 backdrop-blur-sm rounded-full border border-blue-500/30 dark:border-purple-500/40 hover:shadow-lg hover:shadow-blue-500/20 dark:hover:shadow-purple-500/20 transition-all duration-300 cursor-default shadow-md">
+                  <Tag className="w-4 h-4 text-blue-600 dark:text-purple-400 group-hover:text-blue-700 dark:group-hover:text-purple-300 transition-colors" />
+                  <span className="text-sm font-medium text-blue-600 dark:text-purple-400 group-hover:text-blue-700 dark:group-hover:text-purple-300 transition-colors">{post.category}</span>
                 </div>
               )}
             </div>
@@ -381,29 +398,47 @@ function PostContent({ resource, wasUpdated = false }) {
       </div>
 
       {/* Article Content - Improved contrast for light mode */}
-      <div className={`${getMaxWidth()} mx-auto px-4 sm:px-6 lg:px-8 pb-16 transition-all duration-300`}>
+      <div className={`relative ${getMaxWidth()} mx-auto px-4 sm:px-6 lg:px-8 pb-16 transition-all duration-300`}>
         <article className="relative">
-          <div className="relative bg-card/70 dark:bg-card/40 backdrop-blur-md border border-border/50 dark:border-border/40 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-xl dark:shadow-2xl hover:shadow-2xl dark:hover:shadow-3xl transition-all duration-500">
-            {/* Content with enhanced typography */}
-            <div
-              className="prose prose-base sm:prose-lg dark:prose-invert max-w-none 
-                prose-headings:text-foreground prose-headings:font-semibold
-                prose-p:text-foreground/95 dark:prose-p:text-foreground/90 prose-p:leading-relaxed
-                prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-                prose-strong:text-foreground prose-strong:font-semibold
-                prose-code:bg-muted prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-code:text-accent-foreground
-                prose-blockquote:border-l-primary prose-blockquote:bg-muted/50 prose-blockquote:px-6 prose-blockquote:py-4 prose-blockquote:rounded-r-lg
-                prose-ul:space-y-2 prose-ol:space-y-2
-                prose-li:text-foreground/95 dark:prose-li:text-foreground/90
-                prose-img:rounded-lg prose-img:shadow-lg"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+          {/* Enhanced glass morphism card with Settings-inspired styling */}
+          <div className="relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/60 via-white/80 to-purple-50/60 dark:from-blue-950/30 dark:via-gray-900/80 dark:to-purple-950/30 backdrop-blur-xl"></div>
+            <div className="absolute inset-0 bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm"></div>
+            
+            <div className="relative border border-blue-200/40 dark:border-purple-800/40 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-xl">
+              {/* Content with enhanced typography */}
+              <div
+                className="prose prose-base sm:prose-lg dark:prose-invert max-w-none 
+                  prose-headings:text-foreground prose-headings:font-semibold
+                  prose-p:text-foreground/95 dark:prose-p:text-foreground/90 prose-p:leading-relaxed
+                  prose-a:text-blue-600 dark:prose-a:text-purple-400 prose-a:no-underline hover:prose-a:underline
+                  prose-strong:text-foreground prose-strong:font-semibold
+                  prose-code:bg-blue-100/50 dark:prose-code:bg-purple-900/30 prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-code:text-blue-700 dark:prose-code:text-purple-300
+                  prose-blockquote:border-l-blue-500 dark:prose-blockquote:border-l-purple-500 prose-blockquote:bg-blue-50/50 dark:prose-blockquote:bg-purple-900/20 prose-blockquote:px-6 prose-blockquote:py-4 prose-blockquote:rounded-r-lg
+                  prose-ul:space-y-2 prose-ol:space-y-2
+                  prose-li:text-foreground/95 dark:prose-li:text-foreground/90
+                  prose-img:rounded-lg prose-img:shadow-lg"
+                dangerouslySetInnerHTML={{ __html: post.content }}
+              />
+            </div>
           </div>
         </article>
 
         {/* Enhanced Social Share Section */}
-        <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-border/40">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div className="mt-12 sm:mt-16 pt-8 sm:pt-12">
+          {/* Decorative divider */}
+          <div className="flex items-center justify-center mb-8">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-px bg-gradient-to-r from-transparent to-blue-400 dark:to-purple-400"></div>
+              <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full shadow-lg">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div className="w-16 h-px bg-gradient-to-r from-blue-400 to-transparent dark:from-purple-400"></div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-r from-blue-50/60 to-purple-50/60 dark:from-blue-950/30 dark:to-purple-950/30 backdrop-blur-sm rounded-2xl p-6 border border-blue-200/40 dark:border-purple-800/40">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             {/* Article Engagement Stats */}
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -433,6 +468,7 @@ function PostContent({ resource, wasUpdated = false }) {
                 <Share2 className="w-4 h-4 text-blue-400" />
                 <span className="text-sm font-medium text-blue-400">Share</span>
               </button>
+            </div>
             </div>
           </div>
         </div>

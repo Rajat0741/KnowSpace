@@ -4,7 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { Input } from "@/Components/ui/input";
 import Button from "@/Components/ui/button";
 import { SkeletonCard } from "@/Components/ui/SkeletonCard";
-import UserProfileListItem from "@/Components/ui/Custom/UserProfileListItem";
+import UserProfileListItem from "@/Components/ui/Custom/UserProfileListItem/UserProfileListItem";
 import service from "../../../appwrite/config";
 
 const Search = () => {

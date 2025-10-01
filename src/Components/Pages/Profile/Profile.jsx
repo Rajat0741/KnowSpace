@@ -5,7 +5,7 @@ import service from '../../../appwrite/config'
 import { Query } from 'appwrite'
 import Postcard from '../../ui/Custom/PostCard/Postcard'
 import { SkeletonCard } from '../../ui/SkeletonCard'
-import ProfilePicture from '../../ui/ProfilePicture'
+import ProfilePicture from '../../ui/Custom/ProfilePicture/ProfilePicture'
 import { CheckCircle, XCircle, User, Mail, Calendar, FileText } from 'lucide-react'
 
 function Profile() {
