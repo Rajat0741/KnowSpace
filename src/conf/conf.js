@@ -6,6 +6,11 @@ const conf = {
     appWriteBucketId: String(import.meta.env.VITE_APPWRITE_BUCKET_ID),
     appWriteCommentsCollectionId: String(import.meta.env.VITE_APPWRITE_COMMENTS_COLLECTION_ID),
     
+    // ImageKit Configuration (Frontend only - private key is in Appwrite function)
+    imagekitPublicKey: String(import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY),
+    imagekitUrlEndpoint: String(import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT),
+    imagekitFunctionId: String(import.meta.env.VITE_IMAGEKIT_FUNCTION_ID),
+    
     appBaseUrl: String(import.meta.env.VITE_APP_BASE_URL || 'http://localhost:5173'),
     emailVerificationPath: String(import.meta.env.VITE_EMAIL_VERIFICATION_URL || '/verify-email'),
     passwordResetPath: String(import.meta.env.VITE_PASSWORD_RESET_URL || '/reset-password'),

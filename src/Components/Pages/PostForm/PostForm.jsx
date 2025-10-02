@@ -9,6 +9,8 @@ import { useSelector } from 'react-redux'
 import Select from '@/Components/ui/Select'
 import VaulDrawer from '@/Components/ui/Custom/ImageDrawer/ImageDrawer'
 import { Send, Loader2, FileText, Image, Tag, ToggleLeft, ToggleRight, Upload, X, Edit, Type, FolderOpen } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
+
 function PostForm({ post = null }) {
     const MAX_CONTENT_LENGTH = 35000;
     const MAX_TITLE_LENGTH = 200;
@@ -29,6 +31,7 @@ function PostForm({ post = null }) {
     const [error, setError] = useState("");
     const [imgLink, setImgLink] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
+    const queryClient = useQueryClient();
     const [postCreated, setPostCreated] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     
@@ -127,9 +130,16 @@ function PostForm({ post = null }) {
                     // Upload file (works for both local files and downloaded Pixabay images)
                     uploadedFile = await service.uploadFile(selectedFile);
                     if (uploadedFile) {
-                        // Only delete old image if we successfully uploaded a new one
-                        if (post.featuredimage && !post.featuredimage.startsWith('http')) {
-                            await service.deleteFile(post.featuredimage);
+                        // Delete old image if exists
+                        if (post.featuredimage) {
+                            try {
+                                const oldImageData = JSON.parse(post.featuredimage);
+                                if (oldImageData.fileId) {
+                                    await service.deleteFile(oldImageData.fileId);
+                                }
+                            } catch {
+                                // Old format or external URL, skip deletion
+                            }
                         }
                     }
                 }
@@ -138,7 +148,9 @@ function PostForm({ post = null }) {
                     id: post.$id,
                     title: data.title,
                     content: content, // Use validated content string
-                    featuredimage: uploadedFile ? uploadedFile.$id : post.featuredimage,
+                    featuredimage: uploadedFile 
+                        ? JSON.stringify({ url: uploadedFile.url, fileId: uploadedFile.fileId })
+                        : post.featuredimage,
                     status: data.status,
                     category: data.category,
                     authorName: post.authorName || userData.name || 'Anonymous'
@@ -150,6 +162,10 @@ function PostForm({ post = null }) {
                         setPreviewUrl(null);
                     }
                     setImgLink(null);
+                    
+                    // Invalidate posts queries to refresh the posts list
+                    queryClient.invalidateQueries({ queryKey: ['posts'] });
+                    
                     navigate(`/post/${post.$id}`, { state: { updated: true } });
                 } else {
                     throw new Error("Failed to update the post. Please try again.");
@@ -160,11 +176,10 @@ function PostForm({ post = null }) {
                     // Upload file (works for both local files and downloaded Pixabay images)
                     uploadedFile = await service.uploadFile(selectedFile);
                     if (uploadedFile) {
-                        const fileId = uploadedFile.$id;
                         const dbPost = await service.createPost({
                             title: data.title,
                             content: content, // Use validated content string
-                            featuredimage: fileId,
+                            featuredimage: JSON.stringify({ url: uploadedFile.url, fileId: uploadedFile.fileId }),
                             status: data.status,
                             userid: userData.$id,
                             category: data.category,

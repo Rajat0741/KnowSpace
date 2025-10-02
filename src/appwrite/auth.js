@@ -154,17 +154,16 @@ export class AuthService {
             // Delete old profile picture if exists
             await this.deleteProfilePicture();
             
-            // Create a shorter, valid file ID (max 36 chars, no special chars at start)
-            // Use first 8 chars of user ID + timestamp suffix to stay under 36 chars
-            const userIdShort = user.$id.substring(0, 8);
-            const timestamp = Date.now().toString().substring(-8); // Last 8 digits
-            const fileId = `p${userIdShort}${timestamp}`; // 'p' + 8 + 8 = 17 chars max
+            const uploadedFile = await service.uploadFile(file);
             
-            const uploadedFile = await service.uploadFile(file, fileId);
-            
-            // Store the file ID in user preferences for easy retrieval
+            // Store both URL and fileId in user preferences for easy retrieval and deletion
             if (uploadedFile) {
-                await this.updatePreferences({ profilePictureId: uploadedFile.$id });
+                await this.updatePreferences({ 
+                    profilePicture: {
+                        url: uploadedFile.url,
+                        fileId: uploadedFile.fileId
+                    }
+                });
             }
             
             return uploadedFile;
@@ -179,15 +178,15 @@ export class AuthService {
             const user = await this.getCurrentUser();
             if (!user) return;
             
-            // Get profile picture ID from user preferences
+            // Get profile picture data from user preferences
             const prefs = await this.getPreferences();
-            const profilePictureId = prefs.profilePictureId;
+            const profilePicture = prefs.profilePicture;
             
-            if (profilePictureId) {
-                await service.deleteFile(profilePictureId);
+            if (profilePicture?.fileId) {
+                await service.deleteFile(profilePicture.fileId);
                 // Remove from user preferences
                 const updatedPrefs = { ...prefs };
-                delete updatedPrefs.profilePictureId;
+                delete updatedPrefs.profilePicture;
                 await this.updatePreferences(updatedPrefs);
             }
         } catch (error) {
@@ -200,12 +199,12 @@ export class AuthService {
             const user = await this.getCurrentUser();
             if (!user) return null;
             
-            // Get profile picture ID from user preferences
+            // Get profile picture data from user preferences
             const prefs = await this.getPreferences();
-            const profilePictureId = prefs.profilePictureId;
+            const profilePicture = prefs.profilePicture;
             
-            if (profilePictureId) {
-                return service.getFileView(profilePictureId);
+            if (profilePicture?.url) {
+                return profilePicture.url;
             }
             return null;
         } catch (error) {

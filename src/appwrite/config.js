@@ -1,19 +1,16 @@
 import conf from '../conf/conf.js'
-// Use function ID directly from conf
-import { Client, Databases, ID, Storage, Query, Functions } from 'appwrite'
+import { Client, Databases, ID, Query, Functions } from 'appwrite'
+import imagekitService from '../imagekit/imagekit.js'
 
 export class Service {
     client = new Client();
     databases;
-    storage;
 
     constructor() {
         this.client
             .setEndpoint(conf.appWriteUrl)
             .setProject(conf.appWriteProjectId)
         this.databases = new Databases(this.client);
-        this.storage = new Storage(this.client);
-
     }
 
     async createPost({ title, content, featuredimage, status, userid, category, authorName }) {
@@ -115,14 +112,10 @@ export class Service {
 
     async uploadFile(file, customName = null) {
         try {
-            const fileId = customName || ID.unique();
-            return await this.storage.createFile(
-                conf.appWriteBucketId,
-                fileId,
-                file
-            )
+            // Use ImageKit instead of Appwrite Storage
+            return await imagekitService.uploadFile(file, customName);
         } catch (error) {
-            console.log(error)
+            console.log('Upload error:', error);
             return false;
         }
     }
@@ -171,22 +164,17 @@ export class Service {
 
     async deleteFile(fileid) {
         try {
-            await this.storage.deleteFile(
-                conf.appWriteBucketId,
-                fileid
-            )
-            return true;
+            // Use ImageKit instead of Appwrite Storage
+            return await imagekitService.deleteFile(fileid);
         } catch (error) {
-            console.log(error)
+            console.log('Delete error:', error);
             return false;
         }
     }
 
     getFileView(fileid) {
-        return this.storage.getFileView(
-            conf.appWriteBucketId,
-            fileid
-        )
+        // Use ImageKit instead of Appwrite Storage
+        return imagekitService.getFileView(fileid);
     }
 
     // Comments functionality

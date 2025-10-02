@@ -274,7 +274,14 @@ function Settings() {
           try {
             // Delete featured image if exists
             if (post.featuredimage) {
-              await service.deleteFile(post.featuredimage);
+              try {
+                const imageData = JSON.parse(post.featuredimage);
+                if (imageData.fileId) {
+                  await service.deleteFile(imageData.fileId);
+                }
+              } catch {
+                // Old format or external URL, skip deletion
+              }
             }
             // Delete the post
             await service.deletePost(post.$id);
