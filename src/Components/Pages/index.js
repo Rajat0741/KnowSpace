@@ -7,6 +7,7 @@ const SignupPage = lazy(() => import("./Signupform/Signupform"));
 const PostForm = lazy(() => import("./PostForm/PostForm"));
 const Profile = lazy(() => import("./Profile/Profile"));
 const Post = lazy(() => import("./Post/Post"));
+const PublicPost = lazy(() => import("./Post/PublicPost"));
 const EditPost = lazy(() => import("./EditPost/EditPost"));
 const VerifyEmail = lazy(() => import("./VerifyEmail/VerifyEmail"));
 const Search = lazy(() => import("./Search/Search"));
@@ -21,6 +22,7 @@ export {
     PostForm,
     Profile,
     Post,
+    PublicPost,
     EditPost,
     VerifyEmail,
     Search,

@@ -5,7 +5,7 @@ import { toggleDarkMode } from '@/store/darkmodeSlice';
 import { setProfilePicture, clearProfilePicture } from '@/store/profileSlice';
 import authService from '@/appwrite/auth';
 import { logout, updateUserData } from '@/store/authSlice';
-import {  Settings as SettingsIcon,  Moon,  Sun,  Lock,  Trash2,  Eye,  EyeOff, AlertTriangle, Check, X, Camera, User, Edit3
+import {  Settings as SettingsIcon,  Moon,  Sun, Trash2, AlertTriangle, Check, X, Camera, User, Edit3
 } from 'lucide-react';
 import Button from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
@@ -18,28 +18,14 @@ function Settings() {
   const { userData } = useSelector(state => state.auth);
   
   // Form states
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
   const [newBio, setNewBio] = useState(userData?.prefs?.bio || '');
-  const [showPasswords, setShowPasswords] = useState({
-    current: false,
-    new: false,
-    confirm: false
-  });
   
   // UI states
-  // These booleans control loading indicators, modals and success messages
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [isSendingRecovery, setIsSendingRecovery] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [isUploadingPicture, setIsUploadingPicture] = useState(false);
   const [isUpdatingBio, setIsUpdatingBio] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
-  const [passwordChangeSuccess, setPasswordChangeSuccess] = useState(false);
-  const [recoveryEmailSent, setRecoveryEmailSent] = useState(false);
   const [profilePictureSuccess, setProfilePictureSuccess] = useState(false);
   const [bioUpdateSuccess, setBioUpdateSuccess] = useState(false);
   const [errors, setErrors] = useState({});

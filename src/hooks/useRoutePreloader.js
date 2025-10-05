@@ -19,7 +19,6 @@ export const useRoutePreloader = () => {
       await routeImporter();
       preloadedRoutes.current.add(routeKey);
       
-      console.log('Route preloaded successfully');
     } catch (error) {
       console.warn('Failed to preload route:', error);
     }
@@ -49,6 +48,7 @@ export const routePreloaders = {
   profile: () => import('../Components/Pages/Profile/Profile'),
   search: () => import('../Components/Pages/Search/Search'),
   createPost: () => import('../Components/Pages/PostForm/PostForm'),
+  writeWithAI: () => import('../Components/Pages/Write_with_AI/WriteWithAI'),
   settings: () => import('../Components/Pages/Settings/Settings'),
   post: () => import('../Components/Pages/Post/Post'),
   editPost: () => import('../Components/Pages/EditPost/EditPost'),

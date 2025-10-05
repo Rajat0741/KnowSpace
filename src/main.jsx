@@ -7,10 +7,11 @@ import store from './store/store'
 import { SidebarProvider } from './Components/ui/Custom/Side-bar/sidebar'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { SignupPage, Login, Home, PostForm, Profile, Post, EditPost, VerifyEmail, Search, Settings, ResetPassword, NotFound } from './Components/Pages'
+import { SignupPage, Login, Home, PostForm, Profile, Post, PublicPost, EditPost, VerifyEmail, Search, Settings, ResetPassword, NotFound } from './Components/Pages'
 import UserProfilePage from './Components/Pages/UserProfilePage'
 import Protected from './AuthenticatedRouting/AuthLayout'
 import LazyRoute from './Components/ui/LazyRoute'
+import WriteWithAI from './Components/Pages/Write_with_AI/WriteWithAI'
 
 // Create a client
 const queryClient = new QueryClient({
@@ -100,6 +101,14 @@ const router = createBrowserRouter([
         )
       },
       {
+        path: 'public/post/:id',
+        element: (
+          <LazyRoute fallbackMessage="Loading post...">
+            <PublicPost />
+          </LazyRoute>
+        )
+      },
+      {
         path: "search",
         element: (
           <LazyRoute fallbackMessage="Loading search...">
@@ -120,6 +129,14 @@ const router = createBrowserRouter([
         element: (
           <LazyRoute fallbackMessage="Loading settings...">
             <Protected authentication={true}><Settings /></Protected>
+          </LazyRoute>
+        )
+      },
+      {
+        path: "write-with-ai",
+        element: (
+          <LazyRoute fallbackMessage="Loading...">
+            <Protected authentication={true}><WriteWithAI /> </Protected>
           </LazyRoute>
         )
       },

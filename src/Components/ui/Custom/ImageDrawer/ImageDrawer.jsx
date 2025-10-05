@@ -180,7 +180,7 @@ export default function VaulDrawer({
           <>
             <Globe className="w-5 h-5 text-muted-foreground group-hover/pixabay:text-primary transition-colors mr-2" />
             <span className="text-sm text-muted-foreground group-hover/pixabay:text-foreground transition-colors">
-              Choose from Pixabay
+              Pixabay
             </span>
           </>
         )}

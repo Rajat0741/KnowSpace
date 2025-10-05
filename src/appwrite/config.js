@@ -154,7 +154,6 @@ export class Service {
                 body,
                 false,
             );
-            console.log("User search execution response:", execution);
             return execution.responseBody;
         } catch (error) {
             console.error("Error searching users:", error.message);
@@ -239,6 +238,51 @@ export class Service {
             return true;
         } catch (error) {
             console.log("Error deleting comment:", error);
+            throw error;
+        }
+    }
+
+    // AI Generation Tracking functionality
+    async getTrackingItems(userId) {
+        try {
+            return await this.databases.listDocuments(
+                conf.appWriteDatabaseId,
+                conf.appWriteTrackingCollectionId,
+                [
+                    Query.equal('userid', userId),
+                    Query.orderDesc('$createdAt'),
+                    Query.limit(50)
+                ]
+            );
+        } catch (error) {
+            console.log("Error fetching tracking items:", error);
+            return { documents: [] };
+        }
+    }
+
+    async getTrackingItem(trackingId) {
+        try {
+            return await this.databases.getDocument(
+                conf.appWriteDatabaseId,
+                conf.appWriteTrackingCollectionId,
+                trackingId
+            );
+        } catch (error) {
+            console.log("Error fetching tracking item:", error);
+            throw error;
+        }
+    }
+
+    async deleteTrackingItem(trackingId) {
+        try {
+            await this.databases.deleteDocument(
+                conf.appWriteDatabaseId,
+                conf.appWriteTrackingCollectionId,
+                trackingId
+            );
+            return true;
+        } catch (error) {
+            console.log("Error deleting tracking item:", error);
             throw error;
         }
     }

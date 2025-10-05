@@ -28,6 +28,7 @@ const menuItems = [
   { title: "Home", url: "/home", icon: Home, preloader: routePreloaders.home },
   { title: "Profile", url: "/profile", icon: User, preloader: routePreloaders.profile },
   { title: "Create Posts", url: "/create-post", icon: NotebookPen, preloader: routePreloaders.createPost },
+  { title: "Write with AI", url: "/write-with-ai", icon: Sparkles, preloader: routePreloaders.writeWithAI },
   { title: "Search", url: "/search", icon: Search, preloader: routePreloaders.search },
   { title: "Settings", url: "/settings", icon: Settings, preloader: routePreloaders.settings },
 ]

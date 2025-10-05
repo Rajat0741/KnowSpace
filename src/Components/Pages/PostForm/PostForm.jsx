@@ -8,7 +8,8 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Select from '@/Components/ui/Select'
 import VaulDrawer from '@/Components/ui/Custom/ImageDrawer/ImageDrawer'
-import { Send, Loader2, FileText, Image, Tag, ToggleLeft, ToggleRight, Upload, X, Edit, Type, FolderOpen } from 'lucide-react'
+import DragDropZone from '@/Components/ui/DragDropZone'
+import { Send, Loader2, FileText, Image, Tag, ToggleLeft, ToggleRight, X, Type, FolderOpen } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 
 function PostForm({ post = null }) {
@@ -65,6 +66,26 @@ function PostForm({ post = null }) {
             setSelectedFile(null);
             setValue("featuredimage", null, { shouldValidate: true });
         }
+    };
+
+    // Handler for drag and drop image selection
+    const handleDragDropImageSelect = (file) => {
+        if (file) {
+            // For drag and drop, we get either a single File object or array
+            const fileToProcess = Array.isArray(file) ? file[0] : file;
+            
+            const url = URL.createObjectURL(fileToProcess);
+            setPreviewUrl(url);
+            setSelectedFile(fileToProcess);
+            setValue("featuredimage", [fileToProcess], { shouldValidate: true });
+        }
+    };
+
+    // Handler for drag and drop errors
+    const handleDragDropError = (errorMessage) => {
+        setError(errorMessage);
+        // Clear error after 5 seconds
+        setTimeout(() => setError(""), 5000);
     };
 
     // Handler for image selection from internet - downloads and converts to file
@@ -367,16 +388,16 @@ function PostForm({ post = null }) {
                                             onChange={handleImageChange}
                                         />
                                         
-                                        {/* Always show both buttons */}
-                                        <div className="space-y-3">
+                                        {/* Alternative upload options */}
+                                        <div className="grid grid-cols-2 gap-3">
                                             {/* Choose from Device Button */}
                                             <label 
                                                 htmlFor="featured-image"
-                                                className="flex items-center justify-center w-full h-12 border-2 border-dashed border-border/50 rounded-lg cursor-pointer bg-gradient-to-br from-background/50 via-background/30 to-background/20 hover:from-background/60 hover:via-background/40 hover:to-background/30 transition-all duration-300 group/device backdrop-blur-sm"
+                                                className="flex items-center justify-center h-12 border-2 border-dashed border-border/50 rounded-lg cursor-pointer bg-gradient-to-br from-background/50 via-background/30 to-background/20 hover:from-background/60 hover:via-background/40 hover:to-background/30 transition-all duration-300 group/device backdrop-blur-sm"
                                             >
-                                                <FolderOpen className="w-5 h-5 text-muted-foreground group-hover/device:text-primary transition-colors mr-2" />
+                                                <FolderOpen className="w-4 h-4 text-muted-foreground group-hover/device:text-primary transition-colors mr-2" />
                                                 <span className="text-sm text-muted-foreground group-hover/device:text-foreground transition-colors">
-                                                    Choose from Device
+                                                    Browse
                                                 </span>
                                             </label>
                                             
@@ -384,6 +405,15 @@ function PostForm({ post = null }) {
                                             <VaulDrawer onImageSelect={handleImageSelectFromInternet} />
                                         </div>
                                     </div>
+                                    
+                                    {/* Drag and Drop Zone */}
+                                    <DragDropZone
+                                        onFileSelect={handleDragDropImageSelect}
+                                        onError={handleDragDropError}
+                                        disabled={isSubmitting}
+                                        className="min-h-[120px]"
+                                        showInstructions={!previewUrl && !post?.featuredimage}
+                                    />
                                     
                                     {errors.featuredimage && (
                                         <p className="text-red-500 text-sm flex items-center gap-2">
@@ -417,8 +447,20 @@ function PostForm({ post = null }) {
                                                 />
                                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
                                                 {/* Image Source Indicator */}
-                                                <div className="absolute top-3 left-3 px-2 py-1 bg-black/60 text-white text-xs rounded-md">
-                                                    {selectedFile ? (selectedFile.name?.includes('pixabay') ? '🌐 Internet' : '📁 Device') : post ? '💾 Existing' : ''}
+                                                <div className="absolute top-3 left-3 px-2 py-1 bg-black/60 text-white text-xs rounded-md flex items-center gap-1">
+                                                    {selectedFile ? (
+                                                        selectedFile.name?.includes('pixabay') ? (
+                                                            <>🌐 Pixabay</>
+                                                        ) : selectedFile.name?.includes('downloaded') || selectedFile.name?.includes('image-') ? (
+                                                            <>🎯 Drag & Drop</>
+                                                        ) : (
+                                                            <>📁 Device</>
+                                                        )
+                                                    ) : post ? (
+                                                        <>💾 Existing</>
+                                                    ) : (
+                                                        <>📷 Image</>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>

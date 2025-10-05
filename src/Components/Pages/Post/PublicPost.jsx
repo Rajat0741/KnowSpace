@@ -1,32 +1,24 @@
 import React, { Suspense, useState, useEffect } from 'react';
-import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import service from '@/appwrite/config';
-import { ArrowLeft, Calendar, Tag, Clock, Share2, Edit, Trash2 } from 'lucide-react';
-import CommentsDrawer from '@/Components/ui/Custom/CommentsDrawer/CommentsDrawer';
-import { toast } from 'sonner';
+import { ArrowLeft, Calendar, Tag, Clock, Share2, User } from 'lucide-react';
+import PublicCommentsDrawer from '@/Components/ui/Custom/CommentsDrawer/PublicCommentsDrawer';
 
-function createPostResource(id, reduxPost, forceRefresh = false) {
+function createPostResource(id) {
   let status = 'pending';
   let result;
   let suspender;
 
-  // Use Redux data if available and not forcing refresh
-  if (reduxPost && !forceRefresh && reduxPost.$id === id) {
-    status = 'success';
-    result = reduxPost;
-  } else {
-    // Fetch fresh data only when needed
-    suspender = service.getPost(id)
-      .then((r) => {
-        status = 'success';
-        result = r;
-      })
-      .catch((e) => {
-        status = 'error';
-        result = e;
-      });
-  }
+  suspender = service.getPost(id)
+    .then((r) => {
+      status = 'success';
+      result = r;
+    })
+    .catch((e) => {
+      status = 'error';
+      result = e;
+    });
 
   return {
     read() {
@@ -86,107 +78,23 @@ function getReadingTime(content) {
   return `${time} min read`;
 }
 
-function PostContent({ resource, wasUpdated = false }) {
+function PublicPostContent({ resource }) {
   const post = resource.read();
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isActivating, setIsActivating] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
-  // Activate post functionality
-  const handleActivatePost = async () => {
-    if (!isOwner || post.status !== 'inactive') return;
-    setIsActivating(true);
-    try {
-      await service.updatePost({
-        id: post.$id,
-        title: post.title,
-        content: post.content,
-        featuredimage: post.featuredimage,
-        status: 'active',
-        category: post.category,
-        authorName: post.authorName || userData?.name || 'Anonymous'
-      });
-      window.location.reload(); // reload to reflect status change
-    } catch (error) {
-      console.error('Error activating post:', error);
-      toast.error('Failed to activate post. Please try again.');
-    } finally {
-      setIsActivating(false);
-    }
-  };
 
-  // Check if current user owns this post
-  const isOwner = userData && post && userData.$id === post.userid;
-
-  // Handle back button - go to home if coming from update, otherwise go back
-  const handleBackClick = () => {
-    if (wasUpdated) {
-      navigate('/');
-    } else {
-      navigate(-1);
-    }
-  };
-
-  // Delete post functionality
-  const handleDeletePost = async () => {
-    if (!isOwner) return;
-    setShowDeleteConfirm(true);
-  };
-
-  const confirmDelete = async () => {
-    setShowDeleteConfirm(false);
-    setIsDeleting(true);
-    try {
-      // Delete featured image if exists
-      if (post.featuredimage) {
-         try {
-          const imageData = JSON.parse(post.featuredimage);
-          if (imageData.fileId) {
-            await service.deleteFile(imageData.fileId);
-          }
-        } catch {
-          // Old format or external URL, skip deletion
-        }
-      }
-
-      // Delete the post
-      await service.deletePost(post.$id);
-
-      // Navigate back to home
-      navigate('/');
-    } catch (error) {
-      console.error('Error deleting post:', error);
-      toast.error('Failed to delete post. Please try again.');
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
-  const cancelDelete = () => {
-    setShowDeleteConfirm(false);
-  };
-
-  // Edit post functionality
-  const handleEditPost = () => {
-    if (!isOwner) return;
-    navigate(`/edit-post/${post.$id}`);
-  };
-
-  // Dynamic max width - using viewport-based responsive design
+  // Dynamic max width
   const getMaxWidth = () => {
     return 'max-w-6xl xl:max-w-7xl';
   };
 
-  // Share functionality - Generate public links for sharing
+  // Share functionality
   const sharePost = async (platform) => {
-    // Generate public URL for sharing
-    const publicUrl = `${window.location.origin}/public/post/${post.$id}`;
-    const url = encodeURIComponent(publicUrl);
+    const url = encodeURIComponent(window.location.href);
     const text = encodeURIComponent(`Check out this article: ${post.title}`);
 
     const shareUrls = {
@@ -198,7 +106,7 @@ function PostContent({ resource, wasUpdated = false }) {
 
     if (platform === 'copy') {
       try {
-        await navigator.clipboard.writeText(publicUrl);
+        await navigator.clipboard.writeText(decodeURIComponent(url));
         setCopySuccess(true);
         setTimeout(() => setCopySuccess(false), 2000);
       } catch (err) {
@@ -257,7 +165,7 @@ function PostContent({ resource, wasUpdated = false }) {
 
   return (
     <div className="min-h-screen relative">
-      {/* Enhanced background with animated gradient - Settings inspired */}
+      {/* Enhanced background with animated gradient */}
       <div className="fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/25 via-indigo-50/20 to-purple-50/30 dark:from-blue-950/15 dark:via-indigo-950/10 dark:to-purple-950/20" />
         <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-transparent to-transparent dark:from-gray-900/70" />
@@ -275,7 +183,7 @@ function PostContent({ resource, wasUpdated = false }) {
           {/* Navigation */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sticky top-4 z-10 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-blue-200/30 dark:border-purple-800/30 rounded-2xl p-4 shadow-lg">
             <button
-              onClick={handleBackClick}
+              onClick={() => navigate(-1)}
               className="group inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-50/90 to-purple-50/90 dark:from-blue-900/30 dark:to-purple-900/30 backdrop-blur-sm border border-blue-200/50 dark:border-purple-700/50 rounded-lg hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/50 dark:hover:to-purple-900/50 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400/50 dark:focus:ring-purple-500/50 shadow-md hover:shadow-lg"
               aria-label="Go back to previous page"
             >
@@ -284,48 +192,8 @@ function PostContent({ resource, wasUpdated = false }) {
             </button>
 
             <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-              {/* Owner Actions - Edit and Delete Buttons */}
-              {isOwner && (
-                <div className="flex items-center gap-2 order-first sm:order-none">
-                  {/* Activate button if post is inactive */}
-                  {post.status === 'inactive' && (
-                    <button
-                      onClick={handleActivatePost}
-                      disabled={isActivating}
-                      className="group inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-green-500/20 to-green-600/20 hover:from-green-500/30 hover:to-green-600/30 border border-green-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
-                      title="Activate Post"
-                    >
-                      <svg className="w-4 h-4 text-green-400 group-hover:text-green-300 transition-colors" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-13h2v6h-2V5zm0 8h2v2h-2v-2z" /></svg>
-                      <span className="text-xs sm:text-sm font-medium text-green-400 group-hover:text-green-300 transition-colors">
-                        {isActivating ? 'Activating...' : 'Activate'}
-                      </span>
-                    </button>
-                  )}
-                  <button
-                    onClick={handleEditPost}
-                    className="group inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-500/20 to-blue-600/20 hover:from-blue-500/30 hover:to-blue-600/30 border border-blue-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/20"
-                    title="Edit Post"
-                  >
-                    <Edit className="w-4 h-4 text-blue-400 group-hover:text-blue-300 transition-colors" />
-                    <span className="text-xs sm:text-sm font-medium text-blue-400 group-hover:text-blue-300 transition-colors">Edit</span>
-                  </button>
-
-                  <button
-                    onClick={handleDeletePost}
-                    disabled={isDeleting}
-                    className="group inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-red-500/20 to-red-600/20 hover:from-red-500/30 hover:to-red-600/30 border border-red-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Delete Post"
-                  >
-                    <Trash2 className="w-4 h-4 text-red-400 group-hover:text-red-300 transition-colors" />
-                    <span className="text-xs sm:text-sm font-medium text-red-400 group-hover:text-red-300 transition-colors">
-                      {isDeleting ? 'Deleting...' : 'Delete'}
-                    </span>
-                  </button>
-                </div>
-              )}
-
               {/* Comments Drawer */}
-              <CommentsDrawer postId={post.$id} />
+              <PublicCommentsDrawer postId={post.$id} />
 
               {/* Share Icon */}
               <button
@@ -343,6 +211,18 @@ function PostContent({ resource, wasUpdated = false }) {
                   <span className="text-sm font-medium text-blue-600 dark:text-purple-400 group-hover:text-blue-700 dark:group-hover:text-purple-300 transition-colors">{post.category}</span>
                 </div>
               )}
+
+              {/* Sign In Button for unauthenticated users */}
+              {!userData && (
+                <Link
+                  to="/"
+                  className="group inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/20 to-green-600/20 hover:from-green-500/30 hover:to-green-600/30 border border-green-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-green-500/20"
+                  title="Sign In"
+                >
+                  <User className="w-4 h-4 text-green-400 group-hover:text-green-300 transition-colors" />
+                  <span className="text-xs sm:text-sm font-medium text-green-400 group-hover:text-green-300 transition-colors">Sign In</span>
+                </Link>
+              )}
             </div>
           </div>
 
@@ -357,9 +237,7 @@ function PostContent({ resource, wasUpdated = false }) {
               {/* Metadata */}
               <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <Link to={`/user/${post.userid}`}>
-                    <span className="text-primary font-medium hover:underline">By {post.authorName || 'Anonymous'}</span>
-                  </Link>
+                  <span className="text-primary font-medium">By {post.authorName || 'Anonymous'}</span>
                 </div>
                 {post.$createdAt && (
                   <div className="flex items-center gap-2">
@@ -433,79 +311,38 @@ function PostContent({ resource, wasUpdated = false }) {
 
           <div className="bg-gradient-to-r from-blue-50/60 to-purple-50/60 dark:from-blue-950/30 dark:to-purple-950/30 backdrop-blur-sm rounded-2xl p-6 border border-blue-200/40 dark:border-purple-800/40">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-            {/* Article Engagement Stats */}
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Link to={`/user/${post.authorId}`}>
-                  <span className="text-primary font-medium hover:underline">By {post.authorName || 'Anonymous'}</span>
-                </Link>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                <span>Published {formatDate(post.$createdAt)}</span>
-              </div>
-              {post.content && (
+              {/* Article Engagement Stats */}
+              <div className="flex items-center gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <span>•</span>
-                  <span>{getReadingTime(post.content)}</span>
+                  <span className="text-primary font-medium">By {post.authorName || 'Anonymous'}</span>
                 </div>
-              )}
-            </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  <span>Published {formatDate(post.$createdAt)}</span>
+                </div>
+                {post.content && (
+                  <div className="flex items-center gap-2">
+                    <span>•</span>
+                    <span>{getReadingTime(post.content)}</span>
+                  </div>
+                )}
+              </div>
 
-            {/* Enhanced Share Buttons */}
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-semibold text-foreground/80">Share this article:</span>
-              <button
-                onClick={openShareModal}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-blue-500/30 rounded-lg transition-all duration-300 hover:scale-105"
-              >
-                <Share2 className="w-4 h-4 text-blue-400" />
-                <span className="text-sm font-medium text-blue-400">Share</span>
-              </button>
-            </div>
+              {/* Enhanced Share Buttons */}
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-semibold text-foreground/80">Share this article:</span>
+                <button
+                  onClick={openShareModal}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-blue-500/30 rounded-lg transition-all duration-300 hover:scale-105"
+                >
+                  <Share2 className="w-4 h-4 text-blue-400" />
+                  <span className="text-sm font-medium text-blue-400">Share</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Elegant Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-card border border-border rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4 animate-in fade-in-0 zoom-in-95 duration-200">
-            {/* Icon */}
-            <div className="flex justify-center">
-              <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
-                <Trash2 className="w-6 h-6 text-red-500" />
-              </div>
-            </div>
-
-            {/* Title and Message */}
-            <div className="text-center space-y-2">
-              <h3 className="text-lg font-semibold text-foreground">Delete Post</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Are you sure you want to delete this post? This action cannot be undone and will permanently remove the post and its content.
-              </p>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3 pt-2">
-              <button
-                onClick={cancelDelete}
-                className="flex-1 px-4 py-2.5 bg-muted hover:bg-muted/80 text-foreground rounded-lg transition-colors duration-200 font-medium"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                disabled={isDeleting}
-                className="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isDeleting ? 'Deleting...' : 'Delete'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Beautiful Share Modal */}
       {showShareModal && (
@@ -616,24 +453,19 @@ function PostContent({ resource, wasUpdated = false }) {
   );
 }
 
-function Post() {
+function PublicPost() {
   const { id } = useParams();
-  const reduxPost = useSelector((state) => state.post.post);
-  const location = useLocation();
-
-  // Check if we're coming from an update operation
-  const forceRefresh = location.state?.updated || false;
 
   const resource = React.useMemo(() =>
-    createPostResource(id, reduxPost, forceRefresh),
-    [id, reduxPost, forceRefresh]
+    createPostResource(id),
+    [id]
   );
 
   return (
     <Suspense fallback={<PostSkeleton />}>
-      <PostContent key={id} resource={resource} wasUpdated={forceRefresh} />
+      <PublicPostContent key={id} resource={resource} />
     </Suspense>
   );
 }
 
-export default Post;
+export default PublicPost;

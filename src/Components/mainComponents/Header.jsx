@@ -6,6 +6,7 @@ import { SidebarTrigger } from '../ui/Custom/Side-bar/sidebar';
 import Logoutbtn from '../ui/Custom/Logout-Button/Logoutbtn';
 import Logo from '../ui/Logo';
 import ProfilePicture from '../ui/Custom/ProfilePicture/ProfilePicture';
+import AITrackingDrawer from '../ui/Custom/AITrackingDrawer/AITrackingDrawer';
 import { useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -109,6 +110,7 @@ export default function Header() {
           <DarkModeToggle />
           {isLoggedIn && (
             <>
+              <AITrackingDrawer />
               <ProfilePicture 
                 size="md" 
                 onClick={() => navigate('/profile')}

@@ -18,7 +18,6 @@ import 'tinymce/plugins/anchor';
 import 'tinymce/plugins/searchreplace';
 import 'tinymce/plugins/visualblocks';
 import 'tinymce/plugins/code';
-import 'tinymce/plugins/fullscreen';
 import 'tinymce/plugins/insertdatetime';
 import 'tinymce/plugins/media';
 import 'tinymce/plugins/table';
@@ -74,8 +73,10 @@ function RTE({ name, control, label, defaultvalue = "", onEditorInit, ...props }
                                 license_key: 'gpl',
                                 base_url: '/tinymce',
                                 skin: localDarkMode ? 'oxide-dark' : 'oxide',
-                                content_css: localDarkMode ? 'dark' : 'default',
+                                content_css: "/tinymce-content.css",
+                                body_class: localDarkMode ? 'dark' : '',
                                 menubar: true,
+                                toolbar_mode: 'sliding',
                                 promotion: false,
                                 branding: false,
                                 
@@ -83,7 +84,7 @@ function RTE({ name, control, label, defaultvalue = "", onEditorInit, ...props }
                                 resize: true, // Allow manual resize
                                 // autoresize_bottom_margin: 16, // Commented out to maintain fixed height
                                 autosave_ask_before_unload: true,
-                                autosave_interval: '15s',
+                                autosave_interval: '5s',
                                 autosave_prefix: 'tinymce-autosave-{path}{query}-{id}-',
                                 autosave_restore_when_empty: true,
                                 
@@ -187,7 +188,6 @@ function RTE({ name, control, label, defaultvalue = "", onEditorInit, ...props }
                                     "searchreplace",
                                     "visualblocks",
                                     "code",
-                                    "fullscreen",
                                     "insertdatetime",
                                     "media",
                                     "table",
@@ -213,9 +213,11 @@ function RTE({ name, control, label, defaultvalue = "", onEditorInit, ...props }
                                     "bullist numlist checklist | outdent indent | accordion | removeformat",
                                     "charmap emoticons nonbreaking | link unlink anchor | image media table",
                                     "codesample | insertdatetime pagebreak hr | searchreplace | visualblocks visualchars",
-                                    "preview fullscreen | save | help"
+                                    "preview | save | help"
                                 ].join(" | "),
-                                content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }"
+                                content_style: localDarkMode 
+                                    ? "body { font-family:Helvetica,Arial,sans-serif; font-size:14px; color: #e5e7eb; background-color: #1f2937; }"
+                                    : "body { font-family:Helvetica,Arial,sans-serif; font-size:14px; color: #111827; background-color: #ffffff; }"
                             }}
                             value={editorContent}
                             onInit={(evt, editor) => {
