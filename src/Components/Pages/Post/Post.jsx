@@ -100,6 +100,13 @@ function PostContent({ resource, wasUpdated = false }) {
   // Activate post functionality
   const handleActivatePost = async () => {
     if (!isOwner || post.status !== 'inactive') return;
+    
+    // Check if featured image exists before activating
+    if (!post.featuredimage) {
+      toast.error('Featured image is required to activate this post.');
+      return;
+    }
+    
     setIsActivating(true);
     try {
       await service.updatePost({

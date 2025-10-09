@@ -11,6 +11,7 @@ import VaulDrawer from '@/Components/ui/Custom/ImageDrawer/ImageDrawer'
 import DragDropZone from '@/Components/ui/DragDropZone'
 import { Send, Loader2, FileText, Image, Tag, ToggleLeft, ToggleRight, X, Type, FolderOpen } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 function PostForm({ post = null }) {
     const MAX_CONTENT_LENGTH = 35000;
@@ -29,7 +30,6 @@ function PostForm({ post = null }) {
     const [selectedFile, setSelectedFile] = useState(null); // Store selected file
     const navigate = useNavigate();
     const userData = useSelector((state) => state.auth.userData);
-    const [error, setError] = useState("");
     const [imgLink, setImgLink] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const queryClient = useQueryClient();
@@ -83,15 +83,12 @@ function PostForm({ post = null }) {
 
     // Handler for drag and drop errors
     const handleDragDropError = (errorMessage) => {
-        setError(errorMessage);
-        // Clear error after 5 seconds
-        setTimeout(() => setError(""), 5000);
+        toast.error(errorMessage);
     };
 
     // Handler for image selection from internet - downloads and converts to file
     const handleImageSelectFromInternet = async (image) => {
         try {
-            setError(""); // Clear any previous errors
             
             const imageUrl = image.largeImageURL || image.webformatURL;
             setPreviewUrl(imageUrl); // Show preview immediately
@@ -115,7 +112,7 @@ function PostForm({ post = null }) {
             
         } catch (error) {
             console.error('Error downloading Pixabay image:', error);
-            setError('Failed to download image from Pixabay. Please try again or choose a different image.');
+            toast.error('Failed to download image from Pixabay. Please try again or choose a different image.');
             setPreviewUrl(null);
             setSelectedFile(null);
         }
@@ -124,29 +121,33 @@ function PostForm({ post = null }) {
 
     const submit = async (data) => {
         setIsSubmitting(true);
-        setError("");
-        let uploadedFile = null;
         
         // Ensure content is a string and validate length
         const content = typeof data.content === 'string' ? data.content : String(data.content || '');
         
         // Check if content exceeds database limit (100,000 chars)
         if (content.length > MAX_CONTENT_LENGTH) {
-            setError(`Content is too long (${content.length} characters). Maximum allowed is ${MAX_CONTENT_LENGTH.toLocaleString()} characters. Please shorten your content.`);
+            toast.error(`Content is too long (${content.length} characters). Maximum allowed is ${MAX_CONTENT_LENGTH.toLocaleString()} characters. Please shorten your content.`);
             setIsSubmitting(false);
             return;
         }
         
         // Validate content is not empty
         if (!content.trim()) {
-            setError("Content cannot be empty. Please add some content to your post.");
+            toast.error("Content cannot be empty. Please add some content to your post.");
             setIsSubmitting(false);
             return;
         }
         
+        let uploadedFile = null;
         try {
+            uploadedFile = null;
             if (post) {
                 // Update existing post
+                if (!selectedFile && !post.featuredimage) {
+                    throw new Error("Featured image is required.");
+                }
+                
                 if (selectedFile) {
                     // Upload file (works for both local files and downloaded Pixabay images)
                     uploadedFile = await service.uploadFile(selectedFile);
@@ -226,7 +227,7 @@ function PostForm({ post = null }) {
                 }
             }
         } catch (error) {
-            setError(error.message);
+            toast.error(error.message);
             if (uploadedFile && !postCreated) {
                 try {
                     await service.deleteFile(uploadedFile.$id);
@@ -549,25 +550,7 @@ function PostForm({ post = null }) {
                     </div>
 
                     {/* Error Display */}
-                    {error && (
-                        <div className="fixed bottom-4 right-4 max-w-md z-50">
-                            <div className="bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/50 text-red-700 dark:text-red-300 p-4 rounded-lg shadow-lg backdrop-blur-sm">
-                                <div className="flex items-start gap-3">
-                                    <X className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                                    <div>
-                                        <h4 className="font-semibold">Error</h4>
-                                        <p className="text-sm">{error}</p>
-                                    </div>
-                                    <button 
-                                        onClick={() => setError("")}
-                                        className="ml-auto text-red-500 hover:text-red-700 transition-colors"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                    
                 </form>
             </div>
         </div>

@@ -37,7 +37,6 @@ export default function Login() {
   const location = useLocation();
   const dispatch = useDispatch();
   const {register, handleSubmit, watch} = useForm();
-  const [error, setError] = useState("")
   
   // Check for success message from password reset
   const successMessage = location.state?.message;
@@ -48,8 +47,6 @@ export default function Login() {
   const login = async (data) =>{
     try {
       setIsLoading(true);
-      setError("");
-      setShowResendButton(false);
       const session = await authService.login(data)
       if (session){
         const userData = await authService.getCurrentUser()
@@ -57,7 +54,7 @@ export default function Login() {
           // Check if email is verified
           const isVerified = await authService.isEmailVerified();
           if (!isVerified) {
-            setError("Please verify your email before logging in. Check your inbox for the verification link.");
+            toast.error("Please verify your email before logging in. Check your inbox for the verification link.");
             setShowResendButton(true);
             // Logout the session since email is not verified
             await authService.logout();
@@ -69,8 +66,8 @@ export default function Login() {
           navigate("/home")
         }
       }
-    } catch (error) {
-      setError("Invalid Credentials!");
+    } catch {
+      toast.error("Invalid Credentials!");
     } finally {
       setIsLoading(false);
     }
@@ -80,11 +77,10 @@ export default function Login() {
     try {
       setIsResending(true);
       await authService.sendVerificationEmail();
-      setError("Verification email sent! Please check your inbox.");
+      toast.success("Verification email sent! Please check your inbox.");
       setShowResendButton(false);
-      // eslint-disable-next-line no-unused-vars
-    } catch (error) {
-      setError("Failed to send verification email. Please try again.");
+    } catch {
+      toast.error("Failed to send verification email. Please try again.");
     } finally {
       setIsResending(false);
     }
@@ -244,13 +240,13 @@ to-purple-500 dark:from-gray-900 dark:to-purple-900 p-4 px-8 rounded-xl ">
               Forgot password?
             </button>
           </div>
-          {error && <div className="mt-6 text-center">
-            <p className="text-sm text-red-600 font-semibold">{error}</p>
-            {showResendButton && (
+          
+          {showResendButton && (
+            <div className="mt-6 text-center">
               <Button 
                 type="button" 
                 variant="outline" 
-                className="mt-3 w-full"
+                className="w-full"
                 onClick={resendVerification}
                 disabled={isResending}
               >
@@ -266,8 +262,8 @@ to-purple-500 dark:from-gray-900 dark:to-purple-900 p-4 px-8 rounded-xl ">
                   </>
                 )}
               </Button>
-            )}
-          </div>}
+            </div>
+          )}
           </>
           ) : (
             // Forgot Password Form
