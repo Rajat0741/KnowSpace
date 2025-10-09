@@ -3,21 +3,17 @@ import { toast } from 'sonner'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Functions, ID } from 'appwrite'
-import { Client } from 'appwrite'
 import conf from '@/conf/conf'
-import { Sparkles, Zap, Crown, Plus, Minus, Send, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
+import service from '@/appwrite/config'
+import { Sparkles, Zap, Crown, Plus, Minus, Send, CheckCircle, Loader2 } from 'lucide-react'
 import Button from '@/Components/ui/button'
 import { Input } from '@/Components/ui/input'
 import { updateUserData } from '@/store/authSlice'
 
-const MAX_SOURCES = 5;
+const MAX_SOURCES = 10;
 
 
-const client = new Client()
-  .setEndpoint(conf.appWriteUrl)
-  .setProject(conf.appWriteProjectId);
-
-const functions = new Functions(client);
+const functions = new Functions(service.client);
 
 // Mock usage data - replace with actual API call
 
@@ -93,16 +89,46 @@ const mockUsageData = {
     setLoading(true)
 
     try {
-      // Filter out empty sources
-      const validSources = sources.filter(s => s.trim() !== '')
+      // Filter out empty sources and validate URLs
+      const validSources = sources.filter(s => {
+        const trimmed = s.trim()
+        if (!trimmed) return false
+        
+        // Basic URL validation
+        try {
+          new URL(trimmed)
+          return true
+        } catch {
+          return false
+        }
+      })
 
-      // Prepare request body
+      // Create tracking document with status "queued"
+      const trackingDoc = await service.databases.createDocument(
+        conf.appWriteDatabaseId,
+        conf.appWriteTrackingCollectionId,
+        ID.unique(),
+        {
+          userid: userData.$id,
+          title: title.trim(),
+          prompt: prompt.trim(),
+          category: category,
+          request_type: requestType,
+          style,
+          sources: validSources,
+          status: 'queued',
+          error: null
+        }
+      )
+
+      // Prepare request body with tracking document ID
       const requestBody = {
-        userId: userData.$id,
+        userid: userData.$id,
+        trackingId: trackingDoc.$id,
         title: title.trim(),
         category: category,
         prompt: prompt.trim(),
-        requestType,
+        request_type: requestType,
         style,
         sources: validSources
       }
@@ -354,7 +380,7 @@ const mockUsageData = {
                       <Input
                         value={s}
                         onChange={e => updateSource(i, e.target.value)}
-                        placeholder={`Source ${i+1} — URL to a public webpage or file`}
+                        placeholder={`Source ${i+1} — URL to web pages, PDFs, images (JPG/PNG), JSON/XML files, or GitHub repos`}
                         type="url"
                         className="flex-1 bg-white/90 dark:bg-gray-900/50 border-purple-300/70 dark:border-blue-600/70 focus:border-purple-500 dark:focus:border-blue-400"
                       />

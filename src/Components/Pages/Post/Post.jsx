@@ -90,6 +90,7 @@ function PostContent({ resource, wasUpdated = false }) {
   const post = resource.read();
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
+  const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -419,7 +420,7 @@ function PostContent({ resource, wasUpdated = false }) {
           <div className="relative border border-blue-200/40 dark:border-purple-800/40 rounded-2xl p-6 sm:p-8 lg:p-10">
             {/* Content */}
             <div
-              className="max-w-none"
+              className={`max-w-none ${isDarkMode ? 'dark' : ''}`}
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </div>

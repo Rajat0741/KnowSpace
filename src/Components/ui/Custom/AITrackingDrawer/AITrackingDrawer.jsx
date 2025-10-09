@@ -17,6 +17,13 @@ import Button from '@/Components/ui/button'
 import AITrackingDetailDialog from '../AITrackingDetailDialog/AITrackingDetailDialog'
 
 const STATUS_CONFIG = {
+  queued: {
+    icon: Clock,
+    label: 'Queued',
+    color: 'text-amber-500',
+    bgColor: 'bg-amber-50 dark:bg-amber-950/30',
+    borderColor: 'border-amber-200 dark:border-amber-900'
+  },
   in_progress: {
     icon: Loader2,
     label: 'In Progress',
@@ -186,9 +193,10 @@ export default function AITrackingDrawer({ triggerContent = null }) {
     const hasInProgressItems = trackingItems.some(item =>
       item.status === 'in_progress' || item.status === 'inprogress'
     )
+    const hasQueuedItems = trackingItems.some(item => item.status === 'queued')
 
-    // 5 seconds if there are items in progress, 1 minute if not
-    const intervalMs = hasInProgressItems ? 10000 : 60000
+    // 10 seconds if there are queued items, 5 seconds if there are items in progress, 1 minute if not
+    const intervalMs = hasInProgressItems ? 5000 : hasQueuedItems ? 10000 : 60000
 
     // Calculate time since last refresh
     const timeSinceLastRefresh = Date.now() - lastRefreshTime
@@ -212,7 +220,7 @@ export default function AITrackingDrawer({ triggerContent = null }) {
   }
 
   const inProgressCount = trackingItems.filter(item => 
-    item.status === 'in_progress' || item.status === 'inprogress'
+    item.status === 'in_progress' || item.status === 'inprogress' || item.status === 'queued'
   ).length
 
   return (
@@ -272,14 +280,6 @@ export default function AITrackingDrawer({ triggerContent = null }) {
                       {inProgressCount} in progress
                     </span>
                   )}
-                </div>
-
-                {/* Informational note about delays for newly-started generations to appear */}
-                <div className="mt-2 text-xs text-muted-foreground">
-                  <p>
-                    New or recently-started generations may take a few moments to appear in this list. If you just started a
-                    generation, please allow up to 5-10 seconds and refresh if it doesn't show up automatically.
-                  </p>
                 </div>
               </div>
 
