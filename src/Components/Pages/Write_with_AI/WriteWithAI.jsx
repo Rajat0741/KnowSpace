@@ -202,7 +202,7 @@ const mockUsageData = {
       </div>
 
       {/* Usage Tracking - Top Right Corner */}
-      <div className="absolute top-8 right-3 z-20">
+      <div className="absolute top-8 right-3 z-20 hidden lg:block">
         <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border border-purple-200/40 dark:border-blue-800/40 rounded-xl p-4 shadow-xl">
           <div className="flex items-center gap-2 mb-3">
             <div className="p-1.5 bg-gradient-to-br from-purple-500 to-blue-600 rounded-lg">

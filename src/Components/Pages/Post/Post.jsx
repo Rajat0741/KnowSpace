@@ -1,6 +1,7 @@
 import React, { Suspense, useState, useEffect } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useQueryClient } from '@tanstack/react-query';
 import service from '@/appwrite/config';
 import { ArrowLeft, Calendar, Tag, Clock, Share2, Edit, Trash2 } from 'lucide-react';
 import CommentsDrawer from '@/Components/ui/Custom/CommentsDrawer/CommentsDrawer';
@@ -91,6 +92,7 @@ function PostContent({ resource, wasUpdated = false }) {
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
   const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
+  const queryClient = useQueryClient();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -164,6 +166,9 @@ function PostContent({ resource, wasUpdated = false }) {
 
       // Delete the post
       await service.deletePost(post.$id);
+
+      // Invalidate posts queries to refresh the home page
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
 
       // Navigate back to home
       navigate('/');

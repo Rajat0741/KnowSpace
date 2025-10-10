@@ -1,15 +1,26 @@
 import { useEffect, useRef, useState } from "react"
-import { Header, AppSidebar } from "./Components/mainComponents"
+import { Header, AppSidebar } from "./Components/Header"
 import { SidebarInset } from "./Components/ui/Custom/Side-bar/sidebar"
 import { useDispatch, useSelector } from "react-redux"
 import authService from "./appwrite/auth"
 import { login, logout } from "./store/authSlice"
 import { loadProfilePicture } from "./store/profileSlice"
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 // Optimized individual icon import to reduce bundle size
 import ArrowUp from "lucide-react/dist/esm/icons/arrow-up";
 import { useRoutePreloader } from "./hooks/useRoutePreloader"
 import { Toaster } from "@/Components/ui/sonner"
+
+// ScrollToTop component to automatically scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 
 function App() {
   const dispatch = useDispatch();
@@ -68,6 +79,7 @@ function App() {
 
   return (
     <>
+      <ScrollToTop />
       <AppSidebar />
       <SidebarInset>
                 <div className="flex flex-col min-h-screen">
