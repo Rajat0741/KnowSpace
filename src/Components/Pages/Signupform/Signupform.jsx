@@ -1,58 +1,46 @@
-
 import { useState } from "react";
-// Optimized individual icon imports to reduce bundle size
-import Eye from "lucide-react/dist/esm/icons/eye";
-import EyeOff from "lucide-react/dist/esm/icons/eye-off";
-import Mail from "lucide-react/dist/esm/icons/mail";
-import Lock from "lucide-react/dist/esm/icons/lock";
 import User from "lucide-react/dist/esm/icons/user";
-import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
-import Loader2 from "lucide-react/dist/esm/icons/loader-2";
-import { Link, useNavigate } from "react-router-dom";
-import { Input } from "@/Components/ui/input";
+import { Link } from "react-router-dom";
 import Button from "@/Components/ui/button";
-import { useForm } from "react-hook-form";
 import authService from "@/appwrite/auth";
 import { toast } from "sonner";
 
 export default function SignupPage() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  const navigate = useNavigate();
 
-  // Watch password and confirmPassword fields
-  const password = watch("password");
-  const confirmPassword = watch("confirmPassword");
-
-  const signup = async (data) => {
+  const handleGoogleSignup = async () => {
     try {
       setIsLoading(true);
-      setError("");
-      const userData = await authService.createAccount(data);
-      console.log("User data after signup:", userData);
-      if (userData) {
-        // Account created successfully and verification email sent
-        toast.success("Account created! Please check your email to verify your account before logging in.");
-        navigate("/");
-      } else {
-        setError("Failed to create account. Please try again.");
-      }
+      await authService.loginWithGoogle();
+      // The redirect will happen automatically
     } catch (error) {
-      setError(error.message)
-    } finally {
+      console.error("Google signup error:", error);
+      
+      // Handle specific OAuth errors
+      if (error.code === 400) {
+        toast.error("Invalid request. Please check your Google OAuth configuration.");
+      } else if (error.code === 401) {
+        toast.error("Authentication failed. Please try again.");
+      } else if (error.code === 403) {
+        toast.error("Access denied. Please check your permissions.");
+      } else if (error.code === 429) {
+        toast.error("Too many requests. Please wait a moment and try again.");
+      } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+        toast.error("Network error. Please check your internet connection.");
+      } else if (error.message?.includes('popup') || error.message?.includes('blocked')) {
+        toast.error("Popup blocked. Please allow popups for this site and try again.");
+      } else {
+        toast.error("Failed to sign up with Google. Please try again.");
+      }
+      
       setIsLoading(false);
     }
-  }
-
+  };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-500
-to-purple-500 dark:from-gray-900 dark:to-purple-900 p-4 px-8 rounded-xl ">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-500 to-purple-500 dark:from-gray-900 dark:to-purple-900 p-4 px-8 rounded-xl">
       <div className="grid w-full max-w-6xl grid-cols-1 overflow-hidden rounded-2xl bg-slate-800/50 shadow-2xl backdrop-blur-lg md:grid-cols-2">
-        <div className="p-8">
+        <div className="p-8 flex flex-col justify-center">
           <div className="mb-8 text-center">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-pink-600">
               <User className="h-6 w-6 text-white" />
@@ -61,151 +49,34 @@ to-purple-500 dark:from-gray-900 dark:to-purple-900 p-4 px-8 rounded-xl ">
             <p className="text-slate-400">Join us today and start your journey</p>
           </div>
 
-          <form onSubmit={handleSubmit(signup)} className="flex flex-col gap-4">
-            <div className="relative">
-              <label
-                htmlFor="name"
-                className="mb-2 block text-sm text-slate-400"
-              >
-                Name
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="John Doe"
-                  className="pl-10 bg-white dark:bg-slate-800 text-black dark:text-white"
-                  {...register("name", {required: true})}
-                />
-              </div>
-            </div>
+          <Button
+            type="button"
+            className="w-full py-6 text-lg bg-white hover:bg-gray-100 text-gray-900 border-gray-300"
+            onClick={handleGoogleSignup}
+            disabled={isLoading}
+          >
+            <svg className="w-6 h-6 mr-3" viewBox="0 0 24 24">
+              <path
+                fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              />
+              <path
+                fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              />
+            </svg>
+            {isLoading ? "Connecting..." : "Sign up with Google"}
+          </Button>
 
-            <div className="relative">
-              <label
-                htmlFor="email"
-                className="mb-2 block text-sm text-slate-400"
-              >
-                Email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="username@example.com"
-                  className="pl-10 pr-10 bg-white text-black dark:bg-slate-800 dark:text-white"
-                  {...register("email", { required: true,
-                    validate: {
-                      matchPattern : (value) => {
-                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        return emailPattern.test(value) || "Invalid email format";
-                      }
-                    }
-                   })}
-                />
-              </div>
-            </div>
-
-            <div className="relative">
-              <label
-                htmlFor="password"
-                className="mb-2 block text-sm text-slate-400"
-              >
-                Password (minimum 8 characters)
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  className="pl-10 pr-10 bg-white text-black dark:bg-slate-800 dark:text-white"
-                  {...register("password", {
-                    required: "Password is required",
-                    minLength: {
-                      value: 8,
-                      message: "Password must be at least 8 characters"
-                    }
-                  })}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="relative">
-              <label
-                htmlFor="confirmPassword"
-                className="mb-2 block text-sm text-slate-400"
-              >
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                <Input
-                  id="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  className="pl-10 pr-10 bg-white text-black dark:bg-slate-800 dark:text-white"
-                  {...register("confirmPassword", { required: true })}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <Button
-              type="submit"
-              className="group mt-4"
-              disabled={
-                !password ||
-                !confirmPassword ||
-                password !== confirmPassword ||
-                password.length < 8 ||
-                isLoading
-              }
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Creating Account...
-                </>
-              ) : (
-                <>
-                  Create Account
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </>
-              )}
-            </Button>
-          </form>
-
-          {/* Password error message */}
-                {typeof errors !== 'undefined' && errors.password && (
-                  <p className="mt-2 text-sm text-red-600 font-semibold">
-                    {error}
-                  </p>
-                )}
-
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <p className="text-sm text-slate-400">
               Already have an account?{" "}
               <Link
@@ -215,16 +86,13 @@ to-purple-500 dark:from-gray-900 dark:to-purple-900 p-4 px-8 rounded-xl ">
                 Sign in
               </Link>
             </p>
-            {error && <p className="text-sm text-red-600 font-semibold mt-2">{error}</p>}
           </div>
-
-
         </div>
         <div className="relative hidden items-center justify-center overflow-hidden rounded-r-2xl bg-gradient-to-br from-purple-400 to-red-400 dark:from-purple-500 dark:to-red-500 md:flex">
           <div className="z-10 text-center text-white">
             <h2 className="text-4xl font-bold">Welcome Aboard!</h2>
             <p className="mt-2 max-w-xs">
-              Unlock a world of features by creating your account.
+              Sign up with your Google account to unlock a world of features.
             </p>
           </div>
           <div className="absolute -bottom-1/4 -right-1/4 h-1/2 w-1/2 rounded-full bg-white/10"></div>
@@ -234,4 +102,3 @@ to-purple-500 dark:from-gray-900 dark:to-purple-900 p-4 px-8 rounded-xl ">
     </div>
   );
 }
-

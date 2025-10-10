@@ -22,10 +22,6 @@ function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [hasSearched, setHasSearched] = useState(false)
 
-  // ==========================================
-  // DATA FETCHING WITH REACT QUERY
-  // ==========================================
-
   const {
     data,
     fetchNextPage,

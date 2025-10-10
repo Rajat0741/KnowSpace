@@ -12,6 +12,7 @@ import UserProfilePage from './Components/Pages/UserProfilePage/UserProfilePage'
 import Protected from './AuthenticatedRouting/AuthLayout'
 import LazyRoute from './Components/ui/LazyRoute'
 import WriteWithAI from './Components/Pages/Write_with_AI/WriteWithAI'
+import AuthCallback from './Components/Pages/AuthCallback/AuthCallback'
 
 // Create a client
 const queryClient = new QueryClient({
@@ -137,6 +138,14 @@ const router = createBrowserRouter([
         element: (
           <LazyRoute fallbackMessage="Loading...">
             <Protected authentication={true}><WriteWithAI /> </Protected>
+          </LazyRoute>
+        )
+      },
+      {
+        path: "auth/callback",
+        element: (
+          <LazyRoute fallbackMessage="Completing authentication...">
+            <AuthCallback />
           </LazyRoute>
         )
       },

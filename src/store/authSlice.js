@@ -4,42 +4,6 @@ const initialState = {
     status:false,
     userData:null,
 };
-/**
- * User data structure from Appwrite:
- * {
-  "$id": "$id",
-  "$createdAt": "$createdAt",
-  "$updatedAt": "$updatedAt",
-  "name": "name",
-  "registration": "registration",
-  "status": "status",
-  "labels": "labels",
-  "passwordUpdate": "passwordUpdate",
-  "email": "email",
-  "phone": "phone",
-  "emailVerification": "emailVerification",
-  "phoneVerification": "phoneVerification",
-  "mfa": "mfa",
-  "prefs": {
-    "profilePictureId": "profilePictureId"
-  },
-  "targets": [
-    {
-      "$id": "$id",
-      "$createdAt": "$createdAt",
-      "$updatedAt": "$updatedAt",
-      "name": "name",
-      "userId": "userId",
-      "providerId": "providerId",
-      "providerType": "providerType",
-      "identifier": "identifier",
-      "expired": "expired"
-    }
-  ],
-  "accessedAt": "accessedAt"
-}
- */
-
 
 const authSlice = createSlice({
     name: "auth",
