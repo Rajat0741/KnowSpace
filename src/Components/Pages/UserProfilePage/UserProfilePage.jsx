@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useLocation } from 'react-router-dom'
 import { Calendar, User, CheckCircle, XCircle, ArrowLeft, FileText } from 'lucide-react'
-import ProfilePicture from '../ui/Custom/ProfilePicture/ProfilePicture'
-import { SkeletonCard } from '../ui/SkeletonCard'
-import { Postcard } from '../ui/Custom/PostCard'
+import ProfilePicture from '../../ui/Custom/ProfilePicture/ProfilePicture'
+import { SkeletonCard } from '../../ui/SkeletonCard'
+import { Postcard } from '../../ui/Custom/PostCard'
 import service from '@/appwrite/config'
 import { Query } from 'appwrite'
 
