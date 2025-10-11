@@ -55,7 +55,7 @@ function UserProfileListItem({ user, className, variant = 'default' }) {
                     "shadow-lg ring-4 ring-white/60 dark:ring-slate-700/60 transition-all duration-300",
                     isHovered && "ring-blue-400/60 shadow-blue-400/20 shadow-xl"
                   )}
-                  profilePictureId={user.profilePictureId}
+                  profilePictureId={user?.profilePictureId?.url}
                 />
               </div>
             </div>

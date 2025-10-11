@@ -46,7 +46,7 @@ function UserProfilePage() {
                     setUserIdState(userData.$id || '');
                     setUserName(userData.name || '');
                     setUserBio(userData.bio || '');
-                    setUserProfilePictureId(userData.profilePictureId || '');
+                    setUserProfilePictureId(userData.profilePictureId.url || '');
                     setUserRegistrationDate(userData.registrationDate || '');
 
                     setPostsLoading(true);

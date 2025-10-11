@@ -31,7 +31,7 @@ export class Service {
             )
         }
         catch (error) {
-            console.log(error)
+            throw new Error(`Failed to create post: ${error.message || error}`);
         }
     }
 
@@ -51,7 +51,7 @@ export class Service {
                 }
             )
         } catch (error) {
-            console.log(error)
+            throw new Error(`Failed to update post: ${error.message || error}`);
         }
     }
 
@@ -64,7 +64,7 @@ export class Service {
             )
             return true;
         } catch (error) {
-            console.log(error)
+            throw new Error(`Failed to delete post: ${error.message || error}`);
         }
     }
 
@@ -76,7 +76,7 @@ export class Service {
                 id
             )
         } catch (error) {
-            console.log(error)
+            throw new Error(`Failed to get post: ${error.message || error}`);
         }
     }
 
@@ -88,7 +88,7 @@ export class Service {
                 queries
             );
         } catch (error) {
-            throw new Error("Error:", error);
+            throw new Error(`Failed to get posts: ${error.message || error}`);
         }
     }
 
@@ -104,9 +104,7 @@ export class Service {
                 ]
             );
         } catch (error) {
-            console.log("Search error:", error);
-            // Fallback to client-side search if server search fails
-            return { documents: [] };
+            throw new Error(`Failed to search posts: ${error.message || error}`);
         }
     }
 
@@ -115,8 +113,7 @@ export class Service {
             // Use ImageKit instead of Appwrite Storage
             return await imagekitService.uploadFile(file, customName);
         } catch (error) {
-            console.log('Upload error:', error);
-            return false;
+            throw new Error(`Failed to upload file: ${error.message || error}`);
         }
     }
 
@@ -137,8 +134,7 @@ export class Service {
                 execution.responseBody || '{}'
             )
         } catch (error) {
-            console.log("Error fetching user:", error);
-            return null;
+            throw new Error(`Failed to get user by ID: ${error.message || error}`);
         }
     }
 
@@ -156,8 +152,7 @@ export class Service {
             );
             return execution.responseBody;
         } catch (error) {
-            console.error("Error searching users:", error.message);
-            return null;
+            throw new Error(`Failed to search users: ${error.message || error}`);
         }
     }
 
@@ -166,8 +161,7 @@ export class Service {
             // Use ImageKit instead of Appwrite Storage
             return await imagekitService.deleteFile(fileid);
         } catch (error) {
-            console.log('Delete error:', error);
-            return false;
+            throw new Error(`Failed to delete file: ${error.message || error}`);
         }
     }
 
@@ -191,8 +185,7 @@ export class Service {
                 }
             )
         } catch (error) {
-            console.log("Error creating comment:", error);
-            throw error;
+            throw new Error(`Failed to create comment: ${error.message || error}`);
         }
     }
 
@@ -207,8 +200,7 @@ export class Service {
                 ]
             );
         } catch (error) {
-            console.log("Error fetching comments:", error);
-            return { documents: [] };
+            throw new Error(`Failed to get comments by post ID: ${error.message || error}`);
         }
     }
 
@@ -223,8 +215,7 @@ export class Service {
                 }
             )
         } catch (error) {
-            console.log("Error updating comment:", error);
-            throw error;
+            throw new Error(`Failed to update comment: ${error.message || error}`);
         }
     }
 
@@ -237,8 +228,7 @@ export class Service {
             )
             return true;
         } catch (error) {
-            console.log("Error deleting comment:", error);
-            throw error;
+            throw new Error(`Failed to delete comment: ${error.message || error}`);
         }
     }
 
@@ -255,8 +245,7 @@ export class Service {
                 ]
             );
         } catch (error) {
-            console.log("Error fetching tracking items:", error);
-            return { documents: [] };
+            throw new Error(`Failed to get tracking items: ${error.message || error}`);
         }
     }
 
@@ -268,8 +257,7 @@ export class Service {
                 trackingId
             );
         } catch (error) {
-            console.log("Error fetching tracking item:", error);
-            throw error;
+            throw new Error(`Failed to get tracking item: ${error.message || error}`);
         }
     }
 
@@ -282,8 +270,7 @@ export class Service {
             );
             return true;
         } catch (error) {
-            console.log("Error deleting tracking item:", error);
-            throw error;
+            throw new Error(`Failed to delete tracking item: ${error.message || error}`);
         }
     }
 }

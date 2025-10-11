@@ -2,9 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { Header, AppSidebar } from "./Components/Header"
 import { SidebarInset } from "./Components/ui/Custom/Side-bar/sidebar"
 import { useDispatch, useSelector } from "react-redux"
-import authService from "./appwrite/auth"
-import { login, logout } from "./store/authSlice"
-import { loadProfilePicture } from "./store/profileSlice"
+import { initializeAuth } from "./store/authThunks"
 import { Outlet, useLocation } from "react-router-dom"
 // Optimized individual icon import to reduce bundle size
 import ArrowUp from "lucide-react/dist/esm/icons/arrow-up";
@@ -28,24 +26,15 @@ function App() {
   const authStatus = useSelector((state) => state.auth.status);
 
   useEffect(() => {
-    authService.getCurrentUser()
-      .then((userData) => {
-        if (userData) {
-          dispatch(login({ userData: userData }));
-          // Load profile picture when user is authenticated
-          dispatch(loadProfilePicture());
-          
-          // Preload common routes for authenticated users
-          preloadCommonRoutes();
-        } else {
-          dispatch(logout());
-        }
-      })
-      .catch((error) => {
-        // Handle any unexpected errors
-        console.log("App :: getCurrentUser :: error:", error);
-        dispatch(logout());
-      });
+    // Initialize auth on app start
+    dispatch(initializeAuth()).then((result) => {
+      // Preload common routes for authenticated users
+      if (result.payload?.userData) {
+        preloadCommonRoutes();
+      }
+    }).catch(() => {
+      // Error is already handled in the thunk
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

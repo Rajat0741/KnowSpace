@@ -112,7 +112,7 @@ export class ImageKitService {
             const execution = await this.functions.createExecution(
                 this.functionId,
                 body,
-                false // Don't wait for completion
+                false
             );
             
             const data = JSON.parse(execution.responseBody || '{}');

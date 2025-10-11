@@ -9,10 +9,8 @@ const Profile = lazy(() => import("./Profile/Profile"));
 const Post = lazy(() => import("./Post/Post"));
 const PublicPost = lazy(() => import("./Post/PublicPost"));
 const EditPost = lazy(() => import("./EditPost/EditPost"));
-const VerifyEmail = lazy(() => import("./VerifyEmail/VerifyEmail"));
 const Search = lazy(() => import("./Search/Search"));
 const Settings = lazy(() => import("./Settings/Settings"));
-const ResetPassword = lazy(() => import("./ResetPassword/ResetPassword"));
 const NotFound = lazy(() => import("./NotFound/NotFound"));
 
 export {
@@ -24,9 +22,7 @@ export {
     Post,
     PublicPost,
     EditPost,
-    VerifyEmail,
     Search,
     Settings,
-    ResetPassword,
     NotFound
 }

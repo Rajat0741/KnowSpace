@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toggleDarkMode } from '@/store/darkmodeSlice';
-import { setProfilePicture, clearProfilePicture } from '@/store/profileSlice';
+import { setProfilePicture, clearProfilePicture, resetProfileCheck } from '@/store/profileSlice';
 import authService from '@/appwrite/auth';
-import { logout, updateUserData } from '@/store/authSlice';
+import { updateUserData } from '@/store/authSlice';
+import { performLogout } from '@/store/authThunks';
 import {
   Settings as SettingsIcon, Moon, Sun, Lock, Trash2, Eye, EyeOff, AlertTriangle, Check, X, Camera, User, Edit3
 } from 'lucide-react';
@@ -55,6 +56,8 @@ function Settings() {
     try {
       const uploadedFile = await authService.uploadProfilePicture(file);
       if (uploadedFile) {
+        // Reset profile check to allow reloading
+        dispatch(resetProfileCheck());
         // Get the new profile picture URL and update Redux state
         const newUrl = await authService.getProfilePictureUrl();
         if (newUrl) {
@@ -75,6 +78,7 @@ function Settings() {
     setIsUploadingPicture(true);
     try {
       await authService.deleteProfilePicture();
+      dispatch(resetProfileCheck()); // Reset check flag
       dispatch(clearProfilePicture());
       setProfilePictureSuccess(true);
       setTimeout(() => setProfilePictureSuccess(false), 3000);
@@ -174,7 +178,7 @@ function Settings() {
 
       // Finally, delete the account
       await authService.deleteAccount();
-      dispatch(logout());
+      await dispatch(performLogout()).unwrap();
       navigate('/login');
     } catch (error) {
       // Populate the delete error slot shown near the confirmation

@@ -1,25 +1,31 @@
-import { StrictMode } from 'react'
+import { StrictMode, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { Provider } from 'react-redux'
-import store from './store/store'
+import { PersistGate } from 'redux-persist/integration/react'
+import store, { persistor } from './store/store'
 import { SidebarProvider } from './Components/ui/Custom/Side-bar/sidebar'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { SignupPage, Login, Home, PostForm, Profile, Post, PublicPost, EditPost, VerifyEmail, Search, Settings, ResetPassword, NotFound } from './Components/Pages'
-import UserProfilePage from './Components/Pages/UserProfilePage/UserProfilePage'
+import { SignupPage, Login, Home, PostForm, Profile, Post, PublicPost, EditPost, Search, Settings, NotFound } from './Components/Pages'
 import Protected from './AuthenticatedRouting/AuthLayout'
 import LazyRoute from './Components/ui/LazyRoute'
-import WriteWithAI from './Components/Pages/Write_with_AI/WriteWithAI'
-import AuthCallback from './Components/Pages/AuthCallback/AuthCallback'
+import ErrorBoundary from './Components/ui/Custom/ErrorBoundary/ErrorBoundary'
+
+// Lazy load additional components
+const UserProfilePage = lazy(() => import('./Components/Pages/UserProfilePage/UserProfilePage'))
+const WriteWithAI = lazy(() => import('./Components/Pages/Write_with_AI/WriteWithAI'))
+const AuthCallback = lazy(() => import('./Components/Pages/AuthCallback/AuthCallback'))
 
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: Infinity, // Data never becomes stale
-      gcTime: Infinity, // Cache never gets garbage collected
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+      retry: 3,
+      refetchOnWindowFocus: false,
     },
   },
 })
@@ -50,22 +56,6 @@ const router = createBrowserRouter([
         element: (
           <LazyRoute fallbackMessage="Loading sign up...">
             <Protected authentication={false}><SignupPage /></Protected>
-          </LazyRoute>
-        )
-      },
-      {
-        path: "verify-email",
-        element: (
-          <LazyRoute fallbackMessage="Loading verification...">
-            <VerifyEmail />
-          </LazyRoute>
-        )
-      },
-      {
-        path: "reset-password",
-        element: (
-          <LazyRoute fallbackMessage="Loading password reset...">
-            <ResetPassword />
           </LazyRoute>
         )
       },
@@ -166,7 +156,11 @@ createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={queryClient}>
       <SidebarProvider>
         <Provider store={store}>
-          <RouterProvider router={router} />
+          <PersistGate loading={null} persistor={persistor}>
+            <ErrorBoundary>
+              <RouterProvider router={router} />
+            </ErrorBoundary>
+          </PersistGate>
         </Provider>
       </SidebarProvider>
     </QueryClientProvider>

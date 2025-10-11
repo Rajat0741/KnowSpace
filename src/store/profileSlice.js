@@ -18,7 +18,8 @@ export const loadProfilePicture = createAsyncThunk(
 
 const initialState = {
     profilePictureUrl: null,
-    isLoading: false
+    isLoading: false,
+    hasCheckedProfilePicture: false // Track if we've already checked for profile picture
 }
 
 const profileSlice = createSlice({
@@ -27,12 +28,17 @@ const profileSlice = createSlice({
     reducers: {
         setProfilePicture: (state, action) => {
             state.profilePictureUrl = action.payload;
+            state.hasCheckedProfilePicture = true;
         },
         clearProfilePicture: (state) => {
             state.profilePictureUrl = null;
+            state.hasCheckedProfilePicture = true;
         },
         setProfileLoading: (state, action) => {
             state.isLoading = action.payload;
+        },
+        resetProfileCheck: (state) => {
+            state.hasCheckedProfilePicture = false;
         }
     },
     extraReducers: (builder) => {
@@ -43,19 +49,22 @@ const profileSlice = createSlice({
             .addCase(loadProfilePicture.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.profilePictureUrl = action.payload;
+                state.hasCheckedProfilePicture = true;
             })
             .addCase(loadProfilePicture.rejected, (state) => {
                 state.isLoading = false;
                 state.profilePictureUrl = null;
+                state.hasCheckedProfilePicture = true;
             })
             // Clear profile picture when user logs out
             .addCase(logout, (state) => {
                 state.profilePictureUrl = null;
                 state.isLoading = false;
+                state.hasCheckedProfilePicture = false;
             });
     }
 })
 
-export const { setProfilePicture, clearProfilePicture, setProfileLoading } = profileSlice.actions;
+export const { setProfilePicture, clearProfilePicture, setProfileLoading, resetProfileCheck } = profileSlice.actions;
 
 export default profileSlice.reducer;

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import authService from '../../../appwrite/auth';
 import { useDispatch } from 'react-redux';
-import { login } from '../../../store/authSlice';
+import { handleOAuthCallback } from '../../../store/authThunks';
+import authService from '../../../appwrite/auth';
 
 function AuthCallback() {
   const dispatch = useDispatch();
@@ -18,8 +18,8 @@ function AuthCallback() {
           throw new Error('Missing OAuth parameters');
         }
 
-        // Create session manually
-        await authService.handleOAuthCallback(userId, secret);
+        // Use the auth thunk to handle OAuth callback
+        await dispatch(handleOAuthCallback({ userId, secret })).unwrap();
         
         // Set default preferences for new users
         const defaultPrefs = {
@@ -30,12 +30,6 @@ function AuthCallback() {
         
         // updatePreferences will merge defaults with existing prefs, only setting defaults for missing keys
         await authService.updatePreferences(defaultPrefs);
-        
-        // Get updated user data with preferences
-        const updatedUser = await authService.getCurrentUser();
-        
-        // Update Redux
-        dispatch(login({ userData: updatedUser }));
         
         // Redirect to home
         window.location.href = '/home';

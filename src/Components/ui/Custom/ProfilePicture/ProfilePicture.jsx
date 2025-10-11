@@ -4,18 +4,21 @@ import { User } from 'lucide-react';
 import { loadProfilePicture, clearProfilePicture } from '@/store/profileSlice';
 import service from '@/appwrite/config';
 
-function ProfilePicture({ 
-  size = 'md', 
+function ProfilePicture({
+  size = 'md',
   className = '',
   showFallback = true,
   onClick = null,
   profilePictureId = null
 }) {
   const dispatch = useDispatch();
-  const { profilePictureUrl, isLoading } = useSelector(state => state.profile);
-  const isAuthenticated = useSelector(state => state.auth.status);
+  const { profilePictureUrl, isLoading, hasCheckedProfilePicture } = useSelector(state => state.profile);
+  const { status: isAuthenticated, userData } = useSelector(state => state.auth);
   const [customProfileUrl, setCustomProfileUrl] = useState(null);
   const [customLoading, setCustomLoading] = useState(false);
+
+  const isCurrentlyLoading = profilePictureId ? customLoading : isLoading;
+  const currentProfileUrl = profilePictureId ? customProfileUrl : profilePictureUrl;
 
   useEffect(() => {
     // If profilePictureId is provided, load that specific user's profile picture
@@ -31,12 +34,21 @@ function ProfilePicture({
         setCustomLoading(false);
       }
     } else {
-      // Load current user's profile picture when component mounts and user is authenticated
-      if (isAuthenticated && !profilePictureUrl && !isLoading) {
-        dispatch(loadProfilePicture());
+      // For current user's profile picture
+      if (isAuthenticated && !hasCheckedProfilePicture && !isLoading) {
+        // Check if user has profile picture in preferences first
+        const hasProfilePictureInPrefs = userData?.prefs?.profilePicture?.url;
+        
+        if (hasProfilePictureInPrefs) {
+          // User has profile picture, load it
+          dispatch(loadProfilePicture());
+        } else {
+          // User doesn't have profile picture, mark as checked to prevent infinite calls
+          dispatch(clearProfilePicture());
+        }
       }
     }
-  }, [dispatch, isAuthenticated, profilePictureUrl, isLoading, profilePictureId]);
+  }, [dispatch, isAuthenticated, hasCheckedProfilePicture, isLoading, profilePictureId, userData?.prefs?.profilePicture?.url]);
 
   // Size classes
   const sizeClasses = {
@@ -63,9 +75,7 @@ function ProfilePicture({
   const baseClasses = `${sizeClasses[size]} rounded-full border-2 border-border/50 overflow-hidden bg-muted flex items-center justify-center ${className}`;
   const clickableClasses = onClick ? 'cursor-pointer hover:border-primary/50 transition-colors' : '';
 
-  // Use custom loading state if profilePictureId is provided
-  const isCurrentlyLoading = profilePictureId ? customLoading : isLoading;
-  const currentProfileUrl = profilePictureId ? customProfileUrl : profilePictureUrl;
+
 
   if (isCurrentlyLoading) {
     return (
@@ -76,7 +86,7 @@ function ProfilePicture({
   }
 
   return (
-    <div 
+    <div
       className={`${baseClasses} ${clickableClasses}`}
       onClick={onClick}
     >

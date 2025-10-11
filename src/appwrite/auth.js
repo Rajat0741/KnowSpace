@@ -1,6 +1,8 @@
 import conf from '../conf/conf.js'
 import { Client, Account, ID, OAuthProvider } from 'appwrite'
 import service from './config.js'
+import imagekitService from '@/imagekit/imagekit.js';
+import { toast } from 'sonner';
 
 export class AuthService {
     Client = new Client();
@@ -107,16 +109,24 @@ export class AuthService {
             // Get profile picture data from user preferences
             const prefs = await this.getPreferences();
             const profilePicture = prefs.profilePicture;
-
             if (profilePicture?.fileId) {
-                await service.deleteFile(profilePicture.fileId);
-                // Remove from user preferences
+                // Delete from ImageKit first
+                await imagekitService.deleteFile(profilePicture?.fileId);
                 const updatedPrefs = { ...prefs };
                 delete updatedPrefs.profilePicture;
-                await this.updatePreferences(updatedPrefs);
+                
+                console.log("Updated prefs to save:", updatedPrefs);
+                
+                // Use replacePreferences to completely replace the prefs object
+                await this.replacePreferences(updatedPrefs);
+                
+                return { success: true, deleted: true };
             }
+            
+            return { success: true, deleted: false };
         } catch (error) {
             console.log("Appwrite service :: deleteProfilePicture :: error :", error);
+            throw error;
         }
     }
 
@@ -147,6 +157,16 @@ export class AuthService {
             return await this.account.updatePrefs(newPrefs);
         } catch (error) {
             console.log("Appwrite service :: updatePreferences :: error :", error);
+            throw error;
+        }
+    }
+
+    // Replace user preferences entirely (for deleting fields)
+    async replacePreferences(prefs) {
+        try {
+            return await this.account.updatePrefs(prefs);
+        } catch (error) {
+            console.log("Appwrite service :: replacePreferences :: error :", error);
             throw error;
         }
     }

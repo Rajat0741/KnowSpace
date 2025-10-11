@@ -1,7 +1,6 @@
 import Button from "../../button";
 import { useDispatch } from "react-redux";
-import authService from "@/appwrite/auth";
-import { logout } from "@/store/authSlice";
+import { performLogout } from "@/store/authThunks";
 import React, { useState } from 'react'
 import { toast } from 'sonner'
 import { useNavigate } from "react-router-dom";
@@ -24,12 +23,11 @@ function Logoutbtn({ classname }) {
     const confirmLogout = async () => {
         setIsLoggingOut(true)
         try {
-            await authService.logout()
+            await dispatch(performLogout()).unwrap()
             toast.success("Logged out successfully")
-            dispatch(logout())
             navigate("/")
         } catch (error) {
-            toast.error(`Error in logout: ${error}`)
+            toast.error(`Error in logout: ${error.message || error}`)
         } finally {
             setIsLoggingOut(false)
             setShowLogoutConfirm(false)
