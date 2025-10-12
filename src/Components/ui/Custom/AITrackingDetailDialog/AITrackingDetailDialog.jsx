@@ -63,7 +63,7 @@ export default function AITrackingDetailDialog({ item, open, onOpenChange, onNav
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto scrollbar-hide data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-4 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-4 duration-250">
+  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto scrollbar-hide bg-gradient-to-br from-blue-50/25 via-indigo-50/20 to-purple-50/30 dark:from-blue-950/15 dark:via-indigo-950/10 dark:to-purple-950/20 bg-card/95 backdrop-blur-xl border border-purple-200/40 dark:border-blue-800/40 shadow-2xl data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-4 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-4 duration-250">
         <DialogHeader>
           <DialogTitle className="text-xl">{item.title}</DialogTitle>
           <DialogDescription>

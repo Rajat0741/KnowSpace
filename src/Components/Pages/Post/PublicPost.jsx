@@ -181,7 +181,7 @@ function PublicPostContent({ resource }) {
       <div className="relative overflow-hidden">
         <div className={`relative ${getMaxWidth()} mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-300`}>
           {/* Navigation */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sticky top-4 z-10 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-blue-200/30 dark:border-purple-800/30 rounded-2xl p-4 shadow-lg">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sticky top-4 z-10 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-blue-200/30 dark:border-purple-800/30 rounded-2xl p-4 shadow-xl shadow-black/10 dark:shadow-black/30">
             <button
               onClick={() => navigate(-1)}
               className="group inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-50/90 to-purple-50/90 dark:from-blue-900/30 dark:to-purple-900/30 backdrop-blur-sm border border-blue-200/50 dark:border-purple-700/50 rounded-lg hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/50 dark:hover:to-purple-900/50 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400/50 dark:focus:ring-purple-500/50 shadow-md hover:shadow-lg"
@@ -287,7 +287,7 @@ function PublicPostContent({ resource }) {
       {/* Article Content */}
       <div className={`relative ${getMaxWidth()} mx-auto px-4 sm:px-6 lg:px-8 pb-16`}>
         <article className="relative">
-          <div className="relative border border-blue-200/40 dark:border-purple-800/40 rounded-2xl p-6 sm:p-8 lg:p-10">
+          <div className="relative border border-blue-200/40 dark:border-purple-800/40 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg shadow-black/10 dark:shadow-black/30 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
             {/* Content */}
             <div
               className="max-w-none"
@@ -309,7 +309,7 @@ function PublicPostContent({ resource }) {
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-blue-50/60 to-purple-50/60 dark:from-blue-950/30 dark:to-purple-950/30 backdrop-blur-sm rounded-2xl p-6 border border-blue-200/40 dark:border-purple-800/40">
+          <div className="bg-gradient-to-r from-blue-50/60 to-purple-50/60 dark:from-blue-950/30 dark:to-purple-950/30 backdrop-blur-sm rounded-2xl p-6 border border-blue-200/40 dark:border-purple-800/40 shadow-lg shadow-black/10 dark:shadow-black/30">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
               {/* Article Engagement Stats */}
               <div className="flex items-center gap-6 text-sm text-muted-foreground">

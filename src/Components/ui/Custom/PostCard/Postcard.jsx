@@ -72,9 +72,9 @@ function Postcard({ post, className, showMetadata = true, variant = 'default' })
       >
         <article className={cn(
           'relative overflow-hidden rounded-xl bg-card border border-border/50 transition-all duration-300',
-          'hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-black/30',
+          'shadow-md hover:shadow-xl hover:shadow-black/20 dark:hover:shadow-black/40',
           'hover:scale-[1.02] hover:border-border',
-          'group-focus:scale-[1.02] group-focus:shadow-lg',
+          'group-focus:scale-[1.02] group-focus:shadow-xl group-focus:shadow-black/20 dark:group-focus:shadow-black/40',
           'transform-gpu', // GPU acceleration for better performance
           variants[variant],
           className

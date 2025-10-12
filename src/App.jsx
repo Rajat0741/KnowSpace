@@ -82,7 +82,7 @@ function App() {
       <>
         <ScrollToTop />
         <GlobalDarkModeToggle />
-        <div className="w-full min-h-screen">
+        <div className="w-full min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-purple-900/10 dark:to-slate-900">
           <Outlet />
         </div>
         
@@ -108,7 +108,7 @@ function App() {
       <ScrollToTop />
       <AppSidebar />
       <SidebarInset>
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-purple-900/10 dark:to-slate-900">
           <Header />
           <main className="mb-2 p-1 sm:p-3 pt-1 scrollbar-hide flex-1">
             <Outlet />

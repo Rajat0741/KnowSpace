@@ -36,7 +36,7 @@ function Profile() {
     return (
         <div className='min-h-screen relative overflow-hidden'>
             {/* Subtle, unified background with gentle gradients */}
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 via-blue-50/30 to-purple-50/20 dark:from-slate-900/50 dark:via-slate-800/30 dark:to-slate-900/20">
+            <div className="absolute inset-0 ">
                 {/* Minimal ambient lighting effects */}
                 <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-blue-500/5 dark:bg-blue-400/8 rounded-full blur-3xl" />
                 <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-purple-500/5 dark:bg-purple-400/8 rounded-full blur-3xl" />

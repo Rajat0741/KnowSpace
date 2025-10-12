@@ -228,10 +228,19 @@ export default function AITrackingDrawer({ triggerContent = null }) {
       <Drawer.Root direction="left" open={isOpen} onOpenChange={setIsOpen}>
         <Drawer.Trigger asChild>
           {triggerContent || (
-            <button className="relative p-2 rounded-lg hover:bg-accent transition-colors">
-              <Sparkles size={20} />
+            <button className="relative group p-2 rounded-lg transition-all duration-300">
+              <div className="relative">
+                {/* Main icon container */}
+                <div className="relative p-1 bg-gradient-to-br from-purple-500 via-blue-600 to-indigo-600 rounded-lg shadow-md border border-white/20 transition-transform duration-300 group-hover:scale-110">
+                  <Sparkles size={20} className="text-white drop-shadow-sm" />
+                  
+                  {/* Subtle inner glow */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-lg"></div>
+                </div>
+              </div>
+              
               {inProgressCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs rounded-full flex items-center justify-center shadow-lg border border-white/20">
                   {inProgressCount}
                 </span>
               )}
@@ -245,9 +254,9 @@ export default function AITrackingDrawer({ triggerContent = null }) {
             className="left-0 top-0 bottom-0 fixed z-[10000] outline-none w-[90vw] sm:w-[400px] flex"
             style={{ '--initial-transform': 'calc(100% + 8px)' }}
           >
-            <div className="bg-card h-full w-full flex flex-col border-r border-border shadow-2xl">
+            <div className="bg-gradient-to-br from-blue-50/25 via-indigo-50/20 to-purple-50/30 dark:from-blue-950/15 dark:via-indigo-950/10 dark:to-purple-950/20 bg-card/95 backdrop-blur-xl h-full w-full flex flex-col border-r border-purple-200/40 dark:border-blue-800/40 shadow-2xl">
               {/* Header */}
-              <div className="flex-shrink-0 p-4 border-b border-border bg-card/95 backdrop-blur-sm">
+              <div className="flex-shrink-0 p-4 border-b border-purple-200/40 dark:border-blue-800/40 bg-gradient-to-r from-blue-50/60 via-indigo-50/50 to-purple-50/60 dark:from-blue-950/30 dark:via-indigo-950/25 dark:to-purple-950/30 bg-card/95 backdrop-blur-xl">
                 <div className="flex items-center justify-between mb-2">
                   <Drawer.Title className="font-semibold text-lg flex items-center gap-2">
                     <Sparkles size={20} className="text-blue-500" />

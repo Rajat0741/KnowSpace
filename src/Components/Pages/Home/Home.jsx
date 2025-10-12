@@ -100,7 +100,7 @@ function Home() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Search and Filter Section */}
         <div className="mb-6 lg:mb-8">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 lg:p-6 shadow-sm">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 lg:p-6 shadow-lg shadow-black/10 dark:shadow-black/30">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Search Input */}
               <div className="flex-1 lg:flex-[2]">
@@ -160,7 +160,7 @@ function Home() {
         {/* Search Results Count */}
         {hasSearched && (
           <div className="mb-6">
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-sm">
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-md shadow-black/10 dark:shadow-black/30">
               <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 {recentPosts.length > 0 ? (
                   <span className="flex items-center gap-2">
@@ -187,7 +187,7 @@ function Home() {
             hasMore={hasNextPage}
             loader={
               <div className="flex justify-center items-center py-8">
-                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-6 py-4 shadow-sm">
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-6 py-4 shadow-md shadow-black/10 dark:shadow-black/30">
                   <div className="flex items-center gap-3">
                     <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                     <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
@@ -200,7 +200,7 @@ function Home() {
             endMessage={
               recentPosts.length > POSTS_PER_PAGE && (
                 <div className="flex justify-center items-center py-8">
-                  <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-6 py-4 text-center">
+                  <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-6 py-4 text-center shadow-md shadow-black/10 dark:shadow-black/30">
                     <div className="flex items-center justify-center gap-2 mb-2">
                       <span className="text-2xl">🎉</span>
                       <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -215,7 +215,7 @@ function Home() {
               )
             }
           >
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-lg shadow-black/10 dark:shadow-black/30">
               <PostGrid
                 posts={recentPosts}
                 layout="grid"
@@ -229,7 +229,7 @@ function Home() {
       
       {/* Loading State */}
       {isLoading && (
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-lg shadow-black/10 dark:shadow-black/30">
           <div className="space-y-8">
             {/* Featured posts skeleton */}
             <div className="space-y-4">
@@ -266,7 +266,7 @@ function Home() {
       {/* Empty State */}
       {recentPosts.length === 0 && !isLoading && (
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 max-w-md shadow-sm">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 max-w-md shadow-lg shadow-black/10 dark:shadow-black/30">
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center shadow-inner">
               <span className="text-3xl">{hasSearched ? '🔍' : '📝'}</span>
             </div>
