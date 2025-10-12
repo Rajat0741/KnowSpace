@@ -387,7 +387,7 @@ export default function CommentsDrawer({ postId }) {
               <p className="text-center text-muted-foreground text-sm">
                 Please{' '}
                 <button
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/')}
                   className="text-blue-500 hover:text-blue-600 font-medium underline"
                 >
                   sign in

@@ -2,8 +2,7 @@ import { lazy } from 'react';
 
 // Lazy load all page components for code splitting
 const Home = lazy(() => import("./Home/Home"));
-const Login = lazy(() => import("./Login/Login"));
-const SignupPage = lazy(() => import("./Signupform/Signupform"));
+const Auth = lazy(() => import("./Auth/Auth"));
 const PostForm = lazy(() => import("./PostForm/PostForm"));
 const Profile = lazy(() => import("./Profile/Profile"));
 const Post = lazy(() => import("./Post/Post"));
@@ -15,8 +14,7 @@ const NotFound = lazy(() => import("./NotFound/NotFound"));
 
 export {
     Home,
-    Login,
-    SignupPage,
+    Auth,
     PostForm,
     Profile,
     Post,

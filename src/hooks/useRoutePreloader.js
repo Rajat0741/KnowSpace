@@ -52,6 +52,5 @@ export const routePreloaders = {
   settings: () => import('../Components/Pages/Settings/Settings'),
   post: () => import('../Components/Pages/Post/Post'),
   editPost: () => import('../Components/Pages/EditPost/EditPost'),
-  signup: () => import('../Components/Pages/Signupform/Signupform'),
-  login: () => import('../Components/Pages/Login/Login'),
+  auth: () => import('../Components/Pages/Auth/Auth'),
 };

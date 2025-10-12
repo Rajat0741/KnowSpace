@@ -2,7 +2,6 @@ import conf from '../conf/conf.js'
 import { Client, Account, ID, OAuthProvider } from 'appwrite'
 import service from './config.js'
 import imagekitService from '@/imagekit/imagekit.js';
-import { toast } from 'sonner';
 
 export class AuthService {
     Client = new Client();

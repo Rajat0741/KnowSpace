@@ -8,7 +8,7 @@ import store, { persistor } from './store/store'
 import { SidebarProvider } from './Components/ui/Custom/Side-bar/sidebar'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { SignupPage, Login, Home, PostForm, Profile, Post, PublicPost, EditPost, Search, Settings, NotFound } from './Components/Pages'
+import { Auth, Home, PostForm, Profile, Post, PublicPost, EditPost, Search, Settings, NotFound } from './Components/Pages'
 import Protected from './AuthenticatedRouting/AuthLayout'
 import LazyRoute from './Components/ui/LazyRoute'
 import ErrorBoundary from './Components/ui/Custom/ErrorBoundary/ErrorBoundary'
@@ -39,7 +39,7 @@ const router = createBrowserRouter([
         path: "/",
         element: (
           <LazyRoute fallbackMessage="Loading sign in...">
-            <Protected authentication={false}><Login /></Protected>
+            <Protected authentication={false}><Auth /></Protected>
           </LazyRoute>
         )
       },
@@ -48,14 +48,6 @@ const router = createBrowserRouter([
         element: (
           <LazyRoute fallbackMessage="Loading dashboard...">
             <Protected authentication={true}><Home /></Protected>
-          </LazyRoute>
-        )
-      },
-      {
-        path: "signup",
-        element: (
-          <LazyRoute fallbackMessage="Loading sign up...">
-            <Protected authentication={false}><SignupPage /></Protected>
           </LazyRoute>
         )
       },

@@ -41,8 +41,6 @@ export default function Header() {
         return { title: 'Settings', subtitle: 'Manage your account and preferences' };
       case '/':
         return { title: 'Welcome', subtitle: 'Please sign in to continue' };
-      case '/signup':
-        return { title: 'Join KnowSpace', subtitle: 'Create your account today' };
       default:
         if (path.startsWith('/post/')) {
           return { title: 'Reading', subtitle: 'Explore this knowledge piece' };
