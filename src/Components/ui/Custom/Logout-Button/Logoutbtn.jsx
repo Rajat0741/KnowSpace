@@ -23,14 +23,23 @@ function Logoutbtn({ classname }) {
     const confirmLogout = async () => {
         setIsLoggingOut(true)
         try {
-            await dispatch(performLogout()).unwrap()
-            toast.success("Logged out successfully")
-            navigate("/")
+            const result = await dispatch(performLogout()).unwrap();
+            
+            if (result.serverError) {
+                toast.warning(`Logged out locally (server issue: ${result.serverError})`);
+            } else {
+                toast.success("Logged out successfully");
+            }
+            
+            navigate("/");
         } catch (error) {
-            toast.error(`Error in logout: ${error.message || error}`)
+            toast.error(`Error in logout: ${error.message || error}`);
+            
+            // Even if logout fails, try to navigate to login page
+            navigate("/");
         } finally {
-            setIsLoggingOut(false)
-            setShowLogoutConfirm(false)
+            setIsLoggingOut(false);
+            setShowLogoutConfirm(false);
         }
     }
 

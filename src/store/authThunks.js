@@ -16,6 +16,10 @@ export const initializeAuth = createAsyncThunk(
 
         try {
             dispatch(setLoading(true));
+            
+            // Small delay to ensure Redux Persist has rehydrated
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
             const userData = await authService.getCurrentUser();
             
             if (userData) {
@@ -23,6 +27,17 @@ export const initializeAuth = createAsyncThunk(
                 dispatch(loadProfilePicture());
                 return { success: true, userData };
             } else {
+                // If no user but we have persisted auth state, clear it
+                const persistedAuth = getState().auth;
+                if (persistedAuth.status) {
+                    try {
+                        localStorage.removeItem('persist:auth');
+                        localStorage.removeItem('persist:root');
+                    } catch {
+                        // Silent cleanup
+                    }
+                }
+                
                 dispatch(logout());
                 return { success: true, userData: null };
             }
@@ -61,10 +76,12 @@ export const handleOAuthCallback = createAsyncThunk(
     async ({ userId, secret }, { dispatch }) => {
         try {
             dispatch(setLoading(true));
+            
             const session = await authService.handleOAuthCallback(userId, secret);
             
             if (session) {
                 const userData = await authService.getCurrentUser();
+                
                 if (userData) {
                     dispatch(login({ userData }));
                     dispatch(loadProfilePicture());
@@ -72,7 +89,7 @@ export const handleOAuthCallback = createAsyncThunk(
                 }
             }
             
-            throw new Error("Failed to create session");
+            throw new Error("Failed to create session or retrieve user data");
         } catch (error) {
             console.log("OAuth callback error:", error);
             dispatch(setError(error.message || "Authentication failed"));
@@ -90,14 +107,36 @@ export const performLogout = createAsyncThunk(
     async (_, { dispatch }) => {
         try {
             dispatch(setLoading(true));
+            
+            // Attempt to logout from server
             await authService.logout();
+            
+            // Clear local state
             dispatch(logout());
+            
+            // Clear any persisted auth data
+            try {
+                localStorage.removeItem('persist:auth');
+                localStorage.removeItem('persist:root');
+            } catch {
+                // Silent cleanup
+            }
+            
             return { success: true };
         } catch (error) {
-            console.log("Logout error:", error);
             // Even if logout fails on server, clear local state
             dispatch(logout());
-            return { success: true };
+             
+            // Still clear persisted data
+            try {
+                localStorage.removeItem('persist:auth');
+                localStorage.removeItem('persist:root');
+            } catch {
+                // Silent cleanup
+            }
+            
+            // Don't throw the error - we want logout to succeed locally even if server fails
+            return { success: true, serverError: error.message };
         } finally {
             dispatch(setLoading(false));
         }

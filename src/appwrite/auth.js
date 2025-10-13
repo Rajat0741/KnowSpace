@@ -35,30 +35,80 @@ export class AuthService {
 
     async handleOAuthCallback(userId, secret) {
         try {
-            return await this.account.createSession(userId, secret);
+            // First, check if there's already an active session
+            try {
+                const existingUser = await this.account.get();
+                if (existingUser) {
+                    await this.account.deleteSessions();
+                    // Small delay to ensure session is properly cleared
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            } catch {
+                // Expected if no session exists - continue with session creation
+            }
+            
+            const session = await this.account.createSession(userId, secret);
+            return session;
         } catch (error) {
             console.log("Appwrite service :: handleOAuthCallback :: error :", error);
+            
+            // If we get a "session is active" error, try to clear and retry once
+            if (error.message && error.message.includes('session is active')) {
+                await this.account.deleteSessions();
+                // Wait a bit for the session to be fully cleared
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                const session = await this.account.createSession(userId, secret);
+                return session;
+            }
+            
             throw error;
         }
     }
 
     async getCurrentUser() {
         try {
-            return await this.account.get()
+            const user = await this.account.get();
+            return user;
         } catch (error) {
             // Don't log error for guests - this is expected behavior
             if (error.code !== 401) {
-                console.log("Appwrite service :: getCurrentUser :: error :", error)
+                console.log("Appwrite service :: getCurrentUser :: error :", error);
             }
-            return null
+            return null;
         }
     }
 
     async logout() {
         try {
+            // First try to delete all sessions
             await this.account.deleteSessions();
+            
+            // Verify logout by trying to get current user
+            try {
+                const user = await this.account.get();
+                if (user) {
+                    // If user still exists, try to delete current session specifically
+                    await this.account.deleteSession('current');
+                }
+            } catch (verificationError) {
+                // This is expected - we should get a 401 error after successful logout
+                if (verificationError.code !== 401) {
+                    console.log("Unexpected error during logout verification:", verificationError);
+                }
+            }
+            
+            return { success: true };
         } catch (error) {
-            console.log("Appwrite service :: logout :: error :", error)
+            console.log("Appwrite service :: logout :: error :", error);
+            
+            // If deleteSessions fails, try deleting current session as fallback
+            try {
+                await this.account.deleteSession('current');
+                return { success: true };
+            } catch {
+                throw error; // Throw the original error
+            }
         }
     }
 
