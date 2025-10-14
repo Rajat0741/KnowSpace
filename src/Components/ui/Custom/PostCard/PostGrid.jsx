@@ -1,24 +1,15 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
-import { Postcard, FeaturedPostCard, CompactPostCard } from './index'
+import { Postcard, CompactPostCard } from './index'
 
 const PostGrid = ({ 
   posts = [], 
   layout = 'grid', 
-  showFeatured = true,
-  featuredCount = 4,
   className 
 }) => {
   if (!posts.length) return null
 
-  // Determine which posts should be featured
-  let featuredPosts = []
-  let remainingPosts = [...posts]
-
-  if (showFeatured && posts.length > 0) {
-    featuredPosts = posts.slice(0, Math.min(featuredCount, posts.length))
-    remainingPosts = posts.slice(featuredCount)
-  }
+  const remainingPosts = [...posts]
 
   const layoutConfigs = {
     grid: {
@@ -128,40 +119,7 @@ const PostGrid = ({
   )
 
   return (
-    <div className="post-grid-container space-y-8">
-      {/* Featured posts section */}
-      {featuredPosts.length > 0 && showFeatured && (
-        <section className="post-section space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-foreground">Featured Posts</h2>
-            <span className="text-sm text-muted-foreground">
-              {featuredCount === 2 ? 'Top 2' : `Top ${featuredCount}`}
-            </span>
-          </div>
-          
-          {/* Featured posts grid */}
-          <div className={cn(
-            'grid gap-4 sm:gap-6',
-            featuredCount === 2 
-              ? 'grid-cols-1 lg:grid-cols-2' 
-              : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4'
-          )}>
-            {featuredPosts.map((post) => (
-              <FeaturedPostCard 
-                key={post.$id} 
-                post={post}
-                compact={featuredCount > 2}
-                className={cn(
-                  featuredCount === 2 
-                    ? 'aspect-[2/1] lg:aspect-[3/2]' 
-                    : 'aspect-[4/3] sm:aspect-[3/2]'
-                )}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
+    <div className="post-grid-container">
       {/* Main content based on layout */}
       {remainingPosts.length > 0 && (
         <section className="post-section space-y-4">

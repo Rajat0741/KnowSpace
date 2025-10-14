@@ -94,25 +94,25 @@ const Auth = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-200 dark:from-slate-900 dark:via-blue-900/50 dark:to-purple-900/50 relative overflow-hidden pt-6 pb-10">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/40 to-teal-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden pt-6 pb-10">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-purple-500/30 dark:bg-purple-400/20 blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-blue-500/30 dark:bg-blue-400/20 blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-indigo-500/20 dark:bg-indigo-400/15 blur-3xl"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-cyan-400/20 dark:bg-slate-800/25 blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-teal-400/20 dark:bg-slate-700/25 blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-blue-400/15 dark:bg-slate-800/20 blur-3xl"></div>
       </div>
 
       {/* Floating decorative icons */}
-      <FloatingElement duration={8} className="absolute top-20 left-10 text-purple-500/40 dark:text-purple-400/40">
+      <FloatingElement duration={8} className="absolute top-20 left-10 text-cyan-500/30 dark:text-slate-500/35">
         <Code className="w-12 h-12" />
       </FloatingElement>
-      <FloatingElement duration={10} className="absolute top-40 right-20 text-blue-500/40 dark:text-blue-400/40">
+      <FloatingElement duration={10} className="absolute top-40 right-20 text-teal-500/30 dark:text-slate-400/30">
         <Star className="w-8 h-8" />
       </FloatingElement>
-      <FloatingElement duration={7} className="absolute bottom-32 left-20 text-indigo-500/40 dark:text-indigo-400/40">
+      <FloatingElement duration={7} className="absolute bottom-32 left-20 text-blue-500/30 dark:text-slate-500/30">
         <Heart className="w-10 h-10" />
       </FloatingElement>
-      <FloatingElement duration={9} className="absolute bottom-20 right-10 text-purple-500/40 dark:text-purple-400/40">
+      <FloatingElement duration={9} className="absolute bottom-20 right-10 text-cyan-500/30 dark:text-slate-400/35">
         <Sparkles className="w-14 h-14" />
       </FloatingElement>
 
@@ -131,12 +131,12 @@ const Auth = () => {
             className="mb-8"
           >
             <motion.h1 
-              className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-6 leading-tight"
+              className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 dark:from-teal-400 dark:via-cyan-400 dark:to-blue-400 bg-clip-text text-transparent mb-6 leading-tight"
             >
               KnowSpace
             </motion.h1>
             <motion.p 
-              className="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-8 max-w-2xl mx-auto leading-relaxed"
+              className="text-xl md:text-2xl text-slate-700 dark:text-slate-200 mb-8 max-w-2xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.4 }}
@@ -153,13 +153,13 @@ const Auth = () => {
             whileHover={{ scale: 1.02, y: -5 }}
             className="max-w-md mx-auto mb-16"
           >
-            <div className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-purple-300/50 dark:border-purple-500/30 p-8 relative overflow-hidden">
-              {/* Simple animated background gradient */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/8 to-purple-500/8 dark:from-blue-400/15 dark:to-purple-400/15" />
+            <div className="bg-white/90 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-cyan-200/40 dark:border-slate-700/60 p-8 relative overflow-hidden">
+              {/* Enhanced background gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/8 via-teal-500/6 to-blue-500/8 dark:from-slate-800/40 dark:via-slate-700/30 dark:to-slate-800/40" />
               
               <div className="relative z-10 text-center">
                 <motion.h2 
-                  className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6"
+                  className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
@@ -167,7 +167,7 @@ const Auth = () => {
                   Welcome to KnowSpace
                 </motion.h2>
                 <motion.p 
-                  className="text-gray-600 dark:text-gray-100 mb-8"
+                  className="text-slate-600 dark:text-slate-300 mb-8"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7 }}
@@ -180,7 +180,7 @@ const Auth = () => {
                   whileTap={{ scale: 0.95 }}
                   onClick={handleGoogleLogin}
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
+                  className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 dark:from-teal-600 dark:to-cyan-600 dark:hover:from-teal-500 dark:hover:to-cyan-500 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
                 >
                   {loading ? (
                     <motion.div 
@@ -217,11 +217,11 @@ const Auth = () => {
 
         {/* Features Section */}
         <AnimatedSection delay={0.6} className="mb-16">
-          <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-4">
+          <h2 className="text-4xl font-bold text-center text-slate-800 dark:text-slate-100 mb-4">
             Why Choose KnowSpace?
           </h2>
           <motion.p 
-            className="text-xl text-center text-gray-700 dark:text-gray-200 mb-12 max-w-2xl mx-auto"
+            className="text-xl text-center text-slate-700 dark:text-slate-200 mb-12 max-w-2xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
@@ -238,23 +238,23 @@ const Auth = () => {
                     scale: 1.02
                   }}
                   transition={{ duration: 0.3 }}
-                  className="bg-white/70 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-purple-300/50 dark:border-purple-500/30 h-full relative overflow-hidden group"
+                  className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-xl rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-cyan-200/40 dark:border-slate-700/50 h-full relative overflow-hidden group"
                 >
-                  {/* Hover gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/8 to-purple-500/8 dark:from-blue-400/15 dark:to-purple-400/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  {/* Enhanced hover gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/8 to-blue-500/8 dark:from-slate-700/20 dark:to-slate-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   
                   <div className="relative z-10">
                     <motion.div 
-                      className="text-purple-600 dark:text-purple-400 mb-4"
+                      className="text-teal-600 dark:text-teal-400 mb-4"
                       whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.3 }}
                     >
                       {feature.icon}
                     </motion.div>
-                    <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
+                    <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors duration-300">
                       {feature.title}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-100 leading-relaxed">
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                       {feature.description}
                     </p>
                   </div>
@@ -267,12 +267,12 @@ const Auth = () => {
         {/* Call to Action */}
         <AnimatedSection delay={1.2} className="text-center">
           <motion.div 
-            className="bg-gradient-to-r from-purple-700 to-blue-700 dark:from-purple-800/80 dark:to-blue-800/80 rounded-2xl p-8 md:p-12 text-white relative overflow-hidden"
+            className="bg-gradient-to-r from-teal-600 to-cyan-600 dark:from-slate-800/95 dark:to-slate-700/95 rounded-2xl p-8 md:p-12 text-white dark:text-slate-100 relative overflow-hidden border dark:border-slate-600/30"
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.3 }}
           >
-            {/* Simple animated background */}
-            <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-white/10 to-transparent" />
+            {/* Enhanced animated background */}
+            <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-white/10 to-transparent dark:from-slate-600/20 dark:to-transparent" />
             
             <div className="relative z-10">
               <motion.h2 
@@ -302,7 +302,7 @@ const Auth = () => {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                 disabled={loading}
-                className="bg-white text-purple-700 dark:text-purple-800 font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 mx-auto relative overflow-hidden group"
+                className="bg-white text-teal-700 dark:bg-slate-200 dark:text-slate-800 font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 mx-auto relative overflow-hidden group"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}

@@ -130,34 +130,33 @@ const Search = () => {
 
           {/* Compact Search Input */}
           <div className="mb-3 md:mb-4">
-            <label className="block text-xs md:text-sm font-medium text-foreground mb-1 md:mb-2">
+            <label className="flex items-center gap-2 text-xs md:text-sm font-medium text-foreground mb-1 md:mb-2">
+              <span className="text-blue-600 dark:text-blue-400">🔍</span>
               Search Users
             </label>
             <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
               <div className="relative flex-1">
                 <Input
                   type="text"
-                  placeholder="Search by name, bio, or keywords... (min 3 chars)"
+                  placeholder="Name, bio, keywords... (min 3)"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-purple-200/50 dark:border-purple-700/50 text-black dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-md md:rounded-lg p-2 md:p-3 focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 shadow-sm hover:shadow-md text-sm"
+                  className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-purple-200/50 dark:border-purple-700/50 text-black dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-md md:rounded-lg py-3 px-4 focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-300 shadow-sm hover:shadow-md text-sm"
                 />
               </div>
               <Button
                 onClick={handleSearch}
                 disabled={searchTerm.trim().length < 3 || isFetching}
-                className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-md md:rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-sm"
+                className="px-4 md:px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-md md:rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-sm whitespace-nowrap"
               >
                 {isFetching ? (
                   <div className="flex items-center gap-1 md:gap-2">
-                    <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-xs md:text-sm">Searching...</span>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Searching</span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1 md:gap-2">
-                    <span className="text-xs md:text-sm">Search Users</span>
-                  </div>
+                  <span>🔍 Search</span>
                 )}
               </Button>
             </div>

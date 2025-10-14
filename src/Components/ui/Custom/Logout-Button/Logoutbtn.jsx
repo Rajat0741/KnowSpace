@@ -56,10 +56,9 @@ function Logoutbtn({ classname }) {
     return (
         <>
             <Button 
-                variant="destructive" 
                 size="lg"
                 onClick={handleLogoutClick} 
-                className={`${classname} min-h-[44px] bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800 active:scale-95`}
+                className={`${classname} min-h-[40px] bg-red-700 hover:bg-red-800 dark:bg-red-700 dark:hover:bg-red-800 text-white shadow-xs transition-colors duration-100 focus:ring-2 focus:ring-red-300 dark:focus:ring-red-400`}
             >
                 <LogOut className="w-4 h-4" />
                 Logout

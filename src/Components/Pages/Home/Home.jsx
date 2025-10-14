@@ -7,6 +7,7 @@ import { Query } from 'appwrite'
 import {SkeletonCard} from '../../ui/SkeletonCard'
 import { Input } from '../../ui/input'
 import Select from '../../ui/select'
+import { Search, Filter, Sparkles, TrendingUp } from 'lucide-react'
 
 function Home() {
   // ==========================================
@@ -96,81 +97,114 @@ function Home() {
   }
 
   return (
-    <div className="min-h-scree">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
-        {/* Search and Filter Section */}
-        <div className="mb-6 lg:mb-8">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 lg:p-6 shadow-lg shadow-black/10 dark:shadow-black/30">
-            <div className="flex flex-col lg:flex-row gap-4">
-              {/* Search Input */}
-              <div className="flex-1 lg:flex-[2]">
-                <Input
-                  type="text"
-                  placeholder="Search articles by title or keywords..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 rounded-xl px-4 py-6 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 w-full text-sm"
-                />
-              </div>
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-cyan-50/30 to-teal-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-cyan-400/10 dark:bg-slate-700/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
+        <div className="absolute top-1/3 -right-1/4 w-[500px] h-[500px] bg-teal-400/10 dark:bg-slate-600/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }}></div>
+        <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-blue-400/10 dark:bg-slate-700/25 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }}></div>
+      </div>
 
-              {/* Category Dropdown */}
-              <div className="flex-1">
-                <Select
-                  options={categories}
-                  value={selectedCategory === 'all' ? 'All Categories' : selectedCategory}
-                  onChange={(e) => {
-                    const value = e.target.value === 'All Categories' ? 'all' : e.target.value;
-                    handleCategoryChange(value);
-                  }}
-                  showIcons={true}
-                  className="bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                />
-              </div>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        
+        {/* Hero Header Section */}
+        <div className="mb-8 lg:mb-12">
+          <div className="text-center space-y-4 mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-500/10 to-cyan-500/10 dark:from-teal-600/20 dark:to-cyan-600/20 rounded-full border border-teal-200/50 dark:border-teal-700/50 backdrop-blur-sm">
+              <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+              <span className="text-sm font-semibold text-teal-900 dark:text-teal-100">Discover Amazing Content</span>
             </div>
+            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-900 dark:text-white leading-tight">
+              Explore <span className="bg-gradient-to-r from-teal-600 to-cyan-600 dark:from-teal-400 dark:to-cyan-400 bg-clip-text text-transparent">Knowledge</span>
+            </h1>
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              Browse through our collection of articles, tutorials, and insights
+            </p>
+          </div>
 
-            {/* Active Filters */}
-            {(searchTerm || selectedCategory !== 'all') && (
-              <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-                <div className="flex flex-wrap gap-2 items-center">
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Active filters:
-                  </span>
-                  {selectedCategory !== 'all' && (
-                    <span className="inline-flex items-center gap-1 bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-700">
-                      📂 {selectedCategory}
-                    </span>
-                  )}
-                  {searchTerm && (
-                    <span className="inline-flex items-center gap-1 bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-lg text-sm font-medium border border-purple-200 dark:border-purple-700">
-                      🔍 "{searchTerm}"
-                    </span>
-                  )}
-                  <button
-                    onClick={clearFilters}
-                    className="inline-flex items-center gap-1 text-red-700 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium px-3 py-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors duration-200 border border-red-200 dark:border-red-700 hover:border-red-300 dark:hover:border-red-600"
-                  >
-                    ✕ Clear all
-                  </button>
+          {/* Search and Filter Card */}
+          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/50 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+            <div className="p-6 lg:p-8">
+              <div className="flex flex-col lg:flex-row gap-4">
+                {/* Search Input with Icon */}
+                <div className="flex-1 lg:flex-[2] relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-teal-500 transition-colors pointer-events-none z-10">
+                    <Search className="w-5 h-5" />
+                  </div>
+                  <Input
+                    type="text"
+                    placeholder="Search articles, tutorials..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-12 pr-4 bg-slate-50/80 dark:bg-slate-800/80 border-slate-300/60 dark:border-slate-600/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 rounded-xl py-6 focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 transition-all duration-200 w-full text-base shadow-sm hover:shadow-md"
+                  />
+                </div>
+
+                {/* Category Dropdown with Icon */}
+                <div className="flex-1 relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 z-10 pointer-events-none">
+                    <Filter className="w-5 h-5" />
+                  </div>
+                  <Select
+                    options={categories}
+                    value={selectedCategory === 'all' ? 'All Categories' : selectedCategory}
+                    onChange={(e) => {
+                      const value = e.target.value === 'All Categories' ? 'all' : e.target.value;
+                      handleCategoryChange(value);
+                    }}
+                    showIcons={true}
+                    className="pl-12 bg-slate-50/80 dark:bg-slate-800/80 border-slate-300/60 dark:border-slate-600/60 text-slate-900 dark:text-slate-100 shadow-sm hover:shadow-md transition-all duration-200"
+                  />
                 </div>
               </div>
-            )}
+
+              {/* Active Filters */}
+              {(searchTerm || selectedCategory !== 'all') && (
+                <div className="mt-6 p-4 bg-gradient-to-r from-slate-50/80 to-cyan-50/40 dark:from-slate-800/80 dark:to-slate-700/40 rounded-xl border border-slate-200/60 dark:border-slate-700/50 backdrop-blur-sm">
+                  <div className="flex flex-wrap gap-3 items-center">
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4" />
+                      Active Filters:
+                    </span>
+                    {selectedCategory !== 'all' && (
+                      <span className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 dark:from-teal-600 dark:to-cyan-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
+                        📂 {selectedCategory}
+                      </span>
+                    )}
+                    {searchTerm && (
+                      <span className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
+                        🔍 "{searchTerm}"
+                      </span>
+                    )}
+                    <button
+                      onClick={clearFilters}
+                      className="inline-flex items-center gap-2 text-red-700 dark:text-red-400 hover:text-white dark:hover:text-white bg-red-50 dark:bg-red-900/30 hover:bg-red-600 dark:hover:bg-red-600 text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200 border border-red-200 dark:border-red-700 hover:border-red-600 dark:hover:border-red-600 transform hover:scale-105 shadow-sm hover:shadow-md"
+                    >
+                      ✕ Clear All
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Search Results Count */}
         {hasSearched && (
-          <div className="mb-6">
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 shadow-md shadow-black/10 dark:shadow-black/30">
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <div className="mb-6 animate-in fade-in slide-in-from-top-4 duration-500">
+            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/50 rounded-xl p-4 shadow-lg">
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                 {recentPosts.length > 0 ? (
-                  <span className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                    Found {recentPosts.length} result{recentPosts.length !== 1 ? 's' : ''}
+                  <span className="flex items-center gap-3">
+                    <span className="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></span>
+                    <span className="bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent font-bold">
+                      Found {recentPosts.length} result{recentPosts.length !== 1 ? 's' : ''}
+                    </span>
                   </span>
                 ) : (
-                  <span className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-                    No results found
+                  <span className="flex items-center gap-3">
+                    <span className="flex-shrink-0 w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-lg shadow-orange-500/50"></span>
+                    <span className="text-orange-600 dark:text-orange-400">No results found</span>
                   </span>
                 )}
               </p>
@@ -180,17 +214,20 @@ function Home() {
       
             {/* Posts Layout */}
       {!isLoading && recentPosts.length > 0 && (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
           <InfiniteScroll
             dataLength={recentPosts.length}
             next={fetchNextPage}
             hasMore={hasNextPage}
             loader={
-              <div className="flex justify-center items-center py-8">
-                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-6 py-4 shadow-md shadow-black/10 dark:shadow-black/30">
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+              <div className="flex justify-center items-center py-10">
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/50 rounded-2xl px-8 py-5 shadow-xl">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="w-6 h-6 border-3 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                      <div className="absolute inset-0 w-6 h-6 border-3 border-purple-500/30 border-t-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1s' }}></div>
+                    </div>
+                    <span className="text-base text-slate-700 dark:text-slate-300 font-semibold">
                       Loading more articles...
                     </span>
                   </div>
@@ -199,28 +236,26 @@ function Home() {
             }
             endMessage={
               recentPosts.length > POSTS_PER_PAGE && (
-                <div className="flex justify-center items-center py-8">
-                  <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-6 py-4 text-center shadow-md shadow-black/10 dark:shadow-black/30">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      <span className="text-2xl">🎉</span>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                        All caught up!
+                <div className="flex justify-center items-center py-10">
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-slate-800/80 dark:to-slate-700/80 backdrop-blur-xl border border-blue-200/60 dark:border-slate-600/50 rounded-2xl px-8 py-6 text-center shadow-xl">
+                    <div className="flex items-center justify-center gap-3 mb-2">
+                      <span className="text-3xl animate-bounce">🎉</span>
+                      <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                        All Caught Up!
                       </span>
                     </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      You've reached the end of the articles
+                    <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">
+                      You've explored all available articles
                     </span>
                   </div>
                 </div>
               )
             }
           >
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-lg shadow-black/10 dark:shadow-black/30">
+            <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/50 rounded-2xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300">
               <PostGrid
                 posts={recentPosts}
                 layout="grid"
-                showFeatured={true}
-                featuredCount={4}
               />
             </div>
           </InfiniteScroll>
@@ -229,63 +264,48 @@ function Home() {
       
       {/* Loading State */}
       {isLoading && (
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-lg shadow-black/10 dark:shadow-black/30">
-          <div className="space-y-8">
-            {/* Featured posts skeleton */}
-            <div className="space-y-4">
-              <div className="h-6 w-40 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-                {Array.from({ length: 4 }).map((_, index) => (
-                  <div key={`featured-${index}`} className="space-y-3">
-                    <SkeletonCard className="aspect-[4/3] bg-gray-200 dark:bg-gray-700 rounded-xl" />
-                    <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                    <div className="h-3 w-1/2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                  </div>
-                ))}
+        <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/50 rounded-2xl p-8 shadow-xl animate-in fade-in duration-500">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 12 }).map((_, index) => (
+              <div key={`skeleton-${index}`} className="space-y-4">
+                <SkeletonCard className="h-56 bg-slate-200/60 dark:bg-slate-700/60 rounded-xl animate-pulse" />
+                <div className="space-y-2">
+                  <div className="h-4 w-5/6 bg-slate-200/60 dark:bg-slate-700/60 rounded animate-pulse"></div>
+                  <div className="h-3 w-2/3 bg-slate-200/60 dark:bg-slate-700/60 rounded animate-pulse"></div>
+                  <div className="h-3 w-1/2 bg-slate-200/60 dark:bg-slate-700/60 rounded animate-pulse"></div>
+                </div>
               </div>
-            </div>
-            
-            {/* Regular posts skeleton */}
-            <div className="space-y-4">
-              <div className="h-5 w-32 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {Array.from({ length: 8 }).map((_, index) => (
-                  <div key={`regular-${index}`} className="space-y-3">
-                    <SkeletonCard className="h-48 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-                    <div className="h-4 w-5/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                    <div className="h-3 w-2/3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                    <div className="h-3 w-1/3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       )}
       
       {/* Empty State */}
       {recentPosts.length === 0 && !isLoading && (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 max-w-md shadow-lg shadow-black/10 dark:shadow-black/30">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center shadow-inner">
-              <span className="text-3xl">{hasSearched ? '🔍' : '📝'}</span>
+        <div className="flex flex-col items-center justify-center py-20 px-4 text-center animate-in fade-in zoom-in duration-500">
+          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/50 rounded-3xl p-12 max-w-lg shadow-2xl">
+            <div className="relative w-24 h-24 mx-auto mb-8">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full animate-pulse"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-5xl">{hasSearched ? '🔍' : '📝'}</span>
+              </div>
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-              {hasSearched ? 'No articles found' : 'No articles available'}
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
+              {hasSearched ? 'No Articles Found' : 'No Articles Yet'}
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6 text-sm">
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-8 text-base">
               {hasSearched 
-                ? 'Try adjusting your search terms or explore different categories to find what you\'re looking for.'
-                : 'It looks like there are no articles available yet. Check back later or explore different categories.'
+                ? 'We couldn\'t find any articles matching your criteria. Try adjusting your search or explore different categories.'
+                : 'There are no articles available at the moment. Check back soon for new content!'
               }
             </p>
             {hasSearched && (
               <button
                 onClick={clearFilters}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-xl transition-colors duration-200 font-medium text-sm shadow-sm hover:shadow-md"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 dark:from-teal-500 dark:to-cyan-500 dark:hover:from-teal-600 dark:hover:to-cyan-600 text-white rounded-xl transition-all duration-300 font-semibold text-base shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                <span>🔄</span>
-                Clear filters
+                <span className="text-xl">🔄</span>
+                Clear Filters & Explore
               </button>
             )}
           </div>

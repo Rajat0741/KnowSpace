@@ -34,11 +34,11 @@ import { toast } from 'sonner';
 function Avatar({ username, onClick }) {
   const firstLetter = username?.charAt(0).toUpperCase() || 'U';
   const colors = [
-    'from-blue-500 to-purple-600',
+    'from-teal-500 to-cyan-600',
     'from-green-500 to-teal-600',
     'from-orange-500 to-red-600',
     'from-pink-500 to-rose-600',
-    'from-indigo-500 to-blue-600',
+    'from-blue-500 to-cyan-600',
     'from-yellow-500 to-orange-600',
   ];
   
@@ -99,7 +99,7 @@ function Comment({ comment, currentUserId, onEdit, onDelete }) {
   };
 
   return (
-    <div className="group bg-gradient-to-r from-blue-50/30 to-purple-50/30 dark:from-blue-950/20 dark:to-purple-950/20 backdrop-blur-sm rounded-xl p-4 border border-blue-200/30 dark:border-purple-800/30 hover:border-blue-300/50 dark:hover:border-purple-700/50 transition-all duration-300">
+    <div className="group bg-gradient-to-r from-cyan-50/30 to-teal-50/30 dark:from-cyan-950/20 dark:to-teal-950/20 backdrop-blur-sm rounded-xl p-4 border border-cyan-200/30 dark:border-cyan-800/30 hover:border-cyan-300/50 dark:hover:border-cyan-700/50 transition-all duration-300">
       <div className="flex gap-3">
         {/* Avatar */}
         <Avatar
@@ -186,7 +186,7 @@ function Comment({ comment, currentUserId, onEdit, onDelete }) {
                   onClick={handleSaveEdit}
                   disabled={isSubmitting || !editContent.trim()}
                   size="sm"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                  className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white"
                 >
                   {isSubmitting ? 'Saving...' : 'Save'}
                 </Button>
@@ -288,13 +288,13 @@ export default function CommentsDrawer({ postId }) {
   return (
     <Drawer direction="right" open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        <button className="group inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-blue-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/20">
-          <MessageSquare className="w-4 h-4 text-blue-400 group-hover:text-blue-300 transition-colors" />
-          <span className="text-sm font-medium text-blue-400 group-hover:text-blue-300 transition-colors">
+        <button className="group inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500/20 to-teal-500/20 hover:from-cyan-500/30 hover:to-teal-500/30 border border-cyan-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/20">
+          <MessageSquare className="w-4 h-4 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
+          <span className="text-sm font-medium text-cyan-400 group-hover:text-cyan-300 transition-colors">
             Comments
           </span>
           {comments.length > 0 && (
-            <span className="px-2 py-0.5 bg-blue-500/30 rounded-full text-xs font-semibold text-blue-600 dark:text-blue-300">
+            <span className="px-2 py-0.5 bg-cyan-500/30 rounded-full text-xs font-semibold text-cyan-600 dark:text-cyan-300">
               {comments.length}
             </span>
           )}
@@ -304,14 +304,14 @@ export default function CommentsDrawer({ postId }) {
       <DrawerContent className="w-full sm:w-[500px] bg-gradient-to-br from-background via-background/95 to-background/90">
         <div className="flex flex-col h-full max-h-[100vh]">
           {/* Header */}
-          <DrawerHeader className="border-b border-border/50 bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-950/30 dark:to-purple-950/30 backdrop-blur-sm">
+          <DrawerHeader className="border-b border-border/50 bg-gradient-to-r from-cyan-50/50 to-teal-50/50 dark:from-cyan-950/30 dark:to-teal-950/30 backdrop-blur-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-lg">
+                <div className="p-2 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg shadow-lg">
                   <MessageSquare className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <DrawerTitle className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  <DrawerTitle className="text-lg font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
                     Comments
                   </DrawerTitle>
                   <DrawerDescription className="text-xs text-muted-foreground">
@@ -331,12 +331,12 @@ export default function CommentsDrawer({ postId }) {
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {isLoading ? (
               <div className="flex items-center justify-center py-12">
-                <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
             ) : comments.length === 0 ? (
               <div className="text-center py-12">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full flex items-center justify-center">
-                  <MessageSquare className="w-8 h-8 text-blue-400 dark:text-purple-400" />
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-cyan-100 to-teal-100 dark:from-cyan-900/30 dark:to-teal-900/30 rounded-full flex items-center justify-center">
+                  <MessageSquare className="w-8 h-8 text-cyan-400 dark:text-teal-400" />
                 </div>
                 <p className="text-muted-foreground font-medium">No comments yet</p>
                 <p className="text-sm text-muted-foreground mt-1">Be the first to comment!</p>
@@ -356,7 +356,7 @@ export default function CommentsDrawer({ postId }) {
 
           {/* Add Comment Form */}
           {userData ? (
-            <div className="border-t border-border/50 p-4 bg-gradient-to-r from-blue-50/30 to-purple-50/30 dark:from-blue-950/20 dark:to-purple-950/20 backdrop-blur-sm">
+            <div className="border-t border-border/50 p-4 bg-gradient-to-r from-cyan-50/30 to-teal-50/30 dark:from-cyan-950/20 dark:to-teal-950/20 backdrop-blur-sm">
               <form onSubmit={handleAddComment} className="space-y-3">
                 <div className="flex items-start gap-3">
                   <Avatar username={userData.name} onClick={() => {}} />
@@ -365,7 +365,7 @@ export default function CommentsDrawer({ postId }) {
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       placeholder="Write a comment..."
-                      className="bg-white dark:bg-gray-900 border-blue-300 dark:border-purple-700"
+                      className="bg-white dark:bg-gray-900 border-cyan-300 dark:border-cyan-700"
                       disabled={isSubmitting}
                     />
                   </div>
@@ -374,7 +374,7 @@ export default function CommentsDrawer({ postId }) {
                   <Button
                     type="submit"
                     disabled={isSubmitting || !newComment.trim()}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
+                    className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white shadow-lg"
                   >
                     <Send className="w-4 h-4 mr-2" />
                     {isSubmitting ? 'Posting...' : 'Post Comment'}
@@ -383,12 +383,12 @@ export default function CommentsDrawer({ postId }) {
               </form>
             </div>
           ) : (
-            <div className="border-t border-border/50 p-4 bg-gradient-to-r from-blue-50/30 to-purple-50/30 dark:from-blue-950/20 dark:to-purple-950/20 backdrop-blur-sm">
+            <div className="border-t border-border/50 p-4 bg-gradient-to-r from-cyan-50/30 to-teal-50/30 dark:from-cyan-950/20 dark:to-teal-950/20 backdrop-blur-sm">
               <p className="text-center text-muted-foreground text-sm">
                 Please{' '}
                 <button
                   onClick={() => navigate('/')}
-                  className="text-blue-500 hover:text-blue-600 font-medium underline"
+                  className="text-teal-500 hover:text-teal-600 font-medium underline"
                 >
                   sign in
                 </button>{' '}

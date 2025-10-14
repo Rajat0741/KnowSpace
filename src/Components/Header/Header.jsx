@@ -18,7 +18,7 @@ export default function Header() {
   const navigate = useNavigate();
   
   // Enhanced header styling with gradient background
-  const headerBase = "bg-gradient-to-r from-white/95 via-blue-50/90 to-purple-50/95 dark:from-neutral-900/95 dark:via-blue-950/90 dark:to-purple-950/95 backdrop-blur-xl text-black dark:text-white rounded-full shadow-2xl transition-all duration-250 mt-2 border border-blue-200/50 dark:border-purple-800/30 h-16 flex items-center sm:h-14";
+  const headerBase = "bg-gradient-to-r from-white/95 via-cyan-50/90 to-teal-50/95 dark:from-slate-900/95 dark:via-slate-800/90 dark:to-slate-900/95 backdrop-blur-xl text-black dark:text-white rounded-full shadow-2xl transition-all duration-250 mt-2 border border-cyan-200/50 dark:border-slate-700/50 h-16 flex items-center sm:h-14";
   // Simplified header styling - let SidebarInset handle the responsive behavior
   const headerStyle = "mr-2 ml-2 w-auto";
 
@@ -97,7 +97,7 @@ export default function Header() {
           className="hidden lg:flex lg:flex-col lg:items-center text-black dark:text-white"
           style={{ pointerEvents: isLoggedIn ? 'auto' : 'none', opacity: isLoggedIn ? 1 : 0.5 }}
         >
-          <h1 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-lg font-bold bg-gradient-to-r from-teal-600 to-cyan-600 dark:from-teal-400 dark:to-cyan-400 bg-clip-text text-transparent">
             {pageInfo.title}
           </h1>
           <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
@@ -117,7 +117,6 @@ export default function Header() {
               <Logoutbtn
                 classname={`
                   border-2 border-red-600
-                  logout-gradient
                   rounded-full
                   text-black dark:text-white
                   transition-colors duration-150

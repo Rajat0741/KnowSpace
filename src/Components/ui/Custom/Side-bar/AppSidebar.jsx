@@ -58,19 +58,19 @@ function AppSidebar({ className }) {
     <Sidebar variant="sidebar" className={`${className} knowspace-sidebar sidebar-init`}>
       <SidebarHeader className="relative">
         {/* Gradient Background for Header */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-indigo-600/10 rounded-lg -z-10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/8 via-teal-500/6 to-blue-500/8 dark:from-cyan-700/15 dark:via-teal-700/12 dark:to-blue-700/15 rounded-lg -z-10" />
         
         {/* Brand Logo and Name */}
         <div className="flex items-center gap-3 p-2 group cursor-pointer">
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg blur-sm opacity-75 breathing-glow" />
-            <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg group-hover:scale-105 transition-transform duration-300">
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-lg blur-sm opacity-60 breathing-glow" />
+            <div className="relative bg-gradient-to-br from-cyan-500 to-teal-600 p-2 rounded-lg group-hover:scale-105 transition-transform duration-300 shadow-lg">
               <BookOpen className="h-6 w-6 text-white" />
               <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-yellow-300 animate-pulse" />
             </div>
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent group-hover:from-blue-500 group-hover:to-purple-500 transition-all duration-300">
+            <span className="font-bold text-xl bg-gradient-to-r from-cyan-600 to-teal-600 dark:from-cyan-400 dark:to-teal-400 bg-clip-text text-transparent group-hover:from-cyan-500 group-hover:to-teal-500 transition-all duration-300">
               KnowSpace
             </span>
             <span className="text-xs text-sidebar-foreground/60 font-medium group-hover:text-sidebar-foreground/80 transition-colors duration-300">
@@ -109,18 +109,18 @@ function AppSidebar({ className }) {
                   >
                     {/* Active indicator */}
                     {isActive && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r-full shadow-lg shadow-blue-500/30" />
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-gradient-to-b from-cyan-500 to-teal-600 rounded-r-full shadow-lg shadow-cyan-500/30" />
                     )}
                     
                     <SidebarMenuButton 
                       asChild 
                       className={`
                         relative overflow-hidden transition-all duration-300 ease-out menu-item-glow
-                        hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-600/10
-                        hover:border-l-2 hover:border-blue-500/30 hover:transform hover:translate-x-1
-                        group-hover:shadow-md group-hover:shadow-blue-500/10
+                        hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-teal-600/10
+                        hover:border-l-2 hover:border-cyan-500/30 hover:transform hover:translate-x-1
+                        group-hover:shadow-md group-hover:shadow-cyan-500/10
                         ${isActive 
-                          ? 'bg-gradient-to-r from-blue-500/15 to-purple-600/15 border-l-2 border-blue-500/50 transform translate-x-1' 
+                          ? 'bg-gradient-to-r from-cyan-500/15 to-teal-600/15 border-l-2 border-cyan-500/50 transform translate-x-1' 
                           : ''
                         }
                       `}
@@ -135,15 +135,15 @@ function AppSidebar({ className }) {
                         <div className={`
                           p-1 rounded-lg transition-all duration-300 sparkle-effect
                           ${isActive 
-                            ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg' 
-                            : 'group-hover:bg-gradient-to-br group-hover:from-blue-500/20 group-hover:to-purple-600/20 group-hover:scale-110'
+                            ? 'bg-gradient-to-br from-cyan-500 to-teal-600 text-white shadow-lg' 
+                            : 'group-hover:bg-gradient-to-br group-hover:from-cyan-500/20 group-hover:to-teal-600/20 group-hover:scale-110'
                           }
                         `}>
                           <item.icon className="h-4 w-4" />
                         </div>
                         <span className={`
                           font-medium transition-colors duration-300
-                          ${isActive ? 'text-blue-600 dark:text-blue-400 font-semibold' : ''}
+                          ${isActive ? 'text-cyan-600 dark:text-cyan-400 font-semibold' : ''}
                         `}>
                           {item.title}
                         </span>
@@ -152,7 +152,7 @@ function AppSidebar({ className }) {
                         <div className={`
                           absolute right-2 w-2 h-2 rounded-full transition-all duration-300
                           ${isActive 
-                            ? 'bg-gradient-to-r from-blue-500 to-purple-600 opacity-100' 
+                            ? 'bg-gradient-to-r from-cyan-500 to-teal-600 opacity-100' 
                             : 'bg-sidebar-foreground/20 opacity-0 group-hover:opacity-60'
                           }
                         `} />
@@ -168,12 +168,12 @@ function AppSidebar({ className }) {
       
       <SidebarFooter className="relative">
         {/* Subtle gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-600/5 to-transparent rounded-lg -z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-cyan-600/5 dark:from-cyan-700/12 to-transparent rounded-lg -z-10" />
         
         <div className="flex flex-col items-center gap-2 p-2">
           <div className="sidebar-divider w-16"></div>
           <div className="flex items-center gap-2 group cursor-pointer">
-            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-green-400 to-green-600 animate-pulse"></div>
+            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 animate-pulse"></div>
             <span className="text-xs text-sidebar-foreground/60 font-medium group-hover:text-sidebar-foreground/80 transition-colors duration-300">
               © 2025 KnowSpace
             </span>
