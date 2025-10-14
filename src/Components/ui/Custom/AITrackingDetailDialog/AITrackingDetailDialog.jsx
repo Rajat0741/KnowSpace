@@ -43,8 +43,8 @@ function DetailRow({ icon: Icon, label, value, className = '' }) {
   return (
     <div className="group flex items-start gap-4 py-3 hover:bg-gradient-to-r hover:from-slate-50/50 hover:to-transparent dark:hover:from-slate-800/30 dark:hover:to-transparent rounded-lg transition-all duration-200 px-2 -mx-2">
       {Icon && (
-        <div className="flex-shrink-0 mt-1 p-1.5 rounded-lg bg-gradient-to-br from-cyan-100 to-teal-100 dark:from-cyan-900/40 dark:to-teal-900/40 group-hover:scale-110 transition-transform duration-200">
-          <Icon size={16} className="text-cyan-600 dark:text-cyan-400" />
+        <div className="flex-shrink-0 mt-1 p-1.5 rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/40 dark:to-purple-900/40 group-hover:scale-110 transition-transform duration-200">
+          <Icon size={16} className="text-purple-600 dark:text-purple-400" />
         </div>
       )}
       <div className="flex-1 min-w-0">
@@ -72,16 +72,16 @@ export default function AITrackingDetailDialog({ item, open, onOpenChange, onNav
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto scrollbar-hide bg-gradient-to-br from-white via-slate-50/80 to-cyan-50/60 dark:from-slate-900 dark:via-slate-800/95 dark:to-slate-900/95 backdrop-blur-xl border border-cyan-200/50 dark:border-slate-700/60 shadow-2xl ring-1 ring-white/20 dark:ring-white/10 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-4 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-4 data-[state=closed]:zoom-out-95 duration-300">
+      <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto scrollbar-hide bg-gradient-to-br from-white via-slate-50/80 to-purple-50/60 dark:from-slate-900 dark:via-slate-800/95 dark:to-slate-900/95 backdrop-blur-xl border border-purple-200/50 dark:border-slate-700/60 shadow-2xl ring-1 ring-white/20 dark:ring-white/10 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-4 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-4 data-[state=closed]:zoom-out-95 duration-300">
         {/* Decorative background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-gradient-to-br from-cyan-400/20 via-teal-400/15 to-blue-400/20 dark:from-cyan-600/10 dark:via-teal-600/8 dark:to-blue-600/10 blur-2xl"></div>
-          <div className="absolute -bottom-20 -left-20 w-32 h-32 rounded-full bg-gradient-to-tr from-purple-400/15 via-pink-400/10 to-cyan-400/15 dark:from-purple-600/8 dark:via-pink-600/5 dark:to-cyan-600/8 blur-2xl"></div>
+          <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-gradient-to-br from-blue-400/20 via-purple-400/15 to-indigo-400/20 dark:from-blue-600/10 dark:via-purple-600/8 dark:to-indigo-600/10 blur-2xl"></div>
+          <div className="absolute -bottom-20 -left-20 w-32 h-32 rounded-full bg-gradient-to-tr from-purple-400/15 via-pink-400/10 to-indigo-400/15 dark:from-purple-600/8 dark:via-pink-600/5 dark:to-indigo-600/8 blur-2xl"></div>
         </div>
 
-        <DialogHeader className="relative z-10 pb-6 border-b border-cyan-200/30 dark:border-slate-700/40">
+        <DialogHeader className="relative z-10 pb-6 border-b border-purple-200/30 dark:border-slate-700/40">
           <div className="flex items-start gap-3 mb-2">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-cyan-500 to-teal-600 shadow-lg">
+            <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg">
               <Sparkles size={20} className="text-white" />
             </div>
             <div className="flex-1">
@@ -110,7 +110,7 @@ export default function AITrackingDetailDialog({ item, open, onOpenChange, onNav
             className={
               item.status === 'completed' ? 'text-emerald-600 dark:text-emerald-400 font-semibold' :
               item.status === 'failed' ? 'text-red-600 dark:text-red-400 font-semibold' :
-              'text-cyan-600 dark:text-cyan-400 font-semibold'
+              'text-purple-600 dark:text-purple-400 font-semibold'
             }
           />
 
@@ -170,7 +170,7 @@ export default function AITrackingDetailDialog({ item, open, onOpenChange, onNav
                           href={source.trim()}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 text-sm text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 hover:underline break-all transition-colors duration-200 bg-cyan-50/50 dark:bg-cyan-950/20 hover:bg-cyan-100/70 dark:hover:bg-cyan-950/30 px-3 py-2 rounded-lg group-hover/source:scale-[1.02] transform"
+                          className="inline-flex items-center gap-2 text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline break-all transition-colors duration-200 bg-purple-50/50 dark:bg-purple-950/20 hover:bg-purple-100/70 dark:hover:bg-purple-950/30 px-3 py-2 rounded-lg group-hover/source:scale-[1.02] transform"
                         >
                           <ExternalLink size={12} className="flex-shrink-0" />
                           <span className="truncate max-w-xs">{source.trim()}</span>
@@ -202,8 +202,8 @@ export default function AITrackingDetailDialog({ item, open, onOpenChange, onNav
                     </div>
                   </div>
 
-                  <div className="mt-4 p-4 bg-gradient-to-r from-cyan-50 to-teal-50 dark:from-cyan-950/20 dark:to-teal-950/20 border border-cyan-200/70 dark:border-cyan-800/50 rounded-xl shadow-sm">
-                    <div className="text-sm text-cyan-700 dark:text-cyan-300 font-medium">
+                  <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border border-purple-200/70 dark:border-purple-800/50 rounded-xl shadow-sm">
+                    <div className="text-sm text-purple-700 dark:text-purple-300 font-medium">
                       💡 Your usage credits are preserved and not deducted for failed generations.
                     </div>
                   </div>
@@ -214,13 +214,13 @@ export default function AITrackingDetailDialog({ item, open, onOpenChange, onNav
         </div>
 
         {item.postId && item.status === 'completed' && (
-          <div className="relative z-10 pt-6 border-t border-cyan-200/30 dark:border-slate-700/40 flex justify-end">
+          <div className="relative z-10 pt-6 border-t border-purple-200/30 dark:border-slate-700/40 flex justify-end">
             <Button
               onClick={() => {
                 onNavigateToPost(item.postId)
                 onOpenChange(false)
               }}
-              className="flex items-center gap-2 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-medium px-6 py-2.5 rounded-xl"
+              className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-medium px-6 py-2.5 rounded-xl"
             >
               <ExternalLink size={16} />
               View Generated Post

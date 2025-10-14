@@ -57,7 +57,7 @@ function PublicComment({ comment }) {
   };
 
   return (
-    <div className="group bg-gradient-to-r from-blue-50/30 to-purple-50/30 dark:from-blue-950/20 dark:to-purple-950/20 backdrop-blur-sm rounded-xl p-4 border border-blue-200/30 dark:border-purple-800/30 hover:border-blue-300/50 dark:hover:border-purple-700/50 transition-all duration-300">
+    <div className="group bg-gradient-to-r from-blue-50/30 to-purple-50/30 dark:from-blue-950/20 dark:to-purple-950/20 backdrop-blur-sm rounded-xl p-4 border border-purple-200/30 dark:border-purple-800/30 hover:border-purple-300/50 dark:hover:border-purple-700/50 transition-all duration-300">
       <div className="flex gap-3">
         {/* Avatar */}
         <Avatar

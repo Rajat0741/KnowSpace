@@ -27,14 +27,14 @@ class PostErrorBoundary extends React.Component {
       const isFromAITracking = this.props.location?.state?.fromAITracking;
       
       return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/40 to-teal-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/40 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
           {/* Background decorative elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-cyan-400/10 dark:bg-slate-800/20 blur-3xl"></div>
-            <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-teal-400/10 dark:bg-slate-700/20 blur-3xl"></div>
+            <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-blue-400/10 dark:bg-slate-800/20 blur-3xl"></div>
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-purple-400/10 dark:bg-slate-700/20 blur-3xl"></div>
           </div>
 
-          <div className="relative max-w-2xl w-full bg-white/90 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-cyan-200/50 dark:border-slate-700/60 p-8 md:p-12">
+          <div className="relative max-w-2xl w-full bg-white/90 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-purple-200/50 dark:border-slate-700/60 p-8 md:p-12">
             {/* Icon */}
             <div className="flex justify-center mb-6">
               <div className="p-4 rounded-full bg-gradient-to-br from-red-100 to-orange-100 dark:from-red-900/40 dark:to-orange-900/40">
@@ -56,8 +56,8 @@ class PostErrorBoundary extends React.Component {
 
             {/* Additional Info for AI Tracking */}
             {isFromAITracking && (
-              <div className="mb-8 p-4 bg-gradient-to-r from-cyan-50 to-teal-50 dark:from-cyan-950/20 dark:to-teal-950/20 border border-cyan-200/70 dark:border-cyan-800/50 rounded-xl">
-                <p className="text-sm text-cyan-700 dark:text-cyan-300">
+              <div className="mb-8 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border border-purple-200/70 dark:border-purple-800/50 rounded-xl">
+                <p className="text-sm text-purple-700 dark:text-purple-300">
                   💡 <strong>Tip:</strong> If you recently deleted this post, it will no longer be accessible even though it appears in your AI tracking history.
                 </p>
               </div>
@@ -67,7 +67,7 @@ class PostErrorBoundary extends React.Component {
             <div className="flex justify-center">
               <Link
                 to="/home"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-medium"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-medium"
               >
                 <ArrowLeft className="w-5 h-5" />
                 Back to Home
@@ -347,13 +347,13 @@ function PostContent({ resource, wasUpdated = false }) {
     <div className="min-h-screen relative">
       {/* Enhanced background with animated gradient - Settings inspired */}
       <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-50/25 via-teal-50/20 to-blue-50/30 dark:from-cyan-950/15 dark:via-teal-950/10 dark:to-blue-950/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 via-purple-50/30 to-indigo-50/20 dark:from-slate-900/50 dark:via-slate-800/30 dark:to-slate-900/20" />
         <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-transparent to-transparent dark:from-gray-900/70" />
         {/* Floating orbs */}
         <div className="absolute inset-0 opacity-20 dark:opacity-10">
-          <div className="absolute top-20 left-20 w-60 h-60 bg-cyan-400/15 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute top-40 right-32 w-80 h-80 bg-teal-400/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute bottom-40 left-1/3 w-72 h-72 bg-blue-400/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
+          <div className="absolute top-20 left-20 w-60 h-60 bg-blue-400/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-40 right-32 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute bottom-40 left-1/3 w-72 h-72 bg-indigo-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
         </div>
       </div>
 
@@ -361,14 +361,14 @@ function PostContent({ resource, wasUpdated = false }) {
       <div className="relative overflow-hidden">
         <div className={`relative ${getMaxWidth()} mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-300`}>
           {/* Navigation */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sticky top-4 z-10 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-cyan-200/30 dark:border-cyan-800/30 rounded-2xl p-4 shadow-xl shadow-black/10 dark:shadow-black/30">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sticky top-4 z-10 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-purple-200/30 dark:border-purple-800/30 rounded-2xl p-4 shadow-xl shadow-black/10 dark:shadow-black/30">
             <button
               onClick={handleBackClick}
-              className="group inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-50/90 to-teal-50/90 dark:from-cyan-900/30 dark:to-teal-900/30 backdrop-blur-sm border border-cyan-200/50 dark:border-cyan-700/50 rounded-lg hover:from-cyan-100 hover:to-teal-100 dark:hover:from-cyan-900/50 dark:hover:to-teal-900/50 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 dark:focus:ring-cyan-500/50 shadow-md hover:shadow-lg"
+              className="group inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-50/90 to-purple-50/90 dark:from-blue-900/30 dark:to-purple-900/30 backdrop-blur-sm border border-purple-200/50 dark:border-purple-700/50 rounded-lg hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/50 dark:hover:to-purple-900/50 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400/50 dark:focus:ring-purple-500/50 shadow-md hover:shadow-lg"
               aria-label="Go back to previous page"
             >
-              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 text-teal-600 dark:text-teal-400" />
-              <span className="text-sm font-medium text-teal-600 dark:text-teal-400">Back</span>
+              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 text-purple-600 dark:text-purple-400" />
+              <span className="text-sm font-medium text-purple-600 dark:text-purple-400">Back</span>
             </button>
 
             <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
@@ -391,11 +391,11 @@ function PostContent({ resource, wasUpdated = false }) {
                   )}
                   <button
                     onClick={handleEditPost}
-                    className="group inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-teal-500/20 hover:from-cyan-500/30 hover:to-teal-500/30 border border-cyan-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/20"
+                    className="group inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
                     title="Edit Post"
                   >
-                    <Edit className="w-4 h-4 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
-                    <span className="text-xs sm:text-sm font-medium text-cyan-400 group-hover:text-cyan-300 transition-colors">Edit</span>
+                    <Edit className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                    <span className="text-xs sm:text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors">Edit</span>
                   </button>
 
                   <button
@@ -418,17 +418,17 @@ function PostContent({ resource, wasUpdated = false }) {
               {/* Share Icon */}
               <button
                 onClick={openShareModal}
-                className="group p-2 bg-gradient-to-r from-cyan-500/20 to-teal-500/20 hover:from-cyan-500/30 hover:to-teal-500/30 border border-cyan-500/30 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/20"
+                className="group p-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/20"
                 title="Share Post"
               >
-                <Share2 className="w-4 h-4 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
+                <Share2 className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
               </button>
 
               {/* Category Badge with Glow */}
               {post.category && (
-                <div className="group inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-teal-500/20 dark:from-cyan-500/30 dark:to-teal-500/30 backdrop-blur-sm rounded-full border border-cyan-500/30 dark:border-teal-500/40 hover:shadow-lg hover:shadow-cyan-500/20 dark:hover:shadow-teal-500/20 transition-all duration-300 cursor-default shadow-md">
-                  <Tag className="w-4 h-4 text-teal-600 dark:text-teal-400 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors" />
-                  <span className="text-sm font-medium text-teal-600 dark:text-teal-400 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors">{post.category}</span>
+                <div className="group inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 dark:from-blue-500/30 dark:to-purple-500/30 backdrop-blur-sm rounded-full border border-purple-500/30 dark:border-purple-500/40 hover:shadow-lg hover:shadow-purple-500/20 dark:hover:shadow-purple-500/20 transition-all duration-300 cursor-default shadow-md">
+                  <Tag className="w-4 h-4 text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors" />
+                  <span className="text-sm font-medium text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">{post.category}</span>
                 </div>
               )}
             </div>
@@ -497,7 +497,7 @@ function PostContent({ resource, wasUpdated = false }) {
       {/* Article Content */}
       <div className={`relative ${getMaxWidth()} mx-auto px-4 sm:px-6 lg:px-8 pb-16`}>
         <article className="relative">
-          <div className="relative border border-cyan-200/40 dark:border-cyan-800/40 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg shadow-black/10 dark:shadow-black/30 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
+          <div className="relative border border-purple-200/40 dark:border-purple-800/40 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg shadow-black/10 dark:shadow-black/30 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
             {/* Content */}
             <div
               className={`max-w-none ${isDarkMode ? 'dark' : ''}`}
@@ -511,15 +511,15 @@ function PostContent({ resource, wasUpdated = false }) {
           {/* Decorative divider */}
           <div className="flex items-center justify-center mb-8">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-px bg-gradient-to-r from-transparent to-cyan-400 dark:to-teal-400"></div>
-              <div className="p-2 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-full shadow-lg">
+              <div className="w-16 h-px bg-gradient-to-r from-transparent to-purple-400 dark:to-purple-400"></div>
+              <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full shadow-lg">
                 <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
-              <div className="w-16 h-px bg-gradient-to-r from-cyan-400 to-transparent dark:from-teal-400"></div>
+              <div className="w-16 h-px bg-gradient-to-r from-purple-400 to-transparent dark:from-purple-400"></div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-cyan-50/60 to-teal-50/60 dark:from-cyan-950/30 dark:to-teal-950/30 backdrop-blur-sm rounded-2xl p-6 border border-cyan-200/40 dark:border-cyan-800/40 shadow-lg shadow-black/10 dark:shadow-black/30">
+          <div className="bg-gradient-to-r from-blue-50/60 to-purple-50/60 dark:from-blue-950/30 dark:to-purple-950/30 backdrop-blur-sm rounded-2xl p-6 border border-purple-200/40 dark:border-purple-800/40 shadow-lg shadow-black/10 dark:shadow-black/30">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             {/* Article Engagement Stats */}
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
@@ -545,10 +545,10 @@ function PostContent({ resource, wasUpdated = false }) {
               <span className="text-sm font-semibold text-foreground/80">Share this article:</span>
               <button
                 onClick={openShareModal}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-teal-500/20 hover:from-cyan-500/30 hover:to-teal-500/30 border border-cyan-500/30 rounded-lg transition-all duration-300 hover:scale-105"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105"
               >
-                <Share2 className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm font-medium text-cyan-400">Share</span>
+                <Share2 className="w-4 h-4 text-purple-400" />
+                <span className="text-sm font-medium text-purple-400">Share</span>
               </button>
             </div>
             </div>
@@ -601,8 +601,8 @@ function PostContent({ resource, wasUpdated = false }) {
           <div className="bg-card/95 border border-border rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-6 animate-in fade-in-0 zoom-in-95 duration-200">
             {/* Header */}
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 bg-cyan-500/20 rounded-full flex items-center justify-center mx-auto">
-                <Share2 className="w-6 h-6 text-cyan-500" />
+              <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto">
+                <Share2 className="w-6 h-6 text-purple-500" />
               </div>
               <h3 className="text-lg font-semibold text-foreground">Share This Post</h3>
               <p className="text-muted-foreground text-sm">

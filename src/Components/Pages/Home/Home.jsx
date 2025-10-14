@@ -97,12 +97,12 @@ function Home() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-cyan-50/30 to-teal-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Animated Background Elements */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-cyan-400/10 dark:bg-slate-700/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
-        <div className="absolute top-1/3 -right-1/4 w-[500px] h-[500px] bg-teal-400/10 dark:bg-slate-600/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }}></div>
-        <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-blue-400/10 dark:bg-slate-700/25 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }}></div>
+        <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-blue-400/10 dark:bg-slate-700/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
+        <div className="absolute top-1/3 -right-1/4 w-[500px] h-[500px] bg-purple-400/10 dark:bg-slate-600/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }}></div>
+        <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-indigo-400/10 dark:bg-slate-700/25 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }}></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
@@ -110,12 +110,12 @@ function Home() {
         {/* Hero Header Section */}
         <div className="mb-8 lg:mb-12">
           <div className="text-center space-y-4 mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-500/10 to-cyan-500/10 dark:from-teal-600/20 dark:to-cyan-600/20 rounded-full border border-teal-200/50 dark:border-teal-700/50 backdrop-blur-sm">
-              <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-              <span className="text-sm font-semibold text-teal-900 dark:text-teal-100">Discover Amazing Content</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-600/20 dark:to-purple-600/20 rounded-full border border-purple-200/50 dark:border-purple-700/50 backdrop-blur-sm">
+              <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+              <span className="text-sm font-semibold text-purple-900 dark:text-purple-100">Discover Amazing Content</span>
             </div>
             <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-900 dark:text-white leading-tight">
-              Explore <span className="bg-gradient-to-r from-teal-600 to-cyan-600 dark:from-teal-400 dark:to-cyan-400 bg-clip-text text-transparent">Knowledge</span>
+              Explore <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">Knowledge</span>
             </h1>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               Browse through our collection of articles, tutorials, and insights
@@ -128,7 +128,7 @@ function Home() {
               <div className="flex flex-col lg:flex-row gap-4">
                 {/* Search Input with Icon */}
                 <div className="flex-1 lg:flex-[2] relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-teal-500 transition-colors pointer-events-none z-10">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-purple-500 transition-colors pointer-events-none z-10">
                     <Search className="w-5 h-5" />
                   </div>
                   <Input
@@ -136,7 +136,7 @@ function Home() {
                     placeholder="Search articles, tutorials..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-12 pr-4 bg-slate-50/80 dark:bg-slate-800/80 border-slate-300/60 dark:border-slate-600/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 rounded-xl py-6 focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 transition-all duration-200 w-full text-base shadow-sm hover:shadow-md"
+                    className="pl-12 pr-4 bg-slate-50/80 dark:bg-slate-800/80 border-slate-300/60 dark:border-slate-600/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 rounded-xl py-6 focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all duration-200 w-full text-base shadow-sm hover:shadow-md"
                   />
                 </div>
 
@@ -160,19 +160,19 @@ function Home() {
 
               {/* Active Filters */}
               {(searchTerm || selectedCategory !== 'all') && (
-                <div className="mt-6 p-4 bg-gradient-to-r from-slate-50/80 to-cyan-50/40 dark:from-slate-800/80 dark:to-slate-700/40 rounded-xl border border-slate-200/60 dark:border-slate-700/50 backdrop-blur-sm">
+                <div className="mt-6 p-4 bg-gradient-to-r from-slate-50/80 to-purple-50/40 dark:from-slate-800/80 dark:to-slate-700/40 rounded-xl border border-slate-200/60 dark:border-slate-700/50 backdrop-blur-sm">
                   <div className="flex flex-wrap gap-3 items-center">
                     <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                       <TrendingUp className="w-4 h-4" />
                       Active Filters:
                     </span>
                     {selectedCategory !== 'all' && (
-                      <span className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 dark:from-teal-600 dark:to-cyan-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
+                      <span className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 dark:from-blue-600 dark:to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
                         📂 {selectedCategory}
                       </span>
                     )}
                     {searchTerm && (
-                      <span className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
+                      <span className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
                         🔍 "{searchTerm}"
                       </span>
                     )}
@@ -237,7 +237,7 @@ function Home() {
             endMessage={
               recentPosts.length > POSTS_PER_PAGE && (
                 <div className="flex justify-center items-center py-10">
-                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-slate-800/80 dark:to-slate-700/80 backdrop-blur-xl border border-blue-200/60 dark:border-slate-600/50 rounded-2xl px-8 py-6 text-center shadow-xl">
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-slate-800/80 dark:to-slate-700/80 backdrop-blur-xl border border-purple-200/60 dark:border-slate-600/50 rounded-2xl px-8 py-6 text-center shadow-xl">
                     <div className="flex items-center justify-center gap-3 mb-2">
                       <span className="text-3xl animate-bounce">🎉</span>
                       <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
@@ -302,7 +302,7 @@ function Home() {
             {hasSearched && (
               <button
                 onClick={clearFilters}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 dark:from-teal-500 dark:to-cyan-500 dark:hover:from-teal-600 dark:hover:to-cyan-600 text-white rounded-xl transition-all duration-300 font-semibold text-base shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white rounded-xl transition-all duration-300 font-semibold text-base shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 <span className="text-xl">🔄</span>
                 Clear Filters & Explore

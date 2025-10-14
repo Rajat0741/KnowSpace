@@ -88,13 +88,13 @@ function TrackingItem({ item, onViewDetails, onNavigateToPost }) {
       `}
     >
       {/* Subtle glow effect */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400/5 via-teal-400/5 to-blue-400/5 dark:from-cyan-600/10 dark:via-teal-600/10 dark:to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-400/5 via-purple-400/5 to-indigo-400/5 dark:from-blue-600/10 dark:via-purple-600/10 dark:to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       
       <div className="relative z-10 flex items-start gap-4">
         <div className={`flex-shrink-0 mt-1 p-2 rounded-lg bg-gradient-to-br ${
           item.status === 'completed' ? 'from-emerald-100 to-green-100 dark:from-emerald-900/40 dark:to-green-900/40' :
           item.status === 'failed' ? 'from-red-100 to-orange-100 dark:from-red-900/40 dark:to-orange-900/40' :
-          'from-cyan-100 to-blue-100 dark:from-cyan-900/40 dark:to-blue-900/40'
+          'from-blue-100 to-purple-100 dark:from-blue-900/40 dark:to-purple-900/40'
         } group-hover:scale-110 transition-transform duration-200`}>
           <StatusIcon className={`${statusConfig.color} ${(item.status === 'in_progress' || item.status === 'inprogress') ? 'animate-spin' : ''}`} size={20} />
         </div>
@@ -124,7 +124,7 @@ function TrackingItem({ item, onViewDetails, onNavigateToPost }) {
           {item.postId && item.status === 'completed' && (
             <button
               onClick={handleNavigate}
-              className="mt-3 flex items-center gap-1.5 text-xs text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 hover:underline font-medium bg-cyan-50/50 dark:bg-cyan-950/20 hover:bg-cyan-100/70 dark:hover:bg-cyan-950/30 px-2.5 py-1.5 rounded-lg transition-all duration-200"
+              className="mt-3 flex items-center gap-1.5 text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline font-medium bg-purple-50/50 dark:bg-purple-950/20 hover:bg-purple-100/70 dark:hover:bg-purple-950/30 px-2.5 py-1.5 rounded-lg transition-all duration-200"
             >
               <ExternalLink size={12} />
               View Post
@@ -249,7 +249,7 @@ export default function AITrackingDrawer({ triggerContent = null }) {
             <button className="relative group p-2.5 rounded-xl transition-all duration-300 hover:scale-105">
               <div className="relative">
                 {/* Enhanced main icon container - only animate when in progress */}
-                <div className={`relative p-2 bg-gradient-to-br from-cyan-500 via-teal-600 to-blue-600 dark:from-cyan-600 dark:via-teal-700 dark:to-blue-700 rounded-xl shadow-lg border border-white/20 dark:border-white/10 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl ${inProgressCount > 0 ? 'animate-pulse' : ''}`}>
+                <div className={`relative p-2 bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-600 dark:from-blue-600 dark:via-purple-700 dark:to-indigo-700 rounded-xl shadow-lg border border-white/20 dark:border-white/10 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl ${inProgressCount > 0 ? 'animate-pulse' : ''}`}>
                   <Sparkles size={20} className="text-white drop-shadow-sm" />
                   
                   {/* Enhanced inner glow */}
@@ -257,7 +257,7 @@ export default function AITrackingDrawer({ triggerContent = null }) {
                   
                   {/* Animated pulse ring - only show when in progress */}
                   {inProgressCount > 0 && (
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400/20 to-blue-400/20 animate-pulse"></div>
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-400/20 to-purple-400/20 animate-pulse"></div>
                   )}
                 </div>
                 
@@ -282,18 +282,18 @@ export default function AITrackingDrawer({ triggerContent = null }) {
             className="left-0 top-0 bottom-0 fixed z-[10000] outline-none w-[90vw] sm:w-[420px] flex"
             style={{ '--initial-transform': 'calc(100% + 8px)' }}
           >
-            <div className="bg-gradient-to-br from-white via-slate-50/95 to-cyan-50/80 dark:from-slate-900/98 dark:via-slate-800/95 dark:to-slate-900/98 backdrop-blur-xl h-full w-full flex flex-col border-r border-cyan-200/50 dark:border-slate-700/50 shadow-2xl relative overflow-hidden">
+            <div className="bg-gradient-to-br from-white via-slate-50/95 to-purple-50/80 dark:from-slate-900/98 dark:via-slate-800/95 dark:to-slate-900/98 backdrop-blur-xl h-full w-full flex flex-col border-r border-purple-200/50 dark:border-slate-700/50 shadow-2xl relative overflow-hidden">
               {/* Decorative background elements */}
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-gradient-to-br from-cyan-400/15 via-teal-400/10 to-blue-400/15 dark:from-cyan-600/8 dark:via-teal-600/5 dark:to-blue-600/8 blur-2xl"></div>
-                <div className="absolute -bottom-20 -left-20 w-32 h-32 rounded-full bg-gradient-to-tr from-purple-400/10 via-pink-400/8 to-cyan-400/10 dark:from-purple-600/5 dark:via-pink-600/3 dark:to-cyan-600/5 blur-2xl"></div>
+                <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-gradient-to-br from-blue-400/15 via-purple-400/10 to-indigo-400/15 dark:from-blue-600/8 dark:via-purple-600/5 dark:to-indigo-600/8 blur-2xl"></div>
+                <div className="absolute -bottom-20 -left-20 w-32 h-32 rounded-full bg-gradient-to-tr from-purple-400/10 via-pink-400/8 to-indigo-400/10 dark:from-purple-600/5 dark:via-pink-600/3 dark:to-indigo-600/5 blur-2xl"></div>
               </div>
 
               {/* Header */}
-              <div className="relative z-10 flex-shrink-0 p-5 border-b border-cyan-200/40 dark:border-slate-700/40 bg-gradient-to-r from-white/80 via-slate-50/70 to-cyan-50/70 dark:from-slate-900/90 dark:via-slate-800/80 dark:to-slate-900/90 backdrop-blur-xl">
+              <div className="relative z-10 flex-shrink-0 p-5 border-b border-purple-200/40 dark:border-slate-700/40 bg-gradient-to-r from-white/80 via-slate-50/70 to-purple-50/70 dark:from-slate-900/90 dark:via-slate-800/80 dark:to-slate-900/90 backdrop-blur-xl">
                 <div className="flex items-center justify-between mb-3">
                   <Drawer.Title className="font-bold text-lg flex items-center gap-3">
-                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 shadow-md">
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 shadow-md">
                       <Sparkles size={18} className="text-white" />
                     </div>
                     <span className="bg-gradient-to-r from-slate-800 to-slate-600 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
@@ -316,7 +316,7 @@ export default function AITrackingDrawer({ triggerContent = null }) {
                     size="sm"
                     onClick={fetchTrackingItems}
                     disabled={loading}
-                    className="flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-cyan-200/50 dark:border-slate-600/50 hover:bg-cyan-50 dark:hover:bg-slate-700 transition-all"
+                    className="flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-purple-200/50 dark:border-slate-600/50 hover:bg-purple-50 dark:hover:bg-slate-700 transition-all"
                   >
                     <RefreshCw size={14} className={(inProgressCount > 0 || loading) ? 'animate-spin' : ''} />
                     <span className="font-medium">
@@ -324,8 +324,8 @@ export default function AITrackingDrawer({ triggerContent = null }) {
                     </span>
                   </Button>
                   {inProgressCount > 0 && (
-                    <div className="flex items-center gap-2 text-xs text-cyan-600 dark:text-cyan-400 bg-cyan-50/50 dark:bg-cyan-950/20 px-2.5 py-1.5 rounded-lg border border-cyan-200/30 dark:border-cyan-800/30">
-                      <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
+                    <div className="flex items-center gap-2 text-xs text-purple-600 dark:text-purple-400 bg-purple-50/50 dark:bg-purple-950/20 px-2.5 py-1.5 rounded-lg border border-purple-200/30 dark:border-purple-800/30">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
                       <span className="font-medium">{inProgressCount} in progress</span>
                     </div>
                   )}
@@ -337,14 +337,14 @@ export default function AITrackingDrawer({ triggerContent = null }) {
                 {loading && trackingItems.length === 0 ? (
                   <div className="flex items-center justify-center py-12">
                     <div className="text-center">
-                      <Loader2 className="animate-spin text-cyan-500 mx-auto mb-3" size={32} />
+                      <Loader2 className="animate-spin text-purple-500 mx-auto mb-3" size={32} />
                       <p className="text-sm text-slate-600 dark:text-slate-400">Loading tracking data...</p>
                     </div>
                   </div>
                 ) : trackingItems.length === 0 ? (
                   <div className="text-center py-16 text-slate-500 dark:text-slate-400">
-                    <div className="bg-gradient-to-br from-cyan-100 to-teal-100 dark:from-cyan-900/20 dark:to-teal-900/20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Sparkles size={32} className="text-cyan-600 dark:text-cyan-400" />
+                    <div className="bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Sparkles size={32} className="text-purple-600 dark:text-purple-400" />
                     </div>
                     <p className="text-base font-medium mb-2">No AI generations yet</p>
                     <p className="text-sm">Start creating with AI to see tracking here</p>
