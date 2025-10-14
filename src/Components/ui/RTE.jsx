@@ -1,40 +1,9 @@
 import { useSelector } from 'react-redux';
 import { Editor } from '@tinymce/tinymce-react';
-import 'tinymce/tinymce';
-import 'tinymce/icons/default';
-import 'tinymce/themes/silver';
-import 'tinymce/skins/ui/oxide/skin.min.css';
-import 'tinymce/skins/ui/oxide-dark/skin.min.css';
-
-// Import essential plugins for a complete rich text editor
-import 'tinymce/plugins/advlist';
-import 'tinymce/plugins/autolink';
-import 'tinymce/plugins/lists';
-import 'tinymce/plugins/link';
-import 'tinymce/plugins/image';
-import 'tinymce/plugins/charmap';
-import 'tinymce/plugins/preview';
-import 'tinymce/plugins/anchor';
-import 'tinymce/plugins/searchreplace';
-import 'tinymce/plugins/visualblocks';
-import 'tinymce/plugins/code';
-import 'tinymce/plugins/insertdatetime';
-import 'tinymce/plugins/media';
-import 'tinymce/plugins/table';
-import 'tinymce/plugins/wordcount';
-import 'tinymce/plugins/autosave';
-import 'tinymce/plugins/codesample';
-import 'tinymce/plugins/directionality';
-import 'tinymce/plugins/emoticons';
-import 'tinymce/plugins/importcss';
-import 'tinymce/plugins/nonbreaking';
-import 'tinymce/plugins/pagebreak';
-import 'tinymce/plugins/quickbars';
-import 'tinymce/plugins/save';
-import 'tinymce/plugins/visualchars';
-import 'tinymce/plugins/accordion';
 import { Controller } from 'react-hook-form'
 import { useEffect, useState } from 'react';
+
+// Note: We don't import TinyMCE plugins here - they're loaded from /public/tinymce/
 
 
 
@@ -65,12 +34,12 @@ function RTE({ name, control, label, defaultvalue = "", onEditorInit, ...props }
                     control={control}
                     render={({ field: { onChange } }) => (
                         <Editor
+                            tinymceScriptSrc="/tinymce/tinymce.min.js"
                             key={localDarkMode ? 'dark' : 'light'}
                             init={{
                                 height: 600,
                                 min_height: 600,
                                 max_height: 700,
-                                license_key: 'gpl',
                                 base_url: '/tinymce',
                                 skin: localDarkMode ? 'oxide-dark' : 'oxide',
                                 content_css: "/tinymce-content.css",

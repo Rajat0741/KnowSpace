@@ -29,7 +29,6 @@ export default defineConfig({
           // App chunks
           'auth': ['./src/appwrite/auth.js', './src/appwrite/config.js'],
           'editor': ['@tinymce/tinymce-react', 'tinymce'],
-          'ai': ['groq-sdk'],
           'store': ['./src/store/authSlice.js', './src/store/darkmodeSlice.js', './src/store/postSlice.js', './src/store/profileSlice.js'],
         },
         chunkFileNames: (chunkInfo) => {

@@ -11,3 +11,5 @@ package.optimized.json
 # Environment and local files
 /.env
 *.local
+
+project_details_for_ppt.md
