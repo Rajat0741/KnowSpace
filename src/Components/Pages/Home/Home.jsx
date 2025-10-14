@@ -6,7 +6,7 @@ import service from '../../../appwrite/config'
 import { Query } from 'appwrite'
 import {SkeletonCard} from '../../ui/SkeletonCard'
 import { Input } from '../../ui/input'
-import Select from '../../ui/select'
+import Select from '../../ui/Select'
 import { Search, Filter, Sparkles, TrendingUp } from 'lucide-react'
 
 function Home() {
