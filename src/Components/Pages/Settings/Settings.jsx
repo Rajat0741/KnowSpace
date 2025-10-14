@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { toggleDarkMode } from '@/store/darkmodeSlice';
 import { setProfilePicture, clearProfilePicture, resetProfileCheck } from '@/store/profileSlice';
 import authService from '@/appwrite/auth';
 import { updateUserData } from '@/store/authSlice';
-import { performLogout } from '@/store/authThunks';
 import {
-  Settings as SettingsIcon, Moon, Sun, Lock, Trash2, Eye, EyeOff, AlertTriangle, Check, X, Camera, User, Edit3
+  Settings as SettingsIcon, Moon, Sun, Check, X, Camera, User, Edit3
 } from 'lucide-react';
 import Button from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 
 function Settings() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { isDarkMode } = useSelector(state => state.darkMode);
   const { profilePictureUrl } = useSelector(state => state.profile);
   const { userData } = useSelector(state => state.auth);
@@ -24,11 +21,8 @@ function Settings() {
 
   // UI states
   // These booleans control loading indicators, modals and success messages
-  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [isUploadingPicture, setIsUploadingPicture] = useState(false);
   const [isUpdatingBio, setIsUpdatingBio] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [profilePictureSuccess, setProfilePictureSuccess] = useState(false);
   const [bioUpdateSuccess, setBioUpdateSuccess] = useState(false);
   const [errors, setErrors] = useState({});
@@ -126,65 +120,6 @@ function Settings() {
       setErrors({ bio: error.message || 'Failed to update bio' });
     } finally {
       setIsUpdatingBio(false);
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    if (deleteConfirmText !== 'DELETE') {
-      setErrors({ delete: 'Please type "DELETE" to confirm' });
-      return;
-    }
-
-    setIsDeletingAccount(true);
-    try {
-      // First, get the current user to get their ID
-      const currentUser = await authService.getCurrentUser();
-      if (currentUser) {
-        // Import service for database operations
-        const service = await import('@/appwrite/config').then(m => m.default);
-        const { Query } = await import('appwrite');
-
-        // Query all posts by this user
-        const userPosts = await service.getPosts([
-          Query.equal('userid', currentUser.$id)
-        ]);
-
-        // Delete each post and its featured image if exists
-        for (const post of userPosts.documents) {
-          try {
-            // Delete featured image if exists
-            if (post.featuredimage) {
-              try {
-                const imageData = JSON.parse(post.featuredimage);
-                if (imageData.fileId) {
-                  await service.deleteFile(imageData.fileId);
-                }
-              } catch {
-                // Old format or external URL, skip deletion
-              }
-            }
-            // Delete the post
-            await service.deletePost(post.$id);
-          } catch (postError) {
-            // Log but continue deleting other posts — we try to be resilient
-            console.log('Error deleting post:', post.$id, postError);
-            // Continue with other posts even if one fails
-          }
-        }
-
-        // Delete profile picture if exists
-        await authService.deleteProfilePicture();
-      }
-
-      // Finally, delete the account
-      await authService.deleteAccount();
-      await dispatch(performLogout()).unwrap();
-      navigate('/login');
-    } catch (error) {
-      // Populate the delete error slot shown near the confirmation
-      setErrors({ delete: error.message || 'Failed to delete account' });
-    } finally {
-      setIsDeletingAccount(false);
     }
   };
 
@@ -527,131 +462,6 @@ function Settings() {
                     />
                   </button>
                 </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Enhanced Danger Zone Divider */}
-          <div className="flex items-center justify-center py-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-px bg-gradient-to-r from-transparent to-red-400"></div>
-              <div className="p-3 bg-gradient-to-br from-red-500 to-pink-600 rounded-full shadow-lg animate-pulse">
-                <AlertTriangle className="w-4 h-4 text-white" />
-              </div>
-              <div className="w-16 h-px bg-gradient-to-r from-red-400 to-transparent"></div>
-            </div>
-          </div>
-
-          {/* Enhanced Danger Zone */}
-          <section className="relative overflow-hidden">
-            {/* Warning background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-red-50/80 via-orange-50/60 to-pink-50/80 dark:from-red-950/40 dark:via-orange-950/30 dark:to-pink-950/40 backdrop-blur-xl"></div>
-            <div className="absolute inset-0 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm"></div>
-
-            {/* Content */}
-            <div className="relative border-2 border-red-200/60 dark:border-red-800/60 rounded-2xl p-8 shadow-2xl">
-              {/* Warning header */}
-              <div className="flex items-center gap-3 mb-8">
-                <div className="p-3 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl shadow-lg animate-pulse">
-                  <AlertTriangle className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 via-orange-600 to-pink-600 bg-clip-text text-transparent">
-                    ⚠️ Danger Zone
-                  </h2>
-                  <p className="text-sm text-red-600 dark:text-red-400 mt-1 font-medium">
-                    Irreversible actions that permanently affect your account
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <div className="bg-gradient-to-r from-red-50/90 to-pink-50/90 dark:from-red-900/30 dark:to-pink-900/30 backdrop-blur-sm rounded-xl p-6 border border-red-200/50 dark:border-red-800/50">
-                  <h3 className="font-semibold text-red-700 dark:text-red-400 text-lg mb-3 flex items-center gap-2">
-                    🗑️ Delete Account
-                  </h3>
-                  <div className="space-y-3 text-sm">
-                    <p className="text-red-600 dark:text-red-300 font-medium">
-                      ⚠️ <strong>Warning:</strong> This action cannot be undone!
-                    </p>
-                    <p className="text-red-600 dark:text-red-300 leading-relaxed">
-                      Deleting your account will permanently remove:
-                    </p>
-                    <ul className="text-red-600 dark:text-red-300 ml-4 space-y-1">
-                      <li>• All your posts and content</li>
-                      <li>• Your profile and personal information</li>
-                      <li>• Account settings and preferences</li>
-                      <li>• All associated data and history</li>
-                    </ul>
-                  </div>
-                </div>
-
-                {!showDeleteConfirm ? (
-                  <Button
-                    onClick={() => setShowDeleteConfirm(true)}
-                    variant="destructive"
-                    className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Delete Account Permanently
-                  </Button>
-                ) : (
-                  <div className="space-y-6 p-6 bg-gradient-to-r from-red-100 to-pink-100 dark:from-red-900/40 dark:to-pink-900/40 backdrop-blur-sm rounded-xl border-2 border-red-300/50 dark:border-red-800/50">
-                    <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center shadow-lg">
-                        <AlertTriangle className="w-8 h-8 text-white" />
-                      </div>
-                      <h4 className="text-lg font-bold text-red-800 dark:text-red-200 mb-2">
-                        Final Confirmation Required
-                      </h4>
-                      <p className="text-sm font-semibold text-red-700 dark:text-red-300 mb-4">
-                        Type <span className="bg-red-200 dark:bg-red-800 px-2 py-1 rounded font-mono">DELETE</span> to confirm account deletion:
-                      </p>
-                    </div>
-                    <Input
-                      value={deleteConfirmText}
-                      onChange={(e) => setDeleteConfirmText(e.target.value)}
-                      placeholder="Type DELETE"
-                      className="bg-white/90 dark:bg-red-950/50 border-red-300 dark:border-red-700 text-center font-mono text-lg"
-                    />
-                    {errors.delete && (
-                      <div className="flex items-center gap-2 p-3 bg-red-200/50 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg">
-                        <X className="w-4 h-4 text-red-600" />
-                        <span className="text-sm text-red-700 dark:text-red-400 font-medium">
-                          {errors.delete}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex gap-4 justify-center">
-                      <Button
-                        onClick={handleDeleteAccount}
-                        disabled={isDeletingAccount || deleteConfirmText !== 'DELETE'}
-                        variant="destructive"
-                        className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 disabled:opacity-50 shadow-lg"
-                      >
-                        {isDeletingAccount ? (
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            Deleting...
-                          </div>
-                        ) : (
-                          'Confirm Delete'
-                        )}
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setShowDeleteConfirm(false);
-                          setDeleteConfirmText('');
-                          setErrors({});
-                        }}
-                        variant="outline"
-                        className="border-red-200 text-red-700 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/50 backdrop-blur-sm"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </section>

@@ -188,7 +188,7 @@ function PublicPostContent({ resource }) {
               aria-label="Go back to previous page"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 text-purple-600 dark:text-purple-400" />
-              <span className="text-sm font-medium text-purple-600 dark:text-purple-400">Back</span>
+              <span className="hidden sm:inline text-sm font-medium text-purple-600 dark:text-purple-400">Back</span>
             </button>
 
             <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
@@ -204,9 +204,9 @@ function PublicPostContent({ resource }) {
                 <Share2 className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
               </button>
 
-              {/* Category Badge with Glow */}
+              {/* Category Badge with Glow - Hidden on mobile */}
               {post.category && (
-                <div className="group inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 dark:from-blue-500/30 dark:to-purple-500/30 backdrop-blur-sm rounded-full border border-purple-500/30 dark:border-purple-500/40 hover:shadow-lg hover:shadow-purple-500/20 dark:hover:shadow-purple-500/20 transition-all duration-300 cursor-default shadow-md">
+                <div className="hidden sm:inline-flex group items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 dark:from-blue-500/30 dark:to-purple-500/30 backdrop-blur-sm rounded-full border border-purple-500/30 dark:border-purple-500/40 hover:shadow-lg hover:shadow-purple-500/20 dark:hover:shadow-purple-500/20 transition-all duration-300 cursor-default shadow-md">
                   <Tag className="w-4 h-4 text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors" />
                   <span className="text-sm font-medium text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">{post.category}</span>
                 </div>

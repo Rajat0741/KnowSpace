@@ -112,16 +112,6 @@ export class AuthService {
         }
     }
 
-    // Delete account
-    async deleteAccount() {
-        try {
-            return await this.account.deleteIdentity();
-        } catch (error) {
-            console.log("Appwrite service :: deleteAccount :: error :", error);
-            throw error;
-        }
-    }
-
     // Profile Picture Management
     async uploadProfilePicture(file) {
         try {

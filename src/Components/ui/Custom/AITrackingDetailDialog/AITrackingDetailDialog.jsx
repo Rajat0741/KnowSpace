@@ -72,7 +72,7 @@ export default function AITrackingDetailDialog({ item, open, onOpenChange, onNav
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto scrollbar-hide bg-gradient-to-br from-white via-slate-50/80 to-purple-50/60 dark:from-slate-900 dark:via-slate-800/95 dark:to-slate-900/95 backdrop-blur-xl border border-purple-200/50 dark:border-slate-700/60 shadow-2xl ring-1 ring-white/20 dark:ring-white/10 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-4 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-4 data-[state=closed]:zoom-out-95 duration-300">
+      <DialogContent className="max-w-[95vw] sm:max-w-3xl max-h-[85vh] overflow-y-auto scrollbar-hide px-4 sm:px-6 bg-gradient-to-br from-white via-slate-50/80 to-purple-50/60 dark:from-slate-900 dark:via-slate-800/95 dark:to-slate-900/95 backdrop-blur-xl border border-purple-200/50 dark:border-slate-700/60 shadow-2xl ring-1 ring-white/20 dark:ring-white/10 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-4 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-4 data-[state=closed]:zoom-out-95 duration-300">
         {/* Decorative background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-gradient-to-br from-blue-400/20 via-purple-400/15 to-indigo-400/20 dark:from-blue-600/10 dark:via-purple-600/8 dark:to-indigo-600/10 blur-2xl"></div>

@@ -290,7 +290,7 @@ export default function CommentsDrawer({ postId }) {
       <DrawerTrigger asChild>
         <button className="group inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20">
           <MessageSquare className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
-          <span className="text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors">
+          <span className="hidden sm:inline text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors">
             Comments
           </span>
           {comments.length > 0 && (
@@ -374,7 +374,7 @@ export default function CommentsDrawer({ postId }) {
                   <Button
                     type="submit"
                     disabled={isSubmitting || !newComment.trim()}
-                    className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white shadow-lg"
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
                   >
                     <Send className="w-4 h-4 mr-2" />
                     {isSubmitting ? 'Posting...' : 'Post Comment'}
