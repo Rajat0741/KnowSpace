@@ -25,7 +25,7 @@ class PostErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       const isFromAITracking = this.props.location?.state?.fromAITracking;
-      
+
       return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/40 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
           {/* Background decorative elements */}
@@ -49,7 +49,7 @@ class PostErrorBoundary extends React.Component {
 
             {/* Description */}
             <p className="text-center text-slate-600 dark:text-slate-400 mb-8 text-lg">
-              {isFromAITracking 
+              {isFromAITracking
                 ? "This post may have been deleted or is no longer available."
                 : "The post you're looking for doesn't exist or has been removed."}
             </p>
@@ -178,13 +178,13 @@ function PostContent({ resource, wasUpdated = false }) {
   // Activate post functionality
   const handleActivatePost = async () => {
     if (!isOwner || post.status !== 'inactive') return;
-    
+
     // Check if featured image exists before activating
     if (!post.featuredimage) {
       toast.error('Featured image is required to activate this post.');
       return;
     }
-    
+
     setIsActivating(true);
     try {
       await service.updatePost({
@@ -229,7 +229,7 @@ function PostContent({ resource, wasUpdated = false }) {
     try {
       // Delete featured image if exists
       if (post.featuredimage) {
-         try {
+        try {
           const imageData = JSON.parse(post.featuredimage);
           if (imageData.fileId) {
             await service.deleteFile(imageData.fileId);
@@ -361,51 +361,51 @@ function PostContent({ resource, wasUpdated = false }) {
       <div className="relative overflow-hidden">
         <div className={`relative ${getMaxWidth()} mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-300`}>
           {/* Navigation */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sticky top-4 z-10 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-purple-200/30 dark:border-purple-800/30 rounded-2xl p-4 shadow-xl shadow-black/10 dark:shadow-black/30">
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mb-6 sticky top-4 z-10 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-purple-200/30 dark:border-purple-800/30 rounded-2xl p-3 sm:p-4 shadow-xl shadow-black/10 dark:shadow-black/30">
             <button
               onClick={handleBackClick}
-              className="group inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-50/90 to-purple-50/90 dark:from-blue-900/30 dark:to-purple-900/30 backdrop-blur-sm border border-purple-200/50 dark:border-purple-700/50 rounded-lg hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/50 dark:hover:to-purple-900/50 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400/50 dark:focus:ring-purple-500/50 shadow-md hover:shadow-lg"
+              className="group inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-blue-50/90 to-purple-50/90 dark:from-blue-900/30 dark:to-purple-900/30 backdrop-blur-sm border border-purple-200/50 dark:border-purple-700/50 rounded-lg hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/50 dark:hover:to-purple-900/50 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400/50 dark:focus:ring-purple-500/50 shadow-md hover:shadow-lg"
               aria-label="Go back to previous page"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 text-purple-600 dark:text-purple-400" />
               <span className="hidden sm:inline text-sm font-medium text-purple-600 dark:text-purple-400">Back</span>
             </button>
 
-            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-              {/* Owner Actions - Edit and Delete Buttons - Hidden on mobile */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Owner Actions - Edit and Delete Buttons */}
               {isOwner && (
-                <div className="hidden sm:flex items-center gap-2 order-first sm:order-none">
+                <div className="flex items-center gap-1 sm:gap-2">
                   {/* Activate button if post is inactive */}
                   {post.status === 'inactive' && (
                     <button
                       onClick={handleActivatePost}
                       disabled={isActivating}
-                      className="group inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-green-500/20 to-green-600/20 hover:from-green-500/30 hover:to-green-600/30 border border-green-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="group inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-gradient-to-r from-green-500/20 to-green-600/20 hover:from-green-500/30 hover:to-green-600/30 border border-green-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Activate Post"
                     >
-                      <svg className="w-4 h-4 text-green-400 group-hover:text-green-300 transition-colors" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-13h2v6h-2V5zm0 8h2v2h-2v-2z" /></svg>
-                      <span className="text-xs sm:text-sm font-medium text-green-400 group-hover:text-green-300 transition-colors">
+                      <svg className="w-3 h-3 sm:w-4 sm:h-4 text-green-400 group-hover:text-green-300 transition-colors" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-13h2v6h-2V5zm0 8h2v2h-2v-2z" /></svg>
+                      <span className="hidden sm:inline text-xs font-medium text-green-400 group-hover:text-green-300 transition-colors">
                         {isActivating ? 'Activating...' : 'Activate'}
                       </span>
                     </button>
                   )}
                   <button
                     onClick={handleEditPost}
-                    className="group inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
+                    className="group inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
                     title="Edit Post"
                   >
-                    <Edit className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
-                    <span className="text-xs sm:text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors">Edit</span>
+                    <Edit className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                    <span className="hidden sm:inline text-xs font-medium text-purple-400 group-hover:text-purple-300 transition-colors">Edit</span>
                   </button>
 
                   <button
                     onClick={handleDeletePost}
                     disabled={isDeleting}
-                    className="group inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-red-500/20 to-red-600/20 hover:from-red-500/30 hover:to-red-600/30 border border-red-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="group inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-gradient-to-r from-red-500/20 to-red-600/20 hover:from-red-500/30 hover:to-red-600/30 border border-red-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Delete Post"
                   >
-                    <Trash2 className="w-4 h-4 text-red-400 group-hover:text-red-300 transition-colors" />
-                    <span className="text-xs sm:text-sm font-medium text-red-400 group-hover:text-red-300 transition-colors">
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-400 group-hover:text-red-300 transition-colors" />
+                    <span className="hidden sm:inline text-xs font-medium text-red-400 group-hover:text-red-300 transition-colors">
                       {isDeleting ? 'Deleting...' : 'Delete'}
                     </span>
                   </button>
@@ -418,17 +418,17 @@ function PostContent({ resource, wasUpdated = false }) {
               {/* Share Icon */}
               <button
                 onClick={openShareModal}
-                className="group p-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/20"
+                className="group p-1.5 sm:p-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/20"
                 title="Share Post"
               >
-                <Share2 className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                <Share2 className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
               </button>
 
-              {/* Category Badge with Glow - Hidden on mobile */}
+              {/* Category Badge with Glow - Always visible but smaller on mobile */}
               {post.category && (
-                <div className="hidden sm:inline-flex group items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 dark:from-blue-500/30 dark:to-purple-500/30 backdrop-blur-sm rounded-full border border-purple-500/30 dark:border-purple-500/40 hover:shadow-lg hover:shadow-purple-500/20 dark:hover:shadow-purple-500/20 transition-all duration-300 cursor-default shadow-md">
-                  <Tag className="w-4 h-4 text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors" />
-                  <span className="text-sm font-medium text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">{post.category}</span>
+                <div className="inline-flex group items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 dark:from-blue-500/30 dark:to-purple-500/30 backdrop-blur-sm rounded-full border border-purple-500/30 dark:border-purple-500/40 hover:shadow-lg hover:shadow-purple-500/20 dark:hover:shadow-purple-500/20 transition-all duration-300 cursor-default shadow-md">
+                  <Tag className="w-3 h-3 sm:w-4 sm:h-4 text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors" />
+                  <span className="text-xs sm:text-sm font-medium text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors truncate max-w-20 sm:max-w-none">{post.category}</span>
                 </div>
               )}
             </div>
@@ -521,36 +521,36 @@ function PostContent({ resource, wasUpdated = false }) {
 
           <div className="bg-gradient-to-r from-blue-50/60 to-purple-50/60 dark:from-blue-950/30 dark:to-purple-950/30 backdrop-blur-sm rounded-2xl p-6 border border-purple-200/40 dark:border-purple-800/40 shadow-lg shadow-black/10 dark:shadow-black/30">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-            {/* Article Engagement Stats */}
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Link to={`/user/${post.authorId}`}>
-                  <span className="text-primary font-medium hover:underline">By {post.authorName || 'Anonymous'}</span>
-                </Link>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                <span>Published {formatDate(post.$createdAt)}</span>
-              </div>
-              {post.content && (
+              {/* Article Engagement Stats */}
+              <div className="flex items-center gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <span>•</span>
-                  <span>{getReadingTime(post.content)}</span>
+                  <Link to={`/user/${post.authorId}`}>
+                    <span className="text-primary font-medium hover:underline">By {post.authorName || 'Anonymous'}</span>
+                  </Link>
                 </div>
-              )}
-            </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  <span>Published {formatDate(post.$createdAt)}</span>
+                </div>
+                {post.content && (
+                  <div className="flex items-center gap-2">
+                    <span>•</span>
+                    <span>{getReadingTime(post.content)}</span>
+                  </div>
+                )}
+              </div>
 
-            {/* Enhanced Share Buttons */}
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-semibold text-foreground/80">Share this article:</span>
-              <button
-                onClick={openShareModal}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105"
-              >
-                <Share2 className="w-4 h-4 text-purple-400" />
-                <span className="text-sm font-medium text-purple-400">Share</span>
-              </button>
-            </div>
+              {/* Enhanced Share Buttons */}
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-semibold text-foreground/80">Share this article:</span>
+                <button
+                  onClick={openShareModal}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105"
+                >
+                  <Share2 className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm font-medium text-purple-400">Share</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -668,8 +668,8 @@ function PostContent({ resource, wasUpdated = false }) {
               <button
                 onClick={() => sharePost('copy')}
                 className={`w-full flex items-center justify-center gap-3 p-3 border-2 rounded-lg transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg ${copySuccess
-                    ? 'bg-green-500/20 border-green-500/30 text-green-600'
-                    : 'bg-gray-100 dark:bg-muted hover:bg-gray-200 dark:hover:bg-muted/90 border-gray-300 dark:border-border text-gray-900 dark:text-foreground'
+                  ? 'bg-green-500/20 border-green-500/30 text-green-600'
+                  : 'bg-gray-100 dark:bg-muted hover:bg-gray-200 dark:hover:bg-muted/90 border-gray-300 dark:border-border text-gray-900 dark:text-foreground'
                   }`}
               >
                 {copySuccess ? (
