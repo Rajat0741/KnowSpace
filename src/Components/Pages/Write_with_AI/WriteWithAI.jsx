@@ -81,7 +81,7 @@ const mockUsageData = {
     // Check if user has remaining uses for selected request type
     if (mockUsageData[requestType].uses <= 0) {
       toast.error(`No ${requestType} uses remaining`, {
-        description: 'Please upgrade your plan or wait for your uses to reset.'
+        description: 'Please wait for your uses to reset.'
       })
       return
     }
@@ -220,7 +220,7 @@ const mockUsageData = {
                 <div className="p-1 bg-gradient-to-br from-blue-500 to-indigo-600 rounded">
                   <Sparkles className="w-2.5 h-2.5 text-white" />
                 </div>
-                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Basic</span>
+                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Normal</span>
               </div>
               <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
                 {mockUsageData.basic.uses}
@@ -233,7 +233,7 @@ const mockUsageData = {
                 <div className="p-1 bg-gradient-to-br from-purple-500 to-pink-600 rounded">
                   <Zap className="w-2.5 h-2.5 text-white" />
                 </div>
-                <span className="text-xs font-medium text-purple-700 dark:text-purple-300">Pro</span>
+                <span className="text-xs font-medium text-purple-700 dark:text-purple-300">Medium</span>
               </div>
               <span className="text-sm font-bold text-purple-600 dark:text-purple-400">
                 {mockUsageData.pro.uses}
@@ -246,7 +246,7 @@ const mockUsageData = {
                 <div className="p-1 bg-gradient-to-br from-amber-500 to-orange-600 rounded">
                   <Crown className="w-2.5 h-2.5 text-white" />
                 </div>
-                <span className="text-xs font-medium text-amber-700 dark:text-amber-300">Ultra</span>
+                <span className="text-xs font-medium text-amber-700 dark:text-amber-300">High</span>
               </div>
               <span className="text-sm font-bold text-amber-600 dark:text-amber-400">
                 {mockUsageData.ultra.uses}
@@ -325,16 +325,16 @@ const mockUsageData = {
 
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-2">
-                    Request Type
+                    Reasoning Effort
                   </label>
                   <select
                     value={requestType}
                     onChange={e => setRequestType(e.target.value)}
                     className="w-full px-3 py-2 bg-white/90 dark:bg-gray-900/50 border border-purple-300/70 dark:border-blue-600/70 focus:border-purple-500 dark:focus:border-blue-400 rounded-lg transition-all duration-300"
                   >
-                    <option value="basic">Basic</option>
-                    <option value="pro">Pro</option>
-                    <option value="ultra">Ultra</option>
+                    <option value="basic">Normal - {mockUsageData.basic.uses} uses left</option>
+                    <option value="pro">Medium - {mockUsageData.pro.uses} uses left</option>
+                    <option value="ultra">High - {mockUsageData.ultra.uses} uses left</option>
                   </select>
                 </div>
               </div>

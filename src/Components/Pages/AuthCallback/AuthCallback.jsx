@@ -8,6 +8,7 @@ function AuthCallback() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [statusMessage, setStatusMessage] = useState('Completing authentication...');
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -26,15 +27,17 @@ function AuthCallback() {
         // Use the auth thunk to handle OAuth callback
         await dispatch(handleOAuthCallback({ userId, secret })).unwrap();
         
-        // Set default preferences for new users
-        const defaultPrefs = {
-          pro_uses: 5,
-          basic_uses: 10,
-          ultra_uses: 3
-        };
-        
-        // updatePreferences will merge defaults with existing prefs, only setting defaults for missing keys
-        await authService.updatePreferences(defaultPrefs);
+        // Check if user preferences are empty and set defaults for new users
+        const currentPrefs = await authService.getPreferences();
+        if (!currentPrefs || Object.keys(currentPrefs).length === 0) {
+          setStatusMessage('Setting up your new account...');
+          const defaultPrefs = {
+            basic_uses: 10,
+            pro_uses: 5,
+            ultra_uses: 3
+          };
+          await authService.updatePreferences(defaultPrefs);
+        }
         
         // Use React Router navigate with replace to avoid history issues
         navigate('/home', { replace: true });
@@ -68,7 +71,7 @@ function AuthCallback() {
       <div className="text-center p-8">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent mx-auto mb-4"></div>
         <div className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-          Completing authentication...
+          {statusMessage}
         </div>
         <div className="text-gray-600 dark:text-gray-300">
           Please wait while we set up your account
