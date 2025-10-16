@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { handleOAuthCallback } from '../../../store/authThunks';
 import authService from '../../../appwrite/auth';
+import { updateUserData } from '../../../store/authSlice';
 
 function AuthCallback() {
   const dispatch = useDispatch();
@@ -37,6 +38,12 @@ function AuthCallback() {
             ultra_uses: 3
           };
           await authService.updatePreferences(defaultPrefs);
+          
+          // Update Redux state with the new preferences
+          const updatedUser = await authService.getCurrentUser();
+          if (updatedUser) {
+            dispatch(updateUserData({ prefs: updatedUser.prefs }));
+          }
         }
         
         // Use React Router navigate with replace to avoid history issues
