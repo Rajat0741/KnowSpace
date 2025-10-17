@@ -25,9 +25,9 @@ const STATUS_LABELS = {
 }
 
 const REQUEST_TYPE_LABELS = {
-  basic: 'Basic',
-  pro: 'Pro',
-  ultra: 'Ultra'
+  basic: 'Normal',
+  pro: 'Medium',
+  ultra: 'High'
 }
 
 const STYLE_LABELS = {
@@ -126,7 +126,7 @@ const AITrackingDetailDialog = memo(function AITrackingDetailDialog({ item, open
 
           <DetailRow
             icon={Zap}
-            label="Request Type"
+            label="Reasoning effort"
             value={REQUEST_TYPE_LABELS[item.request_type] || item.request_type}
             className="text-slate-700 dark:text-slate-300"
           />
