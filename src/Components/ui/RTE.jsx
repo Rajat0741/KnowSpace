@@ -1,11 +1,25 @@
 import { useSelector } from 'react-redux';
-import { Editor } from '@tinymce/tinymce-react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form'
-import { useEffect, useState } from 'react';
 
-// Note: We don't import TinyMCE plugins here - they're loaded from /public/tinymce/
+// Lazy load TinyMCE Editor to improve initial load time
+const Editor = lazy(() => 
+  import('@tinymce/tinymce-react').then(module => ({ default: module.Editor }))
+);
 
+// Note: We don't import TinyMCE plugins here - they're loaded from /public/tinymce
 
+// Loading skeleton for the editor
+function EditorSkeleton() {
+  return (
+    <div className="w-full h-[600px] border border-border rounded-md bg-muted/20 animate-pulse flex items-center justify-center">
+      <div className="text-center space-y-2">
+        <div className="inline-block w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-sm text-muted-foreground">Loading editor...</p>
+      </div>
+    </div>
+  );
+}
 
 function RTE({ name, control, label, defaultvalue = "", onEditorInit, ...props }) {
     const isDarkMode = useSelector(state => state.darkMode.isDarkMode);
@@ -33,10 +47,11 @@ function RTE({ name, control, label, defaultvalue = "", onEditorInit, ...props }
                     name={name || "Content:"}
                     control={control}
                     render={({ field: { onChange } }) => (
-                        <Editor
-                            tinymceScriptSrc="/tinymce/tinymce.min.js"
-                            key={localDarkMode ? 'dark' : 'light'}
-                            init={{
+                        <Suspense fallback={<EditorSkeleton />}>
+                            <Editor
+                                tinymceScriptSrc="/tinymce/tinymce.min.js"
+                                key={localDarkMode ? 'dark' : 'light'}
+                                init={{
                                 height: 600,
                                 min_height: 600,
                                 max_height: 700,
@@ -199,6 +214,7 @@ function RTE({ name, control, label, defaultvalue = "", onEditorInit, ...props }
                                 onChange(content);
                             }}
                         />
+                        </Suspense>
                     )
                     }
                 />

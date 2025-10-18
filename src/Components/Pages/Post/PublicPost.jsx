@@ -87,6 +87,13 @@ function PublicPostContent({ resource }) {
   const [showShareModal, setShowShareModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
 
+  // Redirect authenticated users to the authenticated version
+  useEffect(() => {
+    if (userData && post?.$id) {
+      navigate(`/post/${post.$id}`, { replace: true });
+    }
+  }, [userData, post?.$id, navigate]);
+
   // Dynamic max width
   const getMaxWidth = () => {
     return 'max-w-6xl xl:max-w-7xl';
@@ -182,26 +189,28 @@ function PublicPostContent({ resource }) {
         <div className={`relative ${getMaxWidth()} mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-300`}>
           {/* Navigation */}
           <div className="flex items-center justify-between gap-2 sm:gap-4 mb-6 sticky top-4 z-10 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-purple-200/30 dark:border-purple-800/30 rounded-2xl p-3 sm:p-4 shadow-xl shadow-black/10 dark:shadow-black/30">
-            <button
-              onClick={() => navigate(-1)}
-              className="group inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-blue-50/90 to-purple-50/90 dark:from-blue-900/30 dark:to-purple-900/30 backdrop-blur-sm border border-purple-200/50 dark:border-purple-700/50 rounded-lg hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/50 dark:hover:to-purple-900/50 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400/50 dark:focus:ring-purple-500/50 shadow-md hover:shadow-lg"
-              aria-label="Go back to previous page"
+            {/* Sign In Button - Left side */}
+            <Link
+              to="/"
+              className="group inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-green-500/20 to-green-600/20 hover:from-green-500/30 hover:to-green-600/30 border border-green-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-green-500/20"
+              title="Sign In to interact with this post"
             >
-              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 text-purple-600 dark:text-purple-400" />
-              <span className="hidden sm:inline text-sm font-medium text-purple-600 dark:text-purple-400">Back</span>
-            </button>
+              <User className="w-4 h-4 text-green-400 group-hover:text-green-300 transition-colors" />
+              <span className="hidden sm:inline text-sm font-medium text-green-400 group-hover:text-green-300 transition-colors">Sign In</span>
+            </Link>
 
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Comments Drawer */}
               <PublicCommentsDrawer postId={post.$id} />
 
-              {/* Share Icon */}
+              {/* Share Icon - Same size as comments */}
               <button
                 onClick={openShareModal}
-                className="group p-1.5 sm:p-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/20"
+                className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
                 title="Share Post"
               >
-                <Share2 className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                <Share2 className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                <span className="hidden sm:inline text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors">Share</span>
               </button>
 
               {/* Category Badge with Glow - Always visible but smaller on mobile */}
@@ -210,18 +219,6 @@ function PublicPostContent({ resource }) {
                   <Tag className="w-3 h-3 sm:w-4 sm:h-4 text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors" />
                   <span className="text-xs sm:text-sm font-medium text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors truncate max-w-20 sm:max-w-none">{post.category}</span>
                 </div>
-              )}
-
-              {/* Sign In Button for unauthenticated users */}
-              {!userData && (
-                <Link
-                  to="/"
-                  className="group inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-green-500/20 to-green-600/20 hover:from-green-500/30 hover:to-green-600/30 border border-green-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-green-500/20"
-                  title="Sign In"
-                >
-                  <User className="w-3 h-3 sm:w-4 sm:h-4 text-green-400 group-hover:text-green-300 transition-colors" />
-                  <span className="text-xs sm:text-sm font-medium text-green-400 group-hover:text-green-300 transition-colors">Sign In</span>
-                </Link>
               )}
             </div>
           </div>
@@ -296,8 +293,8 @@ function PublicPostContent({ resource }) {
           </div>
         </article>
 
-        {/* Enhanced Social Share Section */}
-        <div className="mt-12 sm:mt-16 pt-8 sm:pt-12">
+        {/* Enhanced Social Share Section - Hidden on mobile */}
+        <div className="hidden sm:block mt-12 sm:mt-16 pt-8 sm:pt-12">
           {/* Decorative divider */}
           <div className="flex items-center justify-center mb-8">
             <div className="flex items-center gap-4">

@@ -415,13 +415,14 @@ function PostContent({ resource, wasUpdated = false }) {
               {/* Comments Drawer */}
               <CommentsDrawer postId={post.$id} />
 
-              {/* Share Icon */}
+              {/* Share Icon - Same size as comments */}
               <button
                 onClick={openShareModal}
-                className="group p-1.5 sm:p-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/20"
+                className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
                 title="Share Post"
               >
-                <Share2 className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                <Share2 className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                <span className="hidden sm:inline text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors">Share</span>
               </button>
 
               {/* Category Badge with Glow - Always visible but smaller on mobile */}
@@ -506,8 +507,8 @@ function PostContent({ resource, wasUpdated = false }) {
           </div>
         </article>
 
-        {/* Enhanced Social Share Section */}
-        <div className="mt-12 sm:mt-16 pt-8 sm:pt-12">
+        {/* Enhanced Social Share Section - Hidden on mobile */}
+        <div className="hidden sm:block mt-12 sm:mt-16 pt-8 sm:pt-12">
           {/* Decorative divider */}
           <div className="flex items-center justify-center mb-8">
             <div className="flex items-center gap-4">
