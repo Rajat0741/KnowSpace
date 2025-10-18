@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { toast } from 'sonner'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Functions, ID } from 'appwrite'
 import conf from '@/conf/conf'
 import service from '@/appwrite/config'
-import authService from '@/appwrite/auth'
 import { Sparkles, Zap, Crown, Plus, Minus, Send, CheckCircle, Loader2 } from 'lucide-react'
 import Button from '@/Components/ui/button'
 import { Input } from '@/Components/ui/input'
@@ -40,30 +39,6 @@ const mockUsageData = {
 };
 
   const navigate = useNavigate()
-
-  // Sync preferences from Appwrite on component mount
-  useEffect(() => {
-    const syncPreferences = async () => {
-      if (userData?.$id) {
-        try {
-          const currentPrefs = await authService.getPreferences();
-          // Only update if prefs exist in Appwrite but not in Redux
-          if (currentPrefs && Object.keys(currentPrefs).length > 0) {
-            // Check if Redux prefs are missing or empty
-            if (!userData.prefs || Object.keys(userData.prefs).length === 0) {
-              dispatch(updateUserData({ prefs: currentPrefs }));
-            }
-          }
-        } catch (error) {
-          console.error('Failed to sync preferences:', error);
-        }
-      }
-    };
-    
-    syncPreferences();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userData?.$id]); // Only run when user ID changes or on mount
-
 
   const updateSource = (index, value) => {
     const next = [...sources]

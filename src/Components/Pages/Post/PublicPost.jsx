@@ -290,7 +290,7 @@ function PublicPostContent({ resource }) {
           <div className="relative border border-purple-200/40 dark:border-purple-800/40 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg shadow-black/10 dark:shadow-black/30 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm">
             {/* Content */}
             <div
-              className="max-w-none"
+              className="post-content max-w-none"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </div>

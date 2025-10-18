@@ -631,15 +631,42 @@
 
   
 
-  /* Responsive typography for post content */
+  /* Responsive typography and containment for post content */
   .post-content {
-    @apply text-base leading-relaxed;
+    @apply text-base leading-relaxed break-words;
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
   
   @media (min-width: 640px) {
     .post-content {
       @apply text-lg leading-relaxed;
     }
+  }
+
+  .post-content img,
+  .post-content video,
+  .post-content iframe {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .post-content table {
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+  }
+
+  .post-content pre,
+  .post-content code {
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .post-content blockquote {
+    @apply border-l-4 border-primary/40 pl-4 italic;
   }
   
   .line-clamp-1 {
