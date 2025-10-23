@@ -162,7 +162,7 @@ function getReadingTime(content) {
   return `${time} min read`;
 }
 
-function PostContent({ resource, wasUpdated = false }) {
+function PostContent({ resource, wasUpdated = false, location }) {
   const post = resource.read();
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
@@ -208,10 +208,13 @@ function PostContent({ resource, wasUpdated = false }) {
   // Check if current user owns this post
   const isOwner = userData && post && userData.$id === post.userid;
 
-  // Handle back button - go to home if coming from update, otherwise go back
+  // Handle back button - go to home if coming from public post, AI tracking, or update
   const handleBackClick = () => {
-    if (wasUpdated) {
-      navigate('/');
+    const fromPublicPost = location.state?.fromPublicPost;
+    const fromAITracking = location.state?.fromAITracking;
+    
+    if (wasUpdated || fromPublicPost || fromAITracking) {
+      navigate('/home');
     } else {
       navigate(-1);
     }
@@ -713,15 +716,17 @@ function Post() {
   // Check if we're coming from an update operation
   const forceRefresh = location.state?.updated || false;
 
-  const resource = React.useMemo(() =>
-    createPostResource(id, reduxPost, forceRefresh),
-    [id, reduxPost, forceRefresh]
-  );
+  // Force resource recreation when ID changes or when coming from AI tracking/public post
+  const resource = React.useMemo(() => {
+    // Always force refresh when navigating from AI tracking to ensure latest content
+    const shouldForceRefresh = forceRefresh || location.state?.fromAITracking;
+    return createPostResource(id, reduxPost, shouldForceRefresh);
+  }, [id, reduxPost, forceRefresh, location.state?.fromAITracking]);
 
   return (
     <PostErrorBoundary location={location}>
-      <Suspense fallback={<PostSkeleton />}>
-        <PostContent key={id} resource={resource} wasUpdated={forceRefresh} />
+      <Suspense fallback={<PostSkeleton />} key={id}>
+        <PostContent key={id} resource={resource} wasUpdated={forceRefresh} location={location} />
       </Suspense>
     </PostErrorBoundary>
   );

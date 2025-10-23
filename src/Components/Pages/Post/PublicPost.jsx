@@ -90,7 +90,10 @@ function PublicPostContent({ resource }) {
   // Redirect authenticated users to the authenticated version
   useEffect(() => {
     if (userData && post?.$id) {
-      navigate(`/post/${post.$id}`, { replace: true });
+      navigate(`/post/${post.$id}`, { 
+        replace: true,
+        state: { fromPublicPost: true }
+      });
     }
   }, [userData, post?.$id, navigate]);
 
