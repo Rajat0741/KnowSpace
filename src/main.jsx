@@ -84,7 +84,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: 'public/post/:id',
+        path: 'shared/post/:id',
         element: (
           <LazyRoute fallbackMessage="Loading post...">
             <PublicPost />

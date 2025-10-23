@@ -277,7 +277,7 @@ function PostContent({ resource, wasUpdated = false, location }) {
   // Share functionality - Generate public links for sharing
   const sharePost = async (platform) => {
     // Generate public URL for sharing
-    const publicUrl = `${window.location.origin}/public/post/${post.$id}`;
+    const publicUrl = `${window.location.origin}/shared/post/${post.$id}`;
     const url = encodeURIComponent(publicUrl);
     const text = encodeURIComponent(`Check out this article: ${post.title}`);
 
