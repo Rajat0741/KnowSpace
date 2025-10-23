@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useQueryClient } from '@tanstack/react-query';
 import service from '@/appwrite/config';
-import { ArrowLeft, Calendar, Tag, Clock, Share2, Edit, Trash2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, Tag, Clock, Share2, Edit, Trash2, AlertCircle, Home } from 'lucide-react';
 import CommentsDrawer from '@/Components/ui/Custom/CommentsDrawer/CommentsDrawer';
 import { toast } from 'sonner';
 
@@ -175,6 +175,10 @@ function PostContent({ resource, wasUpdated = false, location }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  
+  // Check if we should show home button instead of back button
+  const shouldShowHomeButton = wasUpdated || location.state?.fromPublicPost || location.state?.fromAITracking;
+  
   // Activate post functionality
   const handleActivatePost = async () => {
     if (!isOwner || post.status !== 'inactive') return;
@@ -208,12 +212,9 @@ function PostContent({ resource, wasUpdated = false, location }) {
   // Check if current user owns this post
   const isOwner = userData && post && userData.$id === post.userid;
 
-  // Handle back button - go to home if coming from public post, AI tracking, or update
-  const handleBackClick = () => {
-    const fromPublicPost = location.state?.fromPublicPost;
-    const fromAITracking = location.state?.fromAITracking;
-    
-    if (wasUpdated || fromPublicPost || fromAITracking) {
+  // Handle navigation button click
+  const handleNavigationClick = () => {
+    if (shouldShowHomeButton) {
       navigate('/home');
     } else {
       navigate(-1);
@@ -366,12 +367,21 @@ function PostContent({ resource, wasUpdated = false, location }) {
           {/* Navigation */}
           <div className="flex items-center justify-between gap-2 sm:gap-4 mb-6 sticky top-4 z-10 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-purple-200/30 dark:border-purple-800/30 rounded-2xl p-3 sm:p-4 shadow-xl shadow-black/10 dark:shadow-black/30">
             <button
-              onClick={handleBackClick}
+              onClick={handleNavigationClick}
               className="group inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-blue-50/90 to-purple-50/90 dark:from-blue-900/30 dark:to-purple-900/30 backdrop-blur-sm border border-purple-200/50 dark:border-purple-700/50 rounded-lg hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/50 dark:hover:to-purple-900/50 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400/50 dark:focus:ring-purple-500/50 shadow-md hover:shadow-lg"
-              aria-label="Go back to previous page"
+              aria-label={shouldShowHomeButton ? "Go to home page" : "Go back to previous page"}
             >
-              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 text-purple-600 dark:text-purple-400" />
-              <span className="hidden sm:inline text-sm font-medium text-purple-600 dark:text-purple-400">Back</span>
+              {shouldShowHomeButton ? (
+                <>
+                  <Home className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                  <span className="hidden sm:inline text-sm font-medium text-purple-600 dark:text-purple-400">Home</span>
+                </>
+              ) : (
+                <>
+                  <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 text-purple-600 dark:text-purple-400" />
+                  <span className="hidden sm:inline text-sm font-medium text-purple-600 dark:text-purple-400">Back</span>
+                </>
+              )}
             </button>
 
             <div className="flex items-center gap-2 sm:gap-3">
