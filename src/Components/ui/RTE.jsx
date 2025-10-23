@@ -60,7 +60,7 @@ function RTE({ name, control, label, defaultvalue = "", onEditorInit, ...props }
                                 content_css: "/tinymce-content.css",
                                 body_class: localDarkMode ? 'dark' : '',
                                 menubar: true,
-                                toolbar_mode: 'sliding',
+                                toolbar_mode: 'floating',
                                 promotion: false,
                                 branding: false,
                                 

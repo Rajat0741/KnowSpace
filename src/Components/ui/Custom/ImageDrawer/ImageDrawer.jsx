@@ -188,26 +188,33 @@ export default function VaulDrawer({
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999]" />
         <Drawer.Content
-          className="right-0 top-0 bottom-0 fixed z-[10000] outline-none w-[70vw] flex"
+          className="right-0 top-0 bottom-0 fixed z-[10000] outline-none w-[90vw] flex"
           style={{ '--initial-transform': 'calc(100% + 8px)' }}
         >
           <div className="bg-card h-full w-full flex flex-col border-l border-border shadow-2xl shadow-black/50">
             {/* Header */}
-            <div className="flex-shrink-0 p-6 border-b border-border bg-card/95 backdrop-blur-sm">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <Drawer.Title className="font-semibold text-foreground text-xl mb-1">
-                    Choose Image from Pixabay
-                  </Drawer.Title>
-                  <Drawer.Description className="text-muted-foreground text-sm">
-                    Search and select high-quality images from Pixabay
-                  </Drawer.Description>
+            <div className="flex-shrink-0 p-4 border-b border-border bg-card/95 backdrop-blur-sm">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <Drawer.Title className="font-semibold text-foreground text-lg">
+                      Choose Image from Pixabay
+                    </Drawer.Title>
+                    <Drawer.Close asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </Drawer.Close>
+                  </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Drawer.Description className="text-muted-foreground text-xs">
+                      Search and select images
+                    </Drawer.Description>
+                    <span className="text-xs text-primary">
+                      • 💡 Double-click to quick select
+                    </span>
+                  </div>
                 </div>
-                <Drawer.Close asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <X className="h-4 w-4" />
-                  </Button>
-                </Drawer.Close>
               </div>
               
               {/* Search and Filters */}

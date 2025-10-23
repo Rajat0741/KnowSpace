@@ -233,7 +233,7 @@ export class Service {
     }
 
     // AI Generation Tracking functionality
-    async getTrackingItems(userId) {
+    async getTrackingItems(userId, limit = 8, offset = 0) {
         try {
             return await this.databases.listDocuments(
                 conf.appWriteDatabaseId,
@@ -241,7 +241,8 @@ export class Service {
                 [
                     Query.equal('userid', userId),
                     Query.orderDesc('$createdAt'),
-                    Query.limit(50)
+                    Query.limit(limit),
+                    Query.offset(offset)
                 ]
             );
         } catch (error) {

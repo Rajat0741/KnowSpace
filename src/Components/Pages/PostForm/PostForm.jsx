@@ -394,6 +394,7 @@ function PostForm({ post = null }) {
                                             {/* Choose from Device Button */}
                                             <label 
                                                 htmlFor="featured-image"
+                                                name="Browse"
                                                 className="flex items-center justify-center h-12 border-2 border-dashed border-border/50 rounded-lg cursor-pointer bg-gradient-to-br from-background/50 via-background/30 to-background/20 hover:from-background/60 hover:via-background/40 hover:to-background/30 transition-all duration-300 group/device backdrop-blur-sm"
                                             >
                                                 <FolderOpen className="w-4 h-4 text-muted-foreground group-hover/device:text-primary transition-colors mr-2" />
