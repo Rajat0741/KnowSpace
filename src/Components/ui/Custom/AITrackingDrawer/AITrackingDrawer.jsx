@@ -252,10 +252,21 @@ export default function AITrackingDrawer({ triggerContent = null }) {
 
   const handleNavigateToPost = (postId) => {
     setIsOpen(false)
+    setShowDetailDialog(false)
+    
+    // Check if we're already on a post page
+    const currentPath = window.location.pathname
+    const isOnPostPage = currentPath.startsWith('/post/')
+    
     // Add a small delay to allow drawer to close smoothly before navigation
     setTimeout(() => {
+      // Navigate with a timestamp to force fresh data fetch
       navigate(`/post/${postId}`, { 
-        state: { fromAITracking: true }
+        state: { 
+          fromAITracking: true,
+          timestamp: Date.now() // Force component to treat this as a new navigation
+        },
+        replace: isOnPostPage // Replace history if already on a post page
       })
     }, 200)
   }

@@ -723,20 +723,23 @@ function Post() {
   const reduxPost = useSelector((state) => state.post.post);
   const location = useLocation();
 
-  // Check if we're coming from an update operation
-  const forceRefresh = location.state?.updated || false;
+  // Check if we need to force refresh
+  // timestamp changes on each navigation from AI tracking, forcing fresh data fetch
+  const shouldForceRefresh = location.state?.updated || 
+                             location.state?.fromAITracking || 
+                             location.state?.fromPublicPost ||
+                             location.state?.timestamp; // This ensures re-fetch on each navigation
 
-  // Force resource recreation when ID changes or when coming from AI tracking/public post
+  // Force resource recreation when ID changes or timestamp changes
   const resource = React.useMemo(() => {
-    // Always force refresh when navigating from AI tracking to ensure latest content
-    const shouldForceRefresh = forceRefresh || location.state?.fromAITracking;
     return createPostResource(id, reduxPost, shouldForceRefresh);
-  }, [id, reduxPost, forceRefresh, location.state?.fromAITracking]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, location.state?.timestamp]); // Only id and timestamp matter for forcing re-creation
 
   return (
     <PostErrorBoundary location={location}>
       <Suspense fallback={<PostSkeleton />} key={id}>
-        <PostContent key={id} resource={resource} wasUpdated={forceRefresh} location={location} />
+        <PostContent key={id} resource={resource} wasUpdated={!!location.state?.updated} location={location} />
       </Suspense>
     </PostErrorBoundary>
   );
