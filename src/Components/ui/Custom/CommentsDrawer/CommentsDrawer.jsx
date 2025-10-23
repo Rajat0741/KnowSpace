@@ -288,7 +288,7 @@ export default function CommentsDrawer({ postId }) {
   return (
     <Drawer direction="right" open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        <button className="group inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20">
+        <button className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20">
           <MessageSquare className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
           <span className="hidden sm:inline text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors">
             Comments

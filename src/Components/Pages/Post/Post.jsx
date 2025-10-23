@@ -393,32 +393,32 @@ function PostContent({ resource, wasUpdated = false, location }) {
                     <button
                       onClick={handleActivatePost}
                       disabled={isActivating}
-                      className="group inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-gradient-to-r from-green-500/20 to-green-600/20 hover:from-green-500/30 hover:to-green-600/30 border border-green-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-green-500/20 to-green-600/20 hover:from-green-500/30 hover:to-green-600/30 border border-green-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Activate Post"
                     >
-                      <svg className="w-3 h-3 sm:w-4 sm:h-4 text-green-400 group-hover:text-green-300 transition-colors" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-13h2v6h-2V5zm0 8h2v2h-2v-2z" /></svg>
-                      <span className="hidden sm:inline text-xs font-medium text-green-400 group-hover:text-green-300 transition-colors">
+                      <svg className="w-4 h-4 text-green-400 group-hover:text-green-300 transition-colors" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-13h2v6h-2V5zm0 8h2v2h-2v-2z" /></svg>
+                      <span className="hidden sm:inline text-sm font-medium text-green-400 group-hover:text-green-300 transition-colors">
                         {isActivating ? 'Activating...' : 'Activate'}
                       </span>
                     </button>
                   )}
                   <button
                     onClick={handleEditPost}
-                    className="group inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
+                    className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
                     title="Edit Post"
                   >
-                    <Edit className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
-                    <span className="hidden sm:inline text-xs font-medium text-purple-400 group-hover:text-purple-300 transition-colors">Edit</span>
+                    <Edit className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                    <span className="hidden sm:inline text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors">Edit</span>
                   </button>
 
                   <button
                     onClick={handleDeletePost}
                     disabled={isDeleting}
-                    className="group inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-gradient-to-r from-red-500/20 to-red-600/20 hover:from-red-500/30 hover:to-red-600/30 border border-red-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-red-500/20 to-red-600/20 hover:from-red-500/30 hover:to-red-600/30 border border-red-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Delete Post"
                   >
-                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-400 group-hover:text-red-300 transition-colors" />
-                    <span className="hidden sm:inline text-xs font-medium text-red-400 group-hover:text-red-300 transition-colors">
+                    <Trash2 className="w-4 h-4 text-red-400 group-hover:text-red-300 transition-colors" />
+                    <span className="hidden sm:inline text-sm font-medium text-red-400 group-hover:text-red-300 transition-colors">
                       {isDeleting ? 'Deleting...' : 'Delete'}
                     </span>
                   </button>
