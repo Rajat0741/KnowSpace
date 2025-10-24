@@ -23,7 +23,18 @@ export const initializeAuth = createAsyncThunk(
             const userData = await authService.getCurrentUser();
             
             if (userData) {
-                dispatch(login({ userData }));
+                // IMPORTANT: Preferences are NOT persisted (see store.js authPersistConfig)
+                // So we always fetch fresh preferences from server on app start
+                try {
+                    const freshPrefs = await authService.getPreferences();
+                    // Merge fresh preferences with user data
+                    const userDataWithPrefs = { ...userData, prefs: freshPrefs };
+                    dispatch(login({ userData: userDataWithPrefs }));
+                } catch (prefsError) {
+                    // If preferences fetch fails, login without prefs (user can retry)
+                    console.log("Could not fetch preferences, logging in without prefs:", prefsError);
+                    dispatch(login({ userData }));
+                }
                 dispatch(loadProfilePicture());
                 return { success: true, userData };
             } else {

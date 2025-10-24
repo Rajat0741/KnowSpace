@@ -21,6 +21,29 @@ const authPersistConfig = {
     storage,
     whitelist: ["status", "userData", "isInitialized"], // Only persist essential auth data
     blacklist: ["isLoading", "error"], // Don't persist temporary states
+    // Transform to exclude preferences from persistence
+    transforms: [
+        {
+            in: (state) => {
+                // When saving to storage, remove preferences
+                if (state.userData?.prefs) {
+                    return {
+                        ...state,
+                        userData: {
+                            ...state.userData,
+                            prefs: undefined // Don't persist preferences
+                        }
+                    };
+                }
+                return state;
+            },
+            out: (state) => {
+                // When loading from storage, state will have no prefs
+                // They will be fetched fresh on initializeAuth
+                return state;
+            }
+        }
+    ]
 };
 
 // Combine reducers
