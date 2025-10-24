@@ -31,12 +31,12 @@ export default function WriteWithAI() {
   const userData = useSelector((state) => state.auth.userData)
   const dispatch = useDispatch()
 
-  
-const mockUsageData = {
-  basic: { uses: userData?.prefs?.basic_uses || 0 },
-  pro: { uses: userData?.prefs?.pro_uses || 0 },
-  ultra: { uses: userData?.prefs?.ultra_uses || 0 }
-};
+  // Dynamically get usage data from Redux state (updates on reload)
+  const mockUsageData = React.useMemo(() => ({
+    basic: { uses: userData?.prefs?.basic_uses || 0 },
+    pro: { uses: userData?.prefs?.pro_uses || 0 },
+    ultra: { uses: userData?.prefs?.ultra_uses || 0 }
+  }), [userData?.prefs?.basic_uses, userData?.prefs?.pro_uses, userData?.prefs?.ultra_uses]);
 
   const navigate = useNavigate()
 

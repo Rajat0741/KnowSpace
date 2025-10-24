@@ -16,8 +16,15 @@ function Settings() {
   const { profilePictureUrl } = useSelector(state => state.profile);
   const { userData } = useSelector(state => state.auth);
 
-  // Form states
+  // Form states - sync with Redux when userData.prefs updates
   const [newBio, setNewBio] = useState(userData?.prefs?.bio || '');
+
+  // Update newBio when userData.prefs.bio changes (on reload with fresh data)
+  React.useEffect(() => {
+    if (userData?.prefs?.bio !== undefined) {
+      setNewBio(userData.prefs.bio);
+    }
+  }, [userData?.prefs?.bio]);
 
   // UI states
   // These booleans control loading indicators, modals and success messages
