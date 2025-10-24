@@ -50,7 +50,11 @@ function UserProfilePage() {
                     setUserRegistrationDate(userData.registrationDate || '');
 
                     setPostsLoading(true);
-                    const queries = [Query.equal('userid', userData.$id)];
+                    // Only fetch active posts for public profile view
+                    const queries = [
+                        Query.equal('userid', userData.$id),
+                        Query.equal('status', 'active')
+                    ];
                     const posts = await service.getPosts(queries);
                     const sortedPosts = (posts.documents || []).sort((a, b) =>
                         new Date(b.$createdAt) - new Date(a.$createdAt)
