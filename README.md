@@ -74,7 +74,7 @@ If you encounter any issues or have questions:
 
 <div align="center">
 
-Made with ❤️ by [Kushwaha Rajat](https://github.com/Rajat0741)
+Made with ❤️ by [Rajat](https://github.com/Rajat0741)
 
 ⭐ Star this repo if you find it helpful!
 
