@@ -22,7 +22,7 @@
 
 - 📱 Responsive design
 
-[Features](#features) • [Tech Stack](#tech-stack) • [Getting Started](#getting-started) • [Documentation](#documentation)- 🌙 Dark mode support
+[Features](#features) • [Tech Stack](#tech-stack) •- 🌙 Dark mode support
 
 - ⚡ Fast performance with Vite and ImageKit optimization
 
