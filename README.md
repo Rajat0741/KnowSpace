@@ -33,36 +33,7 @@
 ---
 
 - **Frontend**: React 19, Vite, TailwindCSS
-
-## 📋 Table of Contents- **Backend**: Appwrite (Database, Authentication, Functions)
-
-- **Image Storage**: ImageKit.io (CDN, Optimization, Transformations)
-
-- [Overview](#overview)- **State Management**: Redux Toolkit
-
-- [Features](#features)- **Form Handling**: React Hook Form
-
-- [Tech Stack](#tech-stack)- **Rich Text Editor**: TinyMCE
-
-- [Architecture](#architecture)- **Routing**: React Router DOM
-
-- [Getting Started](#getting-started)
-
-- [Project Structure](#project-structure)## Quick Start
-
-- [Key Features Explained](#key-features-explained)
-
-- [Environment Variables](#environment-variables)### Prerequisites
-
-- [Available Scripts](#available-scripts)- Node.js 18+ and npm
-
-- [Performance Optimizations](#performance-optimizations)- Appwrite account and project
-
-- [Deployment](#deployment)- ImageKit account
-
-- [Contributing](#contributing)
-
-- [License](#license)### Installation
+- **Backend**: Appwrite, Imagekit, Google AI studio
 
 ---
 
