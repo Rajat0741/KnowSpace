@@ -184,7 +184,7 @@ function UserProfilePage() {
     return (
         <div className='min-h-screen relative overflow-hidden'>
             {/* Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 via-purple-50/30 to-indigo-50/20 dark:from-slate-900/50 dark:via-slate-800/30 dark:to-slate-900/20">
+            <div className="fixed inset-0 -z-10 overflow-hidden">
                 <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-blue-400/10 dark:bg-slate-700/20 rounded-full blur-3xl" />
                 <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-purple-400/10 dark:bg-slate-600/20 rounded-full blur-3xl" />
             </div>
