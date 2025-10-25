@@ -13,10 +13,34 @@ import Protected from './AuthenticatedRouting/AuthLayout'
 import LazyRoute from './Components/ui/LazyRoute'
 import ErrorBoundary from './Components/ui/Custom/ErrorBoundary/ErrorBoundary'
 
-// Lazy load additional components
-const UserProfilePage = lazy(() => import('./Components/Pages/UserProfilePage/UserProfilePage'))
-const WriteWithAI = lazy(() => import('./Components/Pages/Write_with_AI/WriteWithAI'))
-const AuthCallback = lazy(() => import('./Components/Pages/AuthCallback/AuthCallback'))
+// Utility function to retry lazy imports
+const lazyRetry = (componentImport) => 
+  lazy(async () => {
+    const pageHasAlreadyBeenForceRefreshed = JSON.parse(
+      window.sessionStorage.getItem('page-has-been-force-refreshed') || 'false'
+    );
+
+    try {
+      const component = await componentImport();
+      window.sessionStorage.setItem('page-has-been-force-refreshed', 'false');
+      return component;
+    } catch (error) {
+      if (!pageHasAlreadyBeenForceRefreshed) {
+        // Assuming that the user is not on the latest version of the application.
+        // Let's refresh the page immediately.
+        window.sessionStorage.setItem('page-has-been-force-refreshed', 'true');
+        window.location.reload();
+        return { default: () => null }; // Return a dummy component while reloading
+      }
+      // The page has already been reloaded, throw the error
+      throw error;
+    }
+  });
+
+// Lazy load additional components with retry logic
+const UserProfilePage = lazyRetry(() => import('./Components/Pages/UserProfilePage/UserProfilePage'))
+const WriteWithAI = lazyRetry(() => import('./Components/Pages/Write_with_AI/WriteWithAI'))
+const AuthCallback = lazyRetry(() => import('./Components/Pages/AuthCallback/AuthCallback'))
 
 // Create a client
 const queryClient = new QueryClient({

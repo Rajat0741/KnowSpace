@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../ui/button';
-import { Home, Search, ArrowLeft, Sparkles, Compass } from 'lucide-react';
+import { Home, Sparkles, Compass } from 'lucide-react';
 
 const NotFound = () => {
   const navigate = useNavigate();
@@ -49,24 +49,6 @@ const NotFound = () => {
             >
               <Home className="w-5 h-5 mr-2" />
               Go Home
-            </Button>
-
-            <Button
-              onClick={() => navigate('/search')}
-              variant="outline"
-              className="w-full sm:w-auto px-8 py-3 border-2 border-purple-300 dark:border-purple-600 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/30 font-semibold rounded-xl transition-all duration-300 hover:scale-105"
-            >
-              <Search className="w-5 h-5 mr-2" />
-              Search Users
-            </Button>
-
-            <Button
-              onClick={() => navigate(-1)}
-              variant="ghost"
-              className="w-full sm:w-auto px-8 py-3 text-muted-foreground hover:text-foreground hover:bg-muted/50 font-semibold rounded-xl transition-all duration-300 hover:scale-105"
-            >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              Go Back
             </Button>
           </div>
         </div>
