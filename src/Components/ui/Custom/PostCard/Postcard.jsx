@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import service from '@/appwrite/config'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
-import { Calendar, Tag, Eye, Clock } from 'lucide-react'
+import { Calendar, Tag, Eye, Clock, User } from 'lucide-react'
 import { useDispatch } from 'react-redux'
 import { setPost } from '@/store/postSlice'
 
@@ -33,7 +33,7 @@ function Postcard({ post, className, showMetadata = true, variant = 'default' })
   }
 
   const variants = {
-    default: 'aspect-[4/3]',
+    default: 'aspect-[16/10]',
     wide: 'aspect-[16/9]',
     square: 'aspect-square',
     tall: 'aspect-[3/4]'
@@ -75,12 +75,11 @@ function Postcard({ post, className, showMetadata = true, variant = 'default' })
           'shadow-md hover:shadow-xl hover:shadow-black/20 dark:hover:shadow-black/40',
           'hover:scale-[1.02] hover:border-border',
           'group-focus:scale-[1.02] group-focus:shadow-xl group-focus:shadow-black/20 dark:group-focus:shadow-black/40',
-          'transform-gpu', // GPU acceleration for better performance
-          variants[variant],
+          'transform-gpu flex flex-col', // GPU acceleration for better performance
           className
         )}>
           {/* Image Container */}
-          <div className="relative h-full overflow-hidden">
+          <div className={cn("relative overflow-hidden", variants[variant])}>
             {!imageError ? (
               <>
                 {/* Loading placeholder */}
@@ -115,15 +114,6 @@ function Postcard({ post, className, showMetadata = true, variant = 'default' })
               </div>
             )}
 
-            {/* Enhanced gradient overlay with animation */}
-            <div className={cn(
-              'absolute inset-0 transition-all duration-300',
-              isHovered 
-                ? 'bg-gradient-to-t from-black/90 via-black/40 to-transparent'
-                : 'bg-gradient-to-t from-black/80 via-black/20 to-transparent'
-            )} />
-            
-
             {/* Category badge with improved design */}
             {post.category && (
               <div className="absolute top-3 left-3 z-20">
@@ -138,57 +128,40 @@ function Postcard({ post, className, showMetadata = true, variant = 'default' })
                 </span>
               </div>
             )}
+          </div>
 
-            {/* Content overlay with improved typography */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
-              <h2 className={cn(
-                'font-bold text-white mb-2 leading-tight line-clamp-2',
-                'text-lg sm:text-xl lg:text-lg xl:text-xl',
-                'drop-shadow-lg transition-all duration-300',
-                isHovered && 'transform translate-y-[-2px]'
-              )}>
-                {post.title}
-              </h2>
-              
-              {/* Enhanced metadata with better spacing */}
-              {showMetadata && (
-                <div className={cn(
-                  'flex flex-wrap items-center gap-3 text-white/90 text-xs sm:text-sm transition-all duration-300',
-                  isHovered ? 'opacity-100 transform translate-y-0' : 'opacity-80'
-                )}>
-                  <div className="flex items-center gap-1">
-                    <span className="text-xs font-medium">By {post.authorName || 'Anonymous'}</span>
-                  </div>
-                  
-                  {post.$createdAt && (
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      <span>{formatDate(post.$createdAt)}</span>
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    <span>{getReadingTime(post.content)}</span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Enhanced hover effect overlay with subtle animation */}
-            <div className={cn(
-              'absolute inset-0 transition-all duration-300',
-              'bg-gradient-to-br from-primary/5 via-transparent to-primary/10',
-              isHovered ? 'opacity-100' : 'opacity-0'
-            )} />
+          {/* Content area below image */}
+          <div className="p-4 flex-1 flex flex-col justify-between bg-gradient-to-b from-background to-muted/30">
+            <h2 className={cn(
+              'font-bold text-foreground mb-3 leading-tight line-clamp-2',
+              'text-lg sm:text-xl',
+              'transition-colors duration-300',
+              isHovered && 'text-primary'
+            )}>
+              {post.title}
+            </h2>
             
-            {/* Subtle border glow on hover */}
-            <div className={cn(
-              'absolute inset-0 rounded-xl transition-all duration-300 pointer-events-none',
-              isHovered 
-                ? 'ring-1 ring-primary/50 ring-inset' 
-                : 'ring-0 ring-transparent'
-            )} />
+            {/* Enhanced metadata with better spacing */}
+            {showMetadata && (
+              <div className='flex flex-wrap items-center gap-3 text-muted-foreground text-xs'>
+                <div className="flex items-center gap-1.5 bg-muted/50 px-2 py-1 rounded-md">
+                  <User className="w-3 h-3" />
+                  <span className="font-medium">{post.authorName || 'Anonymous'}</span>
+                </div>
+                
+                {post.$createdAt && (
+                  <div className="flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    <span>{formatDate(post.$createdAt)}</span>
+                  </div>
+                )}
+                
+                <div className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  <span>{getReadingTime(post.content)}</span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Accessibility enhancement */}

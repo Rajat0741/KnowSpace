@@ -18,7 +18,7 @@ export default function Header() {
   const navigate = useNavigate();
   
   // Enhanced header styling with gradient background
-  const headerBase = "bg-gradient-to-r from-white/95 via-purple-50/90 to-indigo-50/95 dark:from-slate-900/95 dark:via-slate-800/90 dark:to-slate-900/95 backdrop-blur-xl text-black dark:text-white rounded-full shadow-2xl transition-all duration-250 mt-2 border border-purple-200/50 dark:border-slate-700/50 h-16 flex items-center sm:h-14";
+  const headerBase = "bg-gradient-to-r from-gray-50/95 via-gray-100/90 to-gray-50/95 dark:from-slate-900/95 dark:via-slate-800/90 dark:to-slate-900/95 backdrop-blur-xl text-black dark:text-white rounded-2xl shadow-lg transition-all duration-250 mt-2 border border-gray-200/60 dark:border-slate-700/50 h-16 flex items-center sm:h-14";
   // Simplified header styling - let SidebarInset handle the responsive behavior
   const headerStyle = "mr-2 ml-2 w-auto";
 
