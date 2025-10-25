@@ -18,13 +18,16 @@ function ProfilePicture({
   const [customProfileUrl, setCustomProfileUrl] = useState(null);
   const [customLoading, setCustomLoading] = useState(false);
 
-  const isCurrentlyLoading = profilePictureId ? customLoading : isLoading;
-  const currentProfileUrl = profilePictureId ? customProfileUrl : profilePictureUrl;
+  // Check if this is for another user (external) vs current user
+  const isExternalProfile = profilePictureId !== null && profilePictureId !== undefined;
+  const isCurrentlyLoading = isExternalProfile ? customLoading : isLoading;
+  const currentProfileUrl = isExternalProfile ? customProfileUrl : profilePictureUrl;
 
   useEffect(() => {
-    // If profilePictureId is provided, load that specific user's profile picture
+    // Load external user's profile picture
     if (profilePictureId) {
       setCustomLoading(true);
+      setCustomProfileUrl(null);
       try {
         const url = service.getFileView(profilePictureId);
         setCustomProfileUrl(url);
@@ -34,19 +37,15 @@ function ProfilePicture({
       } finally {
         setCustomLoading(false);
       }
-    } else {
-      // For current user's profile picture
-      if (isAuthenticated && !hasCheckedProfilePicture && !isLoading) {
-        // Check if user has profile picture in preferences first
-        const hasProfilePictureInPrefs = preferences?.profilePicture?.url;
-        
-        if (hasProfilePictureInPrefs) {
-          // User has profile picture, load it
-          dispatch(loadProfilePicture());
-        } else {
-          // User doesn't have profile picture, mark as checked to prevent infinite calls
-          dispatch(clearProfilePicture());
-        }
+      return; 
+    }
+    
+    // Load current user's profile picture
+    if (isAuthenticated && !hasCheckedProfilePicture && !isLoading) {
+      if (preferences?.profilePicture?.url) {
+        dispatch(loadProfilePicture());
+      } else {
+        dispatch(clearProfilePicture());
       }
     }
   }, [dispatch, isAuthenticated, hasCheckedProfilePicture, isLoading, profilePictureId, preferences?.profilePicture?.url]);
