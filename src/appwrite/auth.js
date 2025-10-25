@@ -100,13 +100,22 @@ export class AuthService {
             
             return { success: true };
         } catch (error) {
+            // 401 errors during logout are expected (session already deleted)
+            if (error.code === 401) {
+                return { success: true };
+            }
+            
             console.log("Appwrite service :: logout :: error :", error);
             
-            // If deleteSessions fails, try deleting current session as fallback
+            // If deleteSessions fails with other error, try deleting current session as fallback
             try {
                 await this.account.deleteSession('current');
                 return { success: true };
-            } catch {
+            } catch (fallbackError) {
+                // Even fallback 401 is success
+                if (fallbackError.code === 401) {
+                    return { success: true };
+                }
                 throw error; // Throw the original error
             }
         }
