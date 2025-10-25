@@ -10,6 +10,7 @@ import { CheckCircle, XCircle, User, Mail, Calendar, FileText, Plus } from 'luci
 
 function Profile() {
     const userData = useSelector(state => state.auth.userData)
+    const preferences = useSelector(state => state.preferences)
     const [userPosts, setUserPosts] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -80,7 +81,7 @@ function Profile() {
                 </div>
 
                 {/* Bio Section - if user has a bio, display it prominently */}
-                {userData?.prefs?.bio && (
+                {preferences?.bio && (
                     <div className='relative bg-gradient-to-br from-white/80 to-purple-50/40 dark:from-slate-800/80 dark:to-slate-700/40 rounded-xl p-4 sm:p-6 mx-4 sm:mx-6 mt-4 mb-2 shadow-lg border border-slate-200/60 dark:border-slate-600/50 backdrop-blur-sm'>
                         <div className='flex items-start gap-3'>
                             <div className='p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-md flex-shrink-0'>
@@ -92,7 +93,7 @@ function Profile() {
                                     <span className="text-xs bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded-full">Bio</span>
                                 </h3>
                                 <p className='text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed break-words'>
-                                    {userData.prefs.bio}
+                                    {preferences.bio}
                                 </p>
                             </div>
                         </div>

@@ -13,7 +13,8 @@ function ProfilePicture({
 }) {
   const dispatch = useDispatch();
   const { profilePictureUrl, isLoading, hasCheckedProfilePicture } = useSelector(state => state.profile);
-  const { status: isAuthenticated, userData } = useSelector(state => state.auth);
+  const { status: isAuthenticated } = useSelector(state => state.auth);
+  const preferences = useSelector(state => state.preferences);
   const [customProfileUrl, setCustomProfileUrl] = useState(null);
   const [customLoading, setCustomLoading] = useState(false);
 
@@ -37,7 +38,7 @@ function ProfilePicture({
       // For current user's profile picture
       if (isAuthenticated && !hasCheckedProfilePicture && !isLoading) {
         // Check if user has profile picture in preferences first
-        const hasProfilePictureInPrefs = userData?.prefs?.profilePicture?.url;
+        const hasProfilePictureInPrefs = preferences?.profilePicture?.url;
         
         if (hasProfilePictureInPrefs) {
           // User has profile picture, load it
@@ -48,7 +49,7 @@ function ProfilePicture({
         }
       }
     }
-  }, [dispatch, isAuthenticated, hasCheckedProfilePicture, isLoading, profilePictureId, userData?.prefs?.profilePicture?.url]);
+  }, [dispatch, isAuthenticated, hasCheckedProfilePicture, isLoading, profilePictureId, preferences?.profilePicture?.url]);
 
   // Size classes
   const sizeClasses = {

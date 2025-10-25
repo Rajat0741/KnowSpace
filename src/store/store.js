@@ -6,13 +6,14 @@ import authSlice from "./authSlice";
 import darkModeSlice from "./darkmodeSlice";
 import postSlice from "./postSlice";
 import profileSlice from "./profileSlice";
+import preferencesSlice from "./preferencesSlice";
 
 // Persist configuration
 const persistConfig = {
     key: "root",
     storage,
     whitelist: ["auth", "darkMode"], // Only persist auth and darkMode slices
-    blacklist: ["post", "profile"], // Don't persist post and profile data for better performance
+    blacklist: ["post", "profile", "preferences"], // Don't persist post, profile, and preferences data
 };
 
 // Auth persist configuration (more specific control)
@@ -21,29 +22,6 @@ const authPersistConfig = {
     storage,
     whitelist: ["status", "userData", "isInitialized"], // Only persist essential auth data
     blacklist: ["isLoading", "error"], // Don't persist temporary states
-    // Transform to exclude preferences from persistence
-    transforms: [
-        {
-            in: (state) => {
-                // When saving to storage, remove preferences
-                if (state.userData?.prefs) {
-                    return {
-                        ...state,
-                        userData: {
-                            ...state.userData,
-                            prefs: undefined // Don't persist preferences
-                        }
-                    };
-                }
-                return state;
-            },
-            out: (state) => {
-                // When loading from storage, state will have no prefs
-                // They will be fetched fresh on initializeAuth
-                return state;
-            }
-        }
-    ]
 };
 
 // Combine reducers
@@ -52,6 +30,7 @@ const rootReducer = combineReducers({
     darkMode: darkModeSlice,
     post: postSlice,
     profile: profileSlice,
+    preferences: preferencesSlice, // Not persisted - refreshes on reload
 });
 
 // Create persisted reducer

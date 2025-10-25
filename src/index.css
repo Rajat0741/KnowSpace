@@ -655,6 +655,21 @@
     width: 100%;
     overflow-x: auto;
     display: block;
+    border-collapse: collapse;
+    @apply border border-gray-300 dark:border-gray-600;
+  }
+
+  .post-content table th,
+  .post-content table td {
+    @apply border border-gray-300 dark:border-gray-600 px-4 py-2;
+  }
+
+  .post-content table th {
+    @apply bg-gray-100 dark:bg-gray-800 font-semibold text-left;
+  }
+
+  .post-content table tr:nth-child(even) {
+    @apply bg-gray-50 dark:bg-gray-900/50;
   }
 
   .post-content pre,

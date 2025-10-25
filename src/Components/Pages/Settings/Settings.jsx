@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toggleDarkMode } from '@/store/darkmodeSlice';
 import { setProfilePicture, clearProfilePicture, resetProfileCheck } from '@/store/profileSlice';
 import authService from '@/appwrite/auth';
-import { updateUserData } from '@/store/authSlice';
+import { updatePreferences } from '@/store/preferencesSlice';
 import {
-  Settings as SettingsIcon, Moon, Sun, Check, X, Camera, User, Edit3
+  Settings as SettingsIcon, Moon, Sun, Check, X, Camera, User, Edit3, Trash2
 } from 'lucide-react';
 import Button from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
@@ -14,17 +14,17 @@ function Settings() {
   const dispatch = useDispatch();
   const { isDarkMode } = useSelector(state => state.darkMode);
   const { profilePictureUrl } = useSelector(state => state.profile);
-  const { userData } = useSelector(state => state.auth);
+  const preferences = useSelector(state => state.preferences);
 
-  // Form states - sync with Redux when userData.prefs updates
-  const [newBio, setNewBio] = useState(userData?.prefs?.bio || '');
+  // Form states - sync with Redux when preferences updates
+  const [newBio, setNewBio] = useState(preferences?.bio || '');
 
-  // Update newBio when userData.prefs.bio changes (on reload with fresh data)
+  // Update newBio when preferences.bio changes (on reload with fresh data)
   React.useEffect(() => {
-    if (userData?.prefs?.bio !== undefined) {
-      setNewBio(userData.prefs.bio);
+    if (preferences?.bio !== undefined) {
+      setNewBio(preferences.bio);
     }
-  }, [userData?.prefs?.bio]);
+  }, [preferences?.bio]);
 
   // UI states
   // These booleans control loading indicators, modals and success messages
@@ -100,7 +100,7 @@ function Settings() {
       setErrors({ bio: 'Bio must be less than 500 characters' });
       return;
     }
-    if (newBio.trim() === (userData?.prefs?.bio || '')) {
+    if (newBio.trim() === (preferences?.bio || '')) {
       setErrors({ bio: 'New bio must be different from current bio' });
       return;
     }
@@ -110,12 +110,9 @@ function Settings() {
       // Update bio using Appwrite preferences
       await authService.uploadBio({ bio: newBio.trim() });
 
-      // Update Redux store with new bio in user preferences
-      dispatch(updateUserData({
-        prefs: {
-          ...userData?.prefs,
-          bio: newBio.trim()
-        }
+      // Update Redux preferences slice with new bio
+      dispatch(updatePreferences({
+        bio: newBio.trim()
       }));
 
       setBioUpdateSuccess(true);
@@ -372,7 +369,7 @@ function Settings() {
                         <span className="text-xs text-muted-foreground">
                           {newBio.length}/500 characters
                         </span>
-                        {newBio.trim() && newBio.trim() !== (userData?.prefs?.bio || '') && (
+                        {newBio.trim() && newBio.trim() !== (preferences?.bio || '') && (
                           <span className="text-xs text-blue-600 dark:text-purple-400 font-medium">
                             Preview: {newBio.trim().slice(0, 50)}{newBio.trim().length > 50 ? '...' : ''}
                           </span>
@@ -384,7 +381,7 @@ function Settings() {
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                       <Button
                         type="submit"
-                        disabled={isUpdatingBio || !newBio.trim() || newBio.trim() === (userData?.prefs?.bio || '')}
+                        disabled={isUpdatingBio || !newBio.trim() || newBio.trim() === (preferences?.bio || '')}
                         className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isUpdatingBio ? (
@@ -403,10 +400,10 @@ function Settings() {
                       <Button
                         type="button"
                         onClick={() => {
-                          setNewBio(userData?.prefs?.bio || '');
+                          setNewBio(preferences?.bio || '');
                           setErrors(prev => ({ ...prev, bio: undefined }));
                         }}
-                        disabled={isUpdatingBio || newBio === (userData?.prefs?.bio || '')}
+                        disabled={isUpdatingBio || newBio === (preferences?.bio || '')}
                         variant="outline"
                         className="w-full sm:w-auto border-blue-200/50 dark:border-purple-700/50 text-blue-600 dark:text-purple-400 hover:bg-blue-50/50 dark:hover:bg-purple-950/30 backdrop-blur-sm text-sm sm:text-base"
                       >

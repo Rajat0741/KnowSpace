@@ -2,16 +2,30 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "../appwrite/auth";
 import { login, logout, setLoading, setError, setInitialized } from "./authSlice";
 import { loadProfilePicture } from "./profileSlice";
+import { setPreferences, clearPreferences, setPreferencesLoading, setPreferencesError } from "./preferencesSlice";
 
 // Async thunk for initializing auth state
 export const initializeAuth = createAsyncThunk(
     'auth/initialize',
     async (_, { dispatch, getState }) => {
-        const { auth } = getState();
+        const { auth, preferences } = getState();
         
-        // Skip if already initialized
-        if (auth.isInitialized) {
-            return;
+        // Skip full initialization if already initialized, but always refetch preferences
+        if (auth.isInitialized && auth.userData) {
+            // User is logged in but preferences need to be refetched on reload
+            if (!preferences.isLoading) {
+                try {
+                    dispatch(setPreferencesLoading(true));
+                    const freshPrefs = await authService.getPreferences();
+                    dispatch(setPreferences(freshPrefs));
+                    // Also reload profile picture on reload
+                    dispatch(loadProfilePicture());
+                } catch (prefsError) {
+                    console.log("Could not fetch preferences on reload:", prefsError);
+                    dispatch(setPreferencesError(prefsError.message));
+                }
+            }
+            return { success: true, userData: auth.userData };
         }
 
         try {
@@ -23,18 +37,20 @@ export const initializeAuth = createAsyncThunk(
             const userData = await authService.getCurrentUser();
             
             if (userData) {
-                // IMPORTANT: Preferences are NOT persisted (see store.js authPersistConfig)
-                // So we always fetch fresh preferences from server on app start
+                // Login user without preferences in userData
+                dispatch(login({ userData }));
+                
+                // Fetch preferences separately into preferences slice (not persisted)
                 try {
+                    dispatch(setPreferencesLoading(true));
                     const freshPrefs = await authService.getPreferences();
-                    // Merge fresh preferences with user data
-                    const userDataWithPrefs = { ...userData, prefs: freshPrefs };
-                    dispatch(login({ userData: userDataWithPrefs }));
+                    dispatch(setPreferences(freshPrefs));
                 } catch (prefsError) {
-                    // If preferences fetch fails, login without prefs (user can retry)
-                    console.log("Could not fetch preferences, logging in without prefs:", prefsError);
-                    dispatch(login({ userData }));
+                    // If preferences fetch fails, log error but continue
+                    console.log("Could not fetch preferences:", prefsError);
+                    dispatch(setPreferencesError(prefsError.message));
                 }
+                
                 dispatch(loadProfilePicture());
                 return { success: true, userData };
             } else {
@@ -124,6 +140,7 @@ export const performLogout = createAsyncThunk(
             
             // Clear local state
             dispatch(logout());
+            dispatch(clearPreferences());
             
             // Clear any persisted auth data
             try {

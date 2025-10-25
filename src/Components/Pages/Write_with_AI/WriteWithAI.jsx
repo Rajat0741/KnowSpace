@@ -8,7 +8,7 @@ import service from '@/appwrite/config'
 import { Sparkles, Zap, Crown, Plus, Minus, Send, CheckCircle, Loader2 } from 'lucide-react'
 import Button from '@/Components/ui/button'
 import { Input } from '@/Components/ui/input'
-import { updateUserData } from '@/store/authSlice'
+import { updatePreferences } from '@/store/preferencesSlice'
 
 const MAX_SOURCES = 10;
 
@@ -29,14 +29,15 @@ export default function WriteWithAI() {
   const [success, setSuccess] = useState(false)
 
   const userData = useSelector((state) => state.auth.userData)
+  const preferences = useSelector((state) => state.preferences)
   const dispatch = useDispatch()
 
   // Dynamically get usage data from Redux state (updates on reload)
   const mockUsageData = React.useMemo(() => ({
-    basic: { uses: userData?.prefs?.basic_uses || 0 },
-    pro: { uses: userData?.prefs?.pro_uses || 0 },
-    ultra: { uses: userData?.prefs?.ultra_uses || 0 }
-  }), [userData?.prefs?.basic_uses, userData?.prefs?.pro_uses, userData?.prefs?.ultra_uses]);
+    basic: { uses: preferences?.basic_uses || 0 },
+    pro: { uses: preferences?.pro_uses || 0 },
+    ultra: { uses: preferences?.ultra_uses || 0 }
+  }), [preferences?.basic_uses, preferences?.pro_uses, preferences?.ultra_uses]);
 
   const navigate = useNavigate()
 
@@ -146,10 +147,12 @@ export default function WriteWithAI() {
 
       // Update user preferences in Redux state
       const updatedPrefs = {
-        ...userData.prefs,
+        basic_uses: preferences.basic_uses,
+        pro_uses: preferences.pro_uses,
+        ultra_uses: preferences.ultra_uses,
         [`${requestType}_uses`]: mockUsageData[requestType].uses - 1
       }
-      dispatch(updateUserData({ prefs: updatedPrefs }))
+      dispatch(updatePreferences(updatedPrefs))
 
       setSuccess(true)
       toast.success('AI post generation started!', {
