@@ -15,9 +15,15 @@ export const useRoutePreloader = () => {
         return;
       }
 
-      // Preload the component
-      await routeImporter();
-      preloadedRoutes.current.add(routeKey);
+      // Preload the component - failures won't be cached
+      try {
+        await routeImporter();
+        preloadedRoutes.current.add(routeKey);
+      } catch (error) {
+        // If preload fails, don't cache the failure
+        // Let the actual lazy load handle retry when user navigates
+        console.warn('Failed to preload route, will retry on navigation:', error.message);
+      }
       
     } catch (error) {
       console.warn('Failed to preload route:', error);
@@ -26,10 +32,13 @@ export const useRoutePreloader = () => {
 
   const preloadCommonRoutes = () => {
     // Preload most commonly accessed routes after initial load
+    // These will use the retry logic from the Pages index.js
     setTimeout(() => {
       preloadRoute(() => import('../Components/Pages/Home/Home'));
       preloadRoute(() => import('../Components/Pages/Profile/Profile'));
       preloadRoute(() => import('../Components/Pages/Search/Search'));
+      preloadRoute(() => import('../Components/Pages/PostForm/PostForm'));
+      preloadRoute(() => import('../Components/Pages/Settings/Settings'));
     }, 2000); // Wait 2 seconds after app load
   };
 
