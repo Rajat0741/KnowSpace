@@ -633,9 +633,10 @@
 
   /* Responsive typography and containment for post content */
   .post-content {
-    @apply text-base leading-relaxed break-words text-gray-800 dark:text-gray-200;
+    @apply text-base leading-relaxed text-gray-800 dark:text-gray-200;
     max-width: 100%;
-    overflow-wrap: anywhere;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   @media (min-width: 640px) {
@@ -779,25 +780,66 @@
     box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
   }
 
+  /* Table container for horizontal scrolling on mobile */
+  .post-content > table,
   .post-content table {
-    @apply w-full my-8 rounded-xl overflow-hidden;
-    display: table;
-    border-collapse: separate;
-    border-spacing: 0;
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    @apply my-8 rounded-xl;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     border: 1px solid theme('colors.gray.200');
   }
 
   @media (prefers-color-scheme: dark) {
+    .post-content > table,
     .post-content table {
       border-color: theme('colors.gray.700');
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
     }
   }
 
+  .post-content table > tbody,
+  .post-content table > thead {
+    display: table;
+    width: 100%;
+    table-layout: auto;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  @media (min-width: 768px) {
+    .post-content > table,
+    .post-content table {
+      display: table;
+    }
+  }
+
   .post-content table th,
   .post-content table td {
-    @apply border-b border-gray-200 dark:border-gray-700 px-6 py-4 text-left;
+    @apply border-b border-gray-200 dark:border-gray-700 px-4 py-3 text-left;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 300px;
+    min-width: 80px;
+  }
+
+  @media (min-width: 768px) {
+    .post-content table th,
+    .post-content table td {
+      @apply px-6 py-4;
+      max-width: 400px;
+      min-width: 120px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .post-content table th,
+    .post-content table td {
+      max-width: none;
+    }
   }
 
   .post-content table th {
