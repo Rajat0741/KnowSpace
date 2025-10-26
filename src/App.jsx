@@ -42,10 +42,7 @@ function App() {
     }).catch(() => {
       // Error is already handled in the thunk
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-
+  }, [dispatch, preloadCommonRoutes]);
 
   // Scroll-to-top button logic
   const [showScrollTop, setShowScrollTop] = useState(false);
