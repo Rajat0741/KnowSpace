@@ -115,7 +115,7 @@ function RTE({ name, control, label, defaultvalue = "", onEditorInit, ...props }
                                 font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
                                 
                                 // Advanced list options
-                                advlist_bullet_styles: 'square circle disc',
+                                advlist_bullet_styles: 'square circle',
                                 advlist_number_styles: 'lower-alpha lower-roman upper-alpha upper-roman',
                                 
                                 // Media settings

@@ -51,10 +51,6 @@
   color: inherit;
 }
 
-.article-ul .article-li {
-  list-style-type: disc;
-}
-
 .article-ol .article-li {
   list-style-type: decimal;
 }
