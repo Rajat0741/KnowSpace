@@ -265,14 +265,25 @@ function Home() {
       {/* Loading State */}
       {isLoading && (
         <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/50 rounded-2xl p-8 shadow-xl animate-in fade-in duration-500">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 group-[.sidebar-open]/body:xl:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
             {Array.from({ length: 12 }).map((_, index) => (
-              <div key={`skeleton-${index}`} className="space-y-4">
-                <SkeletonCard className="h-56 bg-slate-200/60 dark:bg-slate-700/60 rounded-xl animate-pulse" />
-                <div className="space-y-2">
-                  <div className="h-4 w-5/6 bg-slate-200/60 dark:bg-slate-700/60 rounded animate-pulse"></div>
-                  <div className="h-3 w-2/3 bg-slate-200/60 dark:bg-slate-700/60 rounded animate-pulse"></div>
-                  <div className="h-3 w-1/2 bg-slate-200/60 dark:bg-slate-700/60 rounded animate-pulse"></div>
+              <div key={`skeleton-${index}`} className="bg-card border border-border/50 rounded-xl overflow-hidden">
+                {/* Image skeleton with 4:3 aspect ratio */}
+                <div className="aspect-[4/3] bg-slate-200/60 dark:bg-slate-700/60 animate-pulse"></div>
+                {/* Content area skeleton */}
+                <div className="p-4 space-y-2">
+                  {/* Title skeleton */}
+                  <div className="space-y-2">
+                    <div className="h-5 w-5/6 bg-slate-200/60 dark:bg-slate-700/60 rounded animate-pulse"></div>
+                    <div className="h-5 w-3/4 bg-slate-200/60 dark:bg-slate-700/60 rounded animate-pulse"></div>
+                  </div>
+                  {/* Author skeleton */}
+                  <div className="h-6 w-24 bg-slate-200/60 dark:bg-slate-700/60 rounded-md animate-pulse"></div>
+                  {/* Date and time skeleton */}
+                  <div className="flex justify-between">
+                    <div className="h-6 w-28 bg-slate-200/60 dark:bg-slate-700/60 rounded-md animate-pulse"></div>
+                    <div className="h-6 w-20 bg-slate-200/60 dark:bg-slate-700/60 rounded-md animate-pulse"></div>
+                  </div>
                 </div>
               </div>
             ))}

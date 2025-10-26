@@ -13,15 +13,17 @@ const PostGrid = ({
 
   const layoutConfigs = {
     grid: {
-      container: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6',
-      cardProps: { className: 'h-64 sm:h-72' }
+      // Reduced columns: sidebar open (3 posts), sidebar closed (4 posts)
+      // Auto height with padding for better content flow
+      container: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 group-[.sidebar-open]/body:xl:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-7',
+      cardProps: { className: '' } // Auto height with padding
     },
     masonry: {
-      container: 'columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 sm:gap-6 space-y-4',
+      container: 'columns-1 md:columns-2 lg:columns-3 group-[.sidebar-open]/body:xl:columns-3 xl:columns-4 gap-5 lg:gap-7 space-y-6',
       cardProps: { variant: 'default', showMetadata: true }
     },
     list: {
-      container: 'space-y-4',
+      container: 'space-y-6',
       cardProps: { orientation: 'horizontal' }
     },
     mixed: {
@@ -33,12 +35,12 @@ const PostGrid = ({
   const config = layoutConfigs[layout] || layoutConfigs.grid
 
   const renderGrid = () => (
-    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10'>
+    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 group-[.sidebar-open]/body:xl:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-7'>
       {remainingPosts.map((post) => (
         <div key={post.$id} className='w-full'>
           <Postcard 
             post={post} 
-            className="h-64 sm:h-72 w-full"
+            className="w-full"
           />
         </div>
       ))}
@@ -59,43 +61,41 @@ const PostGrid = ({
 
   const renderMixed = () => (
     <div className={cn(config.container, className)}>
-      {/* First section: Regular grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+      {/* First section: Larger regular grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 group-[.sidebar-open]/body:xl:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-7">
         {remainingPosts.slice(0, 8).map((post) => (
           <Postcard 
             key={post.$id} 
             post={post} 
             variant="default"
             showMetadata={true}
-            className="h-64 sm:h-72"
           />
         ))}
       </div>
 
-      {/* Second section: Compact horizontal cards */}
+      {/* Second section: Larger compact horizontal cards */}
       {remainingPosts.length > 8 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {remainingPosts.slice(8, 12).map((post) => (
             <CompactPostCard 
               key={post.$id} 
               post={post} 
               orientation="horizontal"
-              className="min-h-[120px]"
+              className="min-h-[160px]"
             />
           ))}
         </div>
       )}
 
-      {/* Remaining posts: Small grid */}
+      {/* Remaining posts: Larger grid */}
       {remainingPosts.length > 12 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
           {remainingPosts.slice(12).map((post) => (
             <Postcard 
               key={post.$id} 
               post={post} 
               variant="square"
               showMetadata={false}
-              className="h-48 sm:h-56"
             />
           ))}
         </div>
@@ -106,12 +106,11 @@ const PostGrid = ({
   const renderMasonry = () => (
     <div className={cn(config.container, className)}>
       {remainingPosts.map((post, index) => (
-        <div key={post.$id} className="break-inside-avoid mb-4">
+        <div key={post.$id} className="break-inside-avoid mb-6">
           <Postcard 
             post={post} 
             variant={index % 3 === 0 ? 'tall' : 'default'}
             showMetadata={true}
-            className={index % 3 === 0 ? 'h-80' : 'h-64'}
           />
         </div>
       ))}
