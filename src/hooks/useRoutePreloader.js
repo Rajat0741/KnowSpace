@@ -1,46 +1,60 @@
-import { useRef } from 'react';
+import { useRef, useCallback } from 'react';
 
 /**
  * Hook for preloading route components
- * This provides a simple API to preload components when user shows intent to navigate
+ * Simple on-demand preloading - only preloads when explicitly called
  */
 export const useRoutePreloader = () => {
-  const preloadedRoutes = useRef(new Set());
+  const preloadedRoutes = useRef(new Map());
 
-  const preloadRoute = async (routeImporter) => {
+  /**
+   * Preload a single route
+   */
+  const preloadRoute = useCallback(async (routeImporter) => {
     try {
       // Check if already preloaded
       const routeKey = routeImporter.toString();
       if (preloadedRoutes.current.has(routeKey)) {
-        return;
+        return preloadedRoutes.current.get(routeKey);
       }
 
-      // Preload the component - failures won't be cached
+      // Preload the component
       try {
-        await routeImporter();
-        preloadedRoutes.current.add(routeKey);
+        const module = await routeImporter();
+        preloadedRoutes.current.set(routeKey, {
+          status: 'success',
+          module,
+          timestamp: Date.now(),
+        });
+        return module;
       } catch (error) {
-        // If preload fails, don't cache the failure
-        // Let the actual lazy load handle retry when user navigates
+        // Cache the failure but allow retry later
+        preloadedRoutes.current.set(routeKey, {
+          status: 'failed',
+          error,
+          timestamp: Date.now(),
+        });
         console.warn('Failed to preload route, will retry on navigation:', error.message);
+        return null;
       }
       
     } catch (error) {
       console.warn('Failed to preload route:', error);
+      return null;
     }
-  };
+  }, []);
 
-  const preloadCommonRoutes = () => {
-    // Preload most commonly accessed routes after initial load
-    // These will use the retry logic from the Pages index.js
-    setTimeout(() => {
-      preloadRoute(() => import('../Components/Pages/Home/Home'));
-      preloadRoute(() => import('../Components/Pages/Profile/Profile'));
-      preloadRoute(() => import('../Components/Pages/Search/Search'));
-      preloadRoute(() => import('../Components/Pages/PostForm/PostForm'));
-      preloadRoute(() => import('../Components/Pages/Settings/Settings'));
-    }, 2000); // Wait 2 seconds after app load
-  };
+  /**
+   * Preload only critical routes immediately after authentication
+   * Just Home page - everything else loads on-demand
+   */
+  const preloadCommonRoutes = useCallback(() => {
+    // Only preload the Home page immediately - it's the first page users see
+    preloadRoute(() => import('../Components/Pages/Home/Home'));
+    
+    // Everything else (Profile, Search, PostForm, Settings) will load on-demand
+    // when user navigates to them
+  }, [preloadRoute]);
 
   return {
     preloadRoute,
@@ -50,7 +64,7 @@ export const useRoutePreloader = () => {
 
 /**
  * Route preloader functions for specific routes
- * Can be called from navigation components or on user interactions
+ * Can be called from navigation components or on user interactions (hover, focus)
  */
 export const routePreloaders = {
   home: () => import('../Components/Pages/Home/Home'),

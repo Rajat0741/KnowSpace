@@ -35,7 +35,7 @@ function App() {
   useEffect(() => {
     // Initialize auth on app start
     dispatch(initializeAuth()).then((result) => {
-      // Preload common routes for authenticated users
+      // Preload common routes ONLY ONCE after successful authentication
       if (result.payload?.userData) {
         preloadCommonRoutes();
       }
@@ -45,12 +45,7 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Preload routes when user becomes authenticated
-  useEffect(() => {
-    if (authStatus) {
-      preloadCommonRoutes();
-    }
-  }, [authStatus, preloadCommonRoutes]);
+
 
   // Scroll-to-top button logic
   const [showScrollTop, setShowScrollTop] = useState(false);

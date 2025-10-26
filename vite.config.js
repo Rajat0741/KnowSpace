@@ -22,13 +22,20 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom'],
           'router-vendor': ['react-router-dom'],
           'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs'],
-          'redux-vendor': ['@reduxjs/toolkit', 'react-redux'],
-          'lucide-vendor': ['lucide-react'],
+          'redux-vendor': ['@reduxjs/toolkit', 'react-redux', 'redux-persist'],
+          'query-vendor': ['@tanstack/react-query'],
           'form-vendor': ['react-hook-form'],
+          
+          // **OPTIMIZATION**: Separate heavy libraries for lazy loading
+          // TinyMCE is split into its own chunk to load only when editor is used
+          'editor': ['@tinymce/tinymce-react'],
+          'tinymce-core': ['tinymce'],
+          
+          // Motion libraries separated for better code splitting
+          'animation': ['framer-motion', 'motion'],
           
           // App chunks
           'auth': ['./src/appwrite/auth.js', './src/appwrite/config.js'],
-          'editor': ['@tinymce/tinymce-react', 'tinymce'],
           'store': ['./src/store/authSlice.js', './src/store/darkmodeSlice.js', './src/store/postSlice.js', './src/store/profileSlice.js'],
         },
         chunkFileNames: (chunkInfo) => {
@@ -59,12 +66,21 @@ export default defineConfig({
     sourcemap: false,
     minify: 'esbuild', // Use esbuild for faster builds
     target: 'esnext', // Modern browsers for better optimization
-    // Chunk size warnings
-    chunkSizeWarningLimit: 500,
+    // Chunk size warnings - increased to account for vendor chunks
+    chunkSizeWarningLimit: 600,
     cssCodeSplit: true, // Split CSS into separate files
+    // **OPTIMIZATION**: Enable module preload for faster chunk loading
+    modulePreload: {
+      polyfill: false, // Disable polyfill for modern browsers
+    },
   },
   // Prefetch chunks for better performance
   server: {
     preTransformRequests: false,
+  },
+  // **OPTIMIZATION**: Add optimizeDeps for better dev experience
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom', 'prop-types'],
+    exclude: ['@tinymce/tinymce-react', 'tinymce'], // Don't pre-bundle heavy editor
   },
 })

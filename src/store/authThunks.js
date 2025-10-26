@@ -32,7 +32,7 @@ export const initializeAuth = createAsyncThunk(
             dispatch(setLoading(true));
             
             // Small delay to ensure Redux Persist has rehydrated
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise(resolve => setTimeout(resolve, 50));
             
             const userData = await authService.getCurrentUser();
             
@@ -45,13 +45,16 @@ export const initializeAuth = createAsyncThunk(
                     dispatch(setPreferencesLoading(true));
                     const freshPrefs = await authService.getPreferences();
                     dispatch(setPreferences(freshPrefs));
+                    
+                    // Load profile picture after preferences are set
+                    // This ensures ProfilePicture component has correct preferences data
+                    await dispatch(loadProfilePicture());
                 } catch (prefsError) {
                     // If preferences fetch fails, log error but continue
                     console.log("Could not fetch preferences:", prefsError);
                     dispatch(setPreferencesError(prefsError.message));
                 }
                 
-                dispatch(loadProfilePicture());
                 return { success: true, userData };
             } else {
                 // If no user but we have persisted auth state, clear it
