@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { MessageSquare, X, Send, MoreVertical, Edit2, Trash2, User } from 'lucide-react';
+import { Query } from 'appwrite';
 import {
   Drawer,
   DrawerClose,
@@ -57,7 +60,7 @@ function Avatar({ username, onClick }) {
 }
 
 // Single comment component
-function Comment({ comment, currentUserId, onEdit, onDelete }) {
+function Comment({ comment, currentUserId, currentUserLabels, onEdit, onDelete }) {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content || '');
@@ -65,6 +68,7 @@ function Comment({ comment, currentUserId, onEdit, onDelete }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const isOwner = currentUserId === comment.userid;
+  const isAdmin = currentUserLabels && currentUserLabels.includes('admin');
 
   const handleSaveEdit = async () => {
     if (!editContent.trim() || editContent === comment.content) return;
@@ -99,7 +103,7 @@ function Comment({ comment, currentUserId, onEdit, onDelete }) {
   };
 
   return (
-    <div className="group bg-gradient-to-r from-blue-50/30 to-purple-50/30 dark:from-blue-950/20 dark:to-purple-950/20 backdrop-blur-sm rounded-xl p-4 border border-purple-200/30 dark:border-purple-800/30 hover:border-purple-300/50 dark:hover:border-purple-700/50 transition-all duration-300">
+    <div className="group bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 backdrop-blur-sm rounded-xl p-4 border-2 border-purple-200/50 dark:border-purple-800/30 hover:border-purple-300/70 dark:hover:border-purple-700/50 transition-all duration-300 shadow-sm hover:shadow-md">
       <div className="flex gap-3">
         {/* Avatar */}
         <Avatar
@@ -123,28 +127,32 @@ function Comment({ comment, currentUserId, onEdit, onDelete }) {
               </span>
             </div>
 
-            {/* Three-dot menu for owner */}
-            {isOwner && !isEditing && (
+            {/* Three-dot menu for owner or admin */}
+            {(isOwner || isAdmin) && !isEditing && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="p-1.5 rounded-lg hover:bg-muted/50 transition-colors opacity-0 group-hover:opacity-100">
-                    <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                  <button className="p-1.5 rounded-lg bg-slate-100/80 dark:bg-muted/50 hover:bg-slate-200 dark:hover:bg-muted transition-colors opacity-0 group-hover:opacity-100 border border-slate-300/50 dark:border-border/50 shadow-sm">
+                    <MoreVertical className="w-4 h-4 text-slate-700 dark:text-muted-foreground" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
-                  <DropdownMenuItem
-                    onClick={() => setIsEditing(true)}
-                    className="cursor-pointer"
-                  >
-                    <Edit2 className="w-4 h-4 mr-2" />
-                    Edit
-                  </DropdownMenuItem>
+                  {/* Edit option only for owner */}
+                  {isOwner && (
+                    <DropdownMenuItem
+                      onClick={() => setIsEditing(true)}
+                      className="cursor-pointer"
+                    >
+                      <Edit2 className="w-4 h-4 mr-2" />
+                      Edit
+                    </DropdownMenuItem>
+                  )}
+                  {/* Delete option for owner or admin */}
                   <DropdownMenuItem
                     onClick={() => setIsDeleteDialogOpen(true)}
                     className="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
-                    Delete
+                    Delete {isAdmin && !isOwner && '(Admin)'}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -214,31 +222,39 @@ function Comment({ comment, currentUserId, onEdit, onDelete }) {
 // Main CommentsDrawer component
 export default function CommentsDrawer({ postId }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const userData = useSelector((state) => state.auth.userData);
-  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const fetchComments = React.useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await service.getCommentsByPostId(postId);
-      setComments(response.documents || []);
-    } catch (error) {
-      console.error('Failed to fetch comments:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [postId]);
+  const COMMENTS_PER_PAGE = 10;
 
-  // Fetch comments when drawer opens
-  useEffect(() => {
-    if (isOpen) {
-      fetchComments();
-    }
-  }, [isOpen, fetchComments]);
+  // Infinite query for comments with pagination
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isLoading
+  } = useInfiniteQuery({
+    queryKey: ['comments', postId],
+    queryFn: ({ pageParam = null }) => {
+      const queries = [
+        Query.limit(COMMENTS_PER_PAGE),
+        ...(pageParam ? [Query.cursorAfter(pageParam)] : [])
+      ];
+      return service.getCommentsByPostId(postId, queries);
+    },
+    getNextPageParam: (lastPage) => {
+      const comments = lastPage.documents || [];
+      return comments.length === COMMENTS_PER_PAGE ? comments[comments.length - 1].$id : undefined;
+    },
+    enabled: isOpen,
+    staleTime: 0, // Always refetch when drawer opens
+  });
+
+  // Flatten comments from all pages
+  const comments = data?.pages.flatMap(page => page.documents || []) || [];
 
   const handleAddComment = async (e) => {
     e.preventDefault();
@@ -246,14 +262,15 @@ export default function CommentsDrawer({ postId }) {
 
     setIsSubmitting(true);
     try {
-      const comment = await service.createComment({
+      await service.createComment({
         userid: userData.$id,
         username: userData.name || 'Anonymous',
         postid: postId,
         content: newComment.trim()
       });
       
-      setComments([comment, ...comments]);
+      // Invalidate and refetch comments query to include new comment
+      queryClient.invalidateQueries(['comments', postId]);
       setNewComment('');
     } catch (error) {
       console.error('Failed to add comment:', error);
@@ -266,9 +283,8 @@ export default function CommentsDrawer({ postId }) {
   const handleEditComment = async (commentId, content) => {
     try {
       await service.updateComment(commentId, content);
-      setComments(comments.map(c => 
-        c.$id === commentId ? { ...c, content } : c
-      ));
+      // Invalidate and refetch to show updated comment
+      queryClient.invalidateQueries(['comments', postId]);
     } catch (error) {
       console.error('Failed to edit comment:', error);
       throw error;
@@ -278,7 +294,8 @@ export default function CommentsDrawer({ postId }) {
   const handleDeleteComment = async (commentId) => {
     try {
       await service.deleteComment(commentId);
-      setComments(comments.filter(c => c.$id !== commentId));
+      // Invalidate and refetch to remove deleted comment
+      queryClient.invalidateQueries(['comments', postId]);
     } catch (error) {
       console.error('Failed to delete comment:', error);
       toast.error('Failed to delete comment. Please try again.');
@@ -288,13 +305,13 @@ export default function CommentsDrawer({ postId }) {
   return (
     <Drawer direction="right" open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        <button className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20">
-          <MessageSquare className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
-          <span className="hidden sm:inline text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors">
+        <button className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500/30 to-purple-500/30 hover:from-blue-500/40 hover:to-purple-500/40 dark:from-blue-500/20 dark:to-purple-500/20 dark:hover:from-blue-500/30 dark:hover:to-purple-500/30 border border-purple-500/40 dark:border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/30 shadow-sm">
+          <MessageSquare className="w-4 h-4 text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors" />
+          <span className="hidden sm:inline text-sm font-medium text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">
             Comments
           </span>
           {comments.length > 0 && (
-            <span className="px-2 py-0.5 bg-purple-500/30 rounded-full text-xs font-semibold text-purple-600 dark:text-purple-300">
+            <span className="px-2 py-0.5 bg-purple-500/40 dark:bg-purple-500/30 rounded-full text-xs font-semibold text-purple-700 dark:text-purple-300">
               {comments.length}
             </span>
           )}
@@ -327,9 +344,9 @@ export default function CommentsDrawer({ postId }) {
             </div>
           </DrawerHeader>
 
-          {/* Comments List */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {isLoading ? (
+          {/* Comments List with Infinite Scroll */}
+          <div id="commentsScrollableDiv" className="flex-1 overflow-y-auto p-4">
+            {isLoading && comments.length === 0 ? (
               <div className="flex items-center justify-center py-12">
                 <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
@@ -342,15 +359,38 @@ export default function CommentsDrawer({ postId }) {
                 <p className="text-sm text-muted-foreground mt-1">Be the first to comment!</p>
               </div>
             ) : (
-              comments.map((comment) => (
-                <Comment
-                  key={comment.$id}
-                  comment={comment}
-                  currentUserId={userData?.$id}
-                  onEdit={handleEditComment}
-                  onDelete={handleDeleteComment}
-                />
-              ))
+              <InfiniteScroll
+                dataLength={comments.length}
+                next={fetchNextPage}
+                hasMore={hasNextPage || false}
+                loader={
+                  <div className="flex items-center justify-center py-4">
+                    <div className="w-6 h-6 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                }
+                scrollableTarget="commentsScrollableDiv"
+                endMessage={
+                  comments.length > 10 && (
+                    <div className="text-center py-4">
+                      <p className="text-sm text-muted-foreground">
+                        You've reached the end of comments
+                      </p>
+                    </div>
+                  )
+                }
+                className="space-y-4"
+              >
+                {comments.map((comment) => (
+                  <Comment
+                    key={comment.$id}
+                    comment={comment}
+                    currentUserId={userData?.$id}
+                    currentUserLabels={userData?.labels}
+                    onEdit={handleEditComment}
+                    onDelete={handleDeleteComment}
+                  />
+                ))}
+              </InfiniteScroll>
             )}
           </div>
 

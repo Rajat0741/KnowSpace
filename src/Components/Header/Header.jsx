@@ -10,6 +10,7 @@ import AITrackingDrawer from '../ui/Custom/AITrackingDrawer/AITrackingDrawer';
 import { useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Shield } from 'lucide-react';
 
 
 export default function Header() {
@@ -23,7 +24,9 @@ export default function Header() {
   const headerStyle = "mr-2 ml-2 w-auto";
 
   const userStatus = useSelector((state) => state.auth.status)
+  const userData = useSelector((state) => state.auth.userData)
   const isLoggedIn = (userStatus === true);
+  const isAdmin = userData && userData.labels && userData.labels.includes('admin');
 
   // Page-based text content
   const getPageInfo = () => {
@@ -105,6 +108,12 @@ export default function Header() {
           </p>
         </div>
         <div className="flex lg:flex-1 lg:justify-end items-center gap-2 lg:gap-4 text-black dark:text-white">
+          {isLoggedIn && isAdmin && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500/20 to-orange-500/20 dark:from-amber-500/30 dark:to-orange-500/30 border border-amber-500/40 dark:border-amber-500/50 rounded-full shadow-sm" title="Administrator">
+              <Shield className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <span className="hidden sm:inline text-xs font-semibold text-amber-700 dark:text-amber-300">Admin</span>
+            </div>
+          )}
           <DarkModeToggle />
           {isLoggedIn && (
             <>

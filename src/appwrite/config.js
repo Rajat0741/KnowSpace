@@ -189,14 +189,15 @@ export class Service {
         }
     }
 
-    async getCommentsByPostId(postid) {
+    async getCommentsByPostId(postid, queries = []) {
         try {
             return await this.databases.listDocuments(
                 conf.appWriteDatabaseId,
                 conf.appWriteCommentsCollectionId,
                 [
                     Query.equal('postid', postid),
-                    Query.orderDesc('$createdAt')
+                    Query.orderDesc('$createdAt'),
+                    ...queries
                 ]
             );
         } catch (error) {

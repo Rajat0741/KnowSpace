@@ -211,6 +211,9 @@ function PostContent({ resource, wasUpdated = false, location }) {
 
   // Check if current user owns this post
   const isOwner = userData && post && userData.$id === post.userid;
+  
+  // Check if current user is admin
+  const isAdmin = userData && userData.labels && userData.labels.includes('admin');
 
   // Handle navigation button click
   const handleNavigationClick = () => {
@@ -223,7 +226,7 @@ function PostContent({ resource, wasUpdated = false, location }) {
 
   // Delete post functionality
   const handleDeletePost = async () => {
-    if (!isOwner) return;
+    if (!isOwner && !isAdmin) return;
     setShowDeleteConfirm(true);
   };
 
@@ -386,10 +389,10 @@ function PostContent({ resource, wasUpdated = false, location }) {
 
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Owner Actions - Edit and Delete Buttons */}
-              {isOwner && (
+              {(isOwner || isAdmin) && (
                 <div className="flex items-center gap-1 sm:gap-2">
-                  {/* Activate button if post is inactive */}
-                  {post.status === 'inactive' && (
+                  {/* Activate button if post is inactive - only for owner */}
+                  {isOwner && post.status === 'inactive' && (
                     <button
                       onClick={handleActivatePost}
                       disabled={isActivating}
@@ -402,23 +405,27 @@ function PostContent({ resource, wasUpdated = false, location }) {
                       </span>
                     </button>
                   )}
-                  <button
-                    onClick={handleEditPost}
-                    className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
-                    title="Edit Post"
-                  >
-                    <Edit className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
-                    <span className="hidden sm:inline text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors">Edit</span>
-                  </button>
+                  {/* Edit button - only for owner */}
+                  {isOwner && (
+                    <button
+                      onClick={handleEditPost}
+                      className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500/30 to-purple-500/30 hover:from-blue-500/40 hover:to-purple-500/40 dark:from-blue-500/20 dark:to-purple-500/20 dark:hover:from-blue-500/30 dark:hover:to-purple-500/30 border border-purple-500/40 dark:border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/30 shadow-sm"
+                      title="Edit Post"
+                    >
+                      <Edit className="w-4 h-4 text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors" />
+                      <span className="hidden sm:inline text-sm font-medium text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">Edit</span>
+                    </button>
+                  )}
 
+                  {/* Delete button - available for owner and admin */}
                   <button
                     onClick={handleDeletePost}
                     disabled={isDeleting}
-                    className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-red-500/20 to-red-600/20 hover:from-red-500/30 hover:to-red-600/30 border border-red-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Delete Post"
+                    className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-red-500/30 to-red-600/30 hover:from-red-500/40 hover:to-red-600/40 dark:from-red-500/20 dark:to-red-600/20 dark:hover:from-red-500/30 dark:hover:to-red-600/30 border border-red-500/40 dark:border-red-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                    title={isAdmin && !isOwner ? 'Delete Post (Admin)' : 'Delete Post'}
                   >
-                    <Trash2 className="w-4 h-4 text-red-400 group-hover:text-red-300 transition-colors" />
-                    <span className="hidden sm:inline text-sm font-medium text-red-400 group-hover:text-red-300 transition-colors">
+                    <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400 group-hover:text-red-700 dark:group-hover:text-red-300 transition-colors" />
+                    <span className="hidden sm:inline text-sm font-medium text-red-600 dark:text-red-400 group-hover:text-red-700 dark:group-hover:text-red-300 transition-colors">
                       {isDeleting ? 'Deleting...' : 'Delete'}
                     </span>
                   </button>
@@ -431,11 +438,11 @@ function PostContent({ resource, wasUpdated = false, location }) {
               {/* Share Icon - Same size as comments */}
               <button
                 onClick={openShareModal}
-                className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
+                className="group inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500/30 to-purple-500/30 hover:from-blue-500/40 hover:to-purple-500/40 dark:from-blue-500/20 dark:to-purple-500/20 dark:hover:from-blue-500/30 dark:hover:to-purple-500/30 border border-purple-500/40 dark:border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/30 shadow-sm"
                 title="Share Post"
               >
-                <Share2 className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
-                <span className="hidden sm:inline text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors">Share</span>
+                <Share2 className="w-4 h-4 text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors" />
+                <span className="hidden sm:inline text-sm font-medium text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">Share</span>
               </button>
 
               {/* Category Badge with Glow - Always visible but smaller on mobile */}
@@ -559,10 +566,10 @@ function PostContent({ resource, wasUpdated = false, location }) {
                 <span className="text-sm font-semibold text-foreground/80">Share this article:</span>
                 <button
                   onClick={openShareModal}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 border border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/30 to-purple-500/30 hover:from-blue-500/40 hover:to-purple-500/40 dark:from-blue-500/20 dark:to-purple-500/20 dark:hover:from-blue-500/30 dark:hover:to-purple-500/30 border border-purple-500/40 dark:border-purple-500/30 rounded-lg transition-all duration-300 hover:scale-105 shadow-sm"
                 >
-                  <Share2 className="w-4 h-4 text-purple-400" />
-                  <span className="text-sm font-medium text-purple-400">Share</span>
+                  <Share2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                  <span className="text-sm font-medium text-purple-600 dark:text-purple-400">Share</span>
                 </button>
               </div>
             </div>

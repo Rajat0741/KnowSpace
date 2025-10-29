@@ -6,8 +6,13 @@ import service from '../../../appwrite/config'
 import { Query } from 'appwrite'
 import {SkeletonCard} from '../../ui/SkeletonCard'
 import { Input } from '../../ui/input'
-import Select from '../../ui/Select'
-import { Search, Filter, Sparkles, TrendingUp } from 'lucide-react'
+import { Search, Filter, X } from 'lucide-react'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/Components/ui/popover"
+import { Separator } from "@/Components/ui/separator"
 
 function Home() {
   // ==========================================
@@ -20,7 +25,9 @@ function Home() {
   // STATE MANAGEMENT
   // ==========================================
   const [selectedCategory, setSelectedCategory] = useState('all')
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState('') // Actual search term for query
+  const [searchInput, setSearchInput] = useState('') // Input value (not yet searched)
+  const [searchType, setSearchType] = useState('title') // 'title' or 'author'
   const [hasSearched, setHasSearched] = useState(false)
 
   const {
@@ -29,15 +36,21 @@ function Home() {
     hasNextPage,
     isLoading
   } = useInfiniteQuery({
-    queryKey: ['posts', selectedCategory, searchTerm],
+    queryKey: ['posts', selectedCategory, searchTerm, searchType],
     queryFn: ({ pageParam = null }) => {
       const queries = [
-        Query.orderDesc('$createdAt'),
+        Query.orderDesc('$createdAt'), // Always sort by newest first
         Query.limit(POSTS_PER_PAGE),
         Query.equal('status', 'active'),
         ...(pageParam ? [Query.cursorAfter(pageParam)] : []),
         ...(selectedCategory !== 'all' ? [Query.equal('category', selectedCategory)] : []),
-        ...(searchTerm.trim() ? [Query.contains('title', searchTerm.trim())] : []),
+        // Search by title or author based on searchType
+        ...(searchTerm.trim() 
+          ? searchType === 'title'
+            ? [Query.search('title', searchTerm.trim())]
+            : [Query.contains('authorName', searchTerm.trim())]
+          : []
+        ),
       ]
       return service.getPosts(queries)
     },
@@ -56,11 +69,25 @@ function Home() {
   // ==========================================
 
   /**
+   * Handles Enter key press to trigger search
+   */
+  const handleSearchKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      setSearchTerm(searchInput.trim())
+      if (searchInput.trim() !== '') {
+        setHasSearched(true)
+      }
+    }
+  }
+
+  /**
    * Clears all search filters and resets to initial state
    */
-  const clearFilters = () => {
+  const handleClearAllFilters = () => {
     setSearchTerm('')
+    setSearchInput('')
     setSelectedCategory('all')
+    setSearchType('title')
     setHasSearched(false)
   }
 
@@ -69,20 +96,16 @@ function Home() {
   // ==========================================
 
   /**
-   * Debounced search effect - triggers search when filters change
+   * Effect to handle category changes
    */
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchTerm !== '' || selectedCategory !== 'all') {
-        setHasSearched(true)
-      } else if (searchTerm === '' && selectedCategory === 'all' && hasSearched) {
-        // Reset to initial state when both filters are cleared
-        setHasSearched(false)
-      }
-    }, 500) // 500ms debounce
-
-    return () => clearTimeout(timer)
-  }, [searchTerm, selectedCategory, hasSearched])
+    if (selectedCategory !== 'all') {
+      setHasSearched(true)
+    } else if (searchTerm === '' && selectedCategory === 'all' && hasSearched) {
+      // Reset to initial state when both filters are cleared
+      setHasSearched(false)
+    }
+  }, [selectedCategory, searchTerm, hasSearched])
 
   // ==========================================
   // EVENT HANDLERS
@@ -107,85 +130,128 @@ function Home() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         
-        {/* Hero Header Section */}
-        <div className="mb-8 lg:mb-12">
-          <div className="text-center space-y-4 mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-600/20 dark:to-purple-600/20 rounded-full border border-purple-200/50 dark:border-purple-700/50 backdrop-blur-sm">
-              <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-              <span className="text-sm font-semibold text-purple-900 dark:text-purple-100">Discover Amazing Content</span>
+        {/* Compact Filters Section */}
+        <div className="mb-8">
+          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/50 rounded-xl shadow-lg p-4">
+            {/* Filter Controls - Clean search bar with filters button */}
+            <div className="relative flex items-center w-full">
+              {/* Search Icon */}
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
+                <Search className="w-5 h-5 text-slate-400 dark:text-slate-500" />
+              </span>
+              {/* Search Input */}
+              <Input
+                type="text"
+                placeholder={searchType === 'title' ? 'Search articles by title... (Press Enter)' : 'Search articles by author name... (Press Enter)'}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyPress={handleSearchKeyPress}
+                className="h-12 pl-12 pr-32 bg-slate-50 dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 rounded-lg focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all w-full text-base"
+                style={{ boxShadow: '0 2px 8px 0 rgba(80,80,120,0.04)' }}
+              />
+              {/* Filters Popover - moved left, inside input */}
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 z-20">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="h-9 px-3 inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-md hover:bg-slate-200 dark:hover:bg-slate-600 focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all font-medium text-sm shadow-sm align-middle">
+                      <Filter className="w-4 h-4" />
+                      <span className="hidden sm:inline">Filters</span>
+                      {(selectedCategory !== 'all' || searchType !== 'title') && (
+                        <span className="flex items-center justify-center w-5 h-5 text-xs font-semibold bg-purple-500 text-white rounded-full">
+                          {(selectedCategory !== 'all' ? 1 : 0) + (searchType !== 'title' ? 1 : 0)}
+                        </span>
+                      )}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-lg rounded-xl">
+                    <div className="space-y-4">
+                      {/* Search Type */}
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                          Search By
+                        </label>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            onClick={() => setSearchType('title')}
+                            className={`px-4 py-2.5 rounded-lg border-2 transition-all font-medium text-sm ${
+                              searchType === 'title'
+                                ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                                : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'
+                            }`}
+                          >
+                            📝 Title
+                          </button>
+                          <button
+                            onClick={() => setSearchType('author')}
+                            className={`px-4 py-2.5 rounded-lg border-2 transition-all font-medium text-sm ${
+                              searchType === 'author'
+                                ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                                : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'
+                            }`}
+                          >
+                            👤 Author
+                          </button>
+                        </div>
+                      </div>
+                      <Separator className="bg-slate-200 dark:bg-slate-700" />
+                      {/* Category */}
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                          Category
+                        </label>
+                        <select
+                          value={selectedCategory === 'all' ? 'All Categories' : selectedCategory}
+                          onChange={(e) => {
+                            const value = e.target.value === 'All Categories' ? 'all' : e.target.value;
+                            handleCategoryChange(value);
+                          }}
+                          className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all cursor-pointer"
+                        >
+                          {categories.map(category => (
+                            <option key={category} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
-            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-900 dark:text-white leading-tight">
-              Explore <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">Knowledge</span>
-            </h1>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Browse through our collection of articles, tutorials, and insights
-            </p>
-          </div>
 
-          {/* Search and Filter Card */}
-          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/50 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-            <div className="p-6 lg:p-8">
-              <div className="flex flex-col lg:flex-row gap-4">
-                {/* Search Input with Icon */}
-                <div className="flex-1 lg:flex-[2] relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-purple-500 transition-colors pointer-events-none z-10">
-                    <Search className="w-5 h-5" />
-                  </div>
-                  <Input
-                    type="text"
-                    placeholder="Search articles, tutorials..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-12 pr-4 bg-slate-50/80 dark:bg-slate-800/80 border-slate-300/60 dark:border-slate-600/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 rounded-xl py-6 focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all duration-200 w-full text-base shadow-sm hover:shadow-md"
-                  />
-                </div>
-
-                {/* Category Dropdown with Icon */}
-                <div className="flex-1 relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 z-10 pointer-events-none">
-                    <Filter className="w-5 h-5" />
-                  </div>
-                  <Select
-                    options={categories}
-                    value={selectedCategory === 'all' ? 'All Categories' : selectedCategory}
-                    onChange={(e) => {
-                      const value = e.target.value === 'All Categories' ? 'all' : e.target.value;
-                      handleCategoryChange(value);
-                    }}
-                    showIcons={true}
-                    className="pl-12 bg-slate-50/80 dark:bg-slate-800/80 border-slate-300/60 dark:border-slate-600/60 text-slate-900 dark:text-slate-100 shadow-sm hover:shadow-md transition-all duration-200"
-                  />
+            {/* Active Filters */}
+            {(searchTerm || selectedCategory !== 'all' || searchType !== 'title') && (
+              <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                <div className="flex flex-wrap gap-2 items-center">
+                  <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                    Active Filters:
+                  </span>
+                  {searchType === 'author' && (
+                    <span className="inline-flex items-center gap-1.5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-md text-xs font-medium border border-indigo-200 dark:border-indigo-800">
+                      👤 Search by Author
+                    </span>
+                  )}
+                  {selectedCategory !== 'all' && (
+                    <span className="inline-flex items-center gap-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-md text-xs font-medium border border-blue-200 dark:border-blue-800">
+                      📂 {selectedCategory}
+                    </span>
+                  )}
+                  {searchTerm && (
+                    <span className="inline-flex items-center gap-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2.5 py-1 rounded-md text-xs font-medium border border-purple-200 dark:border-purple-800">
+                      � "{searchTerm}"
+                    </span>
+                  )}
+                  <button
+                    onClick={handleClearAllFilters}
+                    className="inline-flex items-center gap-1 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-xs font-medium px-2.5 py-1 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-800"
+                  >
+                    <X className="w-3 h-3" />
+                    Clear All
+                  </button>
                 </div>
               </div>
-
-              {/* Active Filters */}
-              {(searchTerm || selectedCategory !== 'all') && (
-                <div className="mt-6 p-4 bg-gradient-to-r from-slate-50/80 to-purple-50/40 dark:from-slate-800/80 dark:to-slate-700/40 rounded-xl border border-slate-200/60 dark:border-slate-700/50 backdrop-blur-sm">
-                  <div className="flex flex-wrap gap-3 items-center">
-                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4" />
-                      Active Filters:
-                    </span>
-                    {selectedCategory !== 'all' && (
-                      <span className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 dark:from-blue-600 dark:to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
-                        📂 {selectedCategory}
-                      </span>
-                    )}
-                    {searchTerm && (
-                      <span className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
-                        🔍 "{searchTerm}"
-                      </span>
-                    )}
-                    <button
-                      onClick={clearFilters}
-                      className="inline-flex items-center gap-2 text-red-700 dark:text-red-400 hover:text-white dark:hover:text-white bg-red-50 dark:bg-red-900/30 hover:bg-red-600 dark:hover:bg-red-600 text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200 border border-red-200 dark:border-red-700 hover:border-red-600 dark:hover:border-red-600 transform hover:scale-105 shadow-sm hover:shadow-md"
-                    >
-                      ✕ Clear All
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
 
@@ -312,7 +378,7 @@ function Home() {
             </p>
             {hasSearched && (
               <button
-                onClick={clearFilters}
+                onClick={handleClearAllFilters}
                 className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white rounded-xl transition-all duration-300 font-semibold text-base shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 <span className="text-xl">🔄</span>
