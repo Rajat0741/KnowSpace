@@ -55,7 +55,7 @@ function AppSidebar({ className }) {
   };
 
   return (
-    <Sidebar variant="sidebar" className={`${className} knowspace-sidebar sidebar-init`}>
+    <Sidebar variant="sidebar" className={`${className} knowspace-sidebar`}>
       <SidebarHeader className="relative">
         {/* Gradient Background for Header */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/8 via-purple-500/6 to-indigo-500/8 dark:from-blue-700/15 dark:via-purple-700/12 dark:to-indigo-700/15 rounded-lg -z-10" />
@@ -103,7 +103,7 @@ function AppSidebar({ className }) {
                 return (
                   <li 
                     key={item.title} 
-                    className="relative group menu-item-animated"
+                    className="relative group"
                     onMouseEnter={() => handleItemHover(item.preloader)}
                     role="listitem"
                   >
