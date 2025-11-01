@@ -18,7 +18,7 @@ function Home() {
   // ==========================================
   // CONFIGURATION & CONSTANTS
   // ==========================================
-  const POSTS_PER_PAGE = 12
+  const POSTS_PER_PAGE = 8
   const categories = ["All Categories", "Technology", "Programming", "Design", "Tutorials", "News", "Reviews", "Personal", "Other"]
 
   // ==========================================

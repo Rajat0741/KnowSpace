@@ -7,10 +7,16 @@ import { Calendar, Tag, Eye, Clock, ArrowRight } from 'lucide-react'
 function CompactPostCard({ post, className, orientation = 'horizontal' }) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
+  
+  // Check if post has a featured image
+  const hasFeaturedImage = post.featuredimage && post.featuredimage.trim() !== ''
+  
   // Handle both URLs and Appwrite file IDs
-  const previewUrl = post.featuredimage?.startsWith('http') 
-    ? post.featuredimage 
-    : service.getFileView(post.featuredimage)
+  const previewUrl = hasFeaturedImage 
+    ? (post.featuredimage?.startsWith('http') 
+        ? post.featuredimage 
+        : service.getFileView(post.featuredimage))
+    : null
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -48,7 +54,12 @@ function CompactPostCard({ post, className, orientation = 'horizontal' }) {
             ? 'w-24 sm:w-32 md:w-40 aspect-square' 
             : 'w-full aspect-video'
         )}>
-          {!imageError ? (
+          {!hasFeaturedImage ? (
+            /* No featured image */
+            <div className="absolute inset-0 bg-gradient-to-br from-muted via-muted/80 to-muted/60 flex items-center justify-center">
+              <Eye className="w-8 h-8 text-muted-foreground opacity-30" />
+            </div>
+          ) : !imageError ? (
             <>
               {/* Loading placeholder */}
               {!imageLoaded && (

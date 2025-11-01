@@ -11,10 +11,16 @@ function Postcard({ post, className, showMetadata = true, variant = 'default' })
   const [imageError, setImageError] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const cardRef = useRef(null)
+  
+  // Check if post has a featured image
+  const hasFeaturedImage = post.featuredimage && post.featuredimage.trim() !== ''
+  
   // Handle both URLs and Appwrite file IDs
-  const previewUrl = post.featuredimage?.startsWith('http') 
-    ? post.featuredimage 
-    : service.getFileView(post.featuredimage)
+  const previewUrl = hasFeaturedImage 
+    ? (post.featuredimage?.startsWith('http') 
+        ? post.featuredimage 
+        : service.getFileView(post.featuredimage))
+    : null
   const dispatch = useDispatch()
 
   const formatDate = (dateString) => {
@@ -38,7 +44,7 @@ function Postcard({ post, className, showMetadata = true, variant = 'default' })
 
   // Intersection Observer for lazy loading improvements
   useEffect(() => {
-    if (!cardRef.current) return
+    if (!cardRef.current || !hasFeaturedImage) return
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -53,7 +59,7 @@ function Postcard({ post, className, showMetadata = true, variant = 'default' })
 
     observer.observe(cardRef.current)
     return () => observer.disconnect()
-  }, [previewUrl])
+  }, [previewUrl, hasFeaturedImage])
 
   return (
     <div 
@@ -77,7 +83,15 @@ function Postcard({ post, className, showMetadata = true, variant = 'default' })
         )}>
           {/* Image Container */}
           <div className={cn("relative overflow-hidden", variants[variant])}>
-            {!imageError ? (
+            {!hasFeaturedImage ? (
+              /* No featured image */
+              <div className="absolute inset-0 bg-gradient-to-br from-muted via-muted/80 to-muted/60 flex items-center justify-center">
+                <div className="text-center text-muted-foreground p-6">
+                  <Eye className="w-12 h-12 mx-auto mb-3 opacity-40" />
+                  <p className="text-sm font-medium">No Featured Image</p>
+                </div>
+              </div>
+            ) : !imageError ? (
               <>
                 {/* Loading placeholder */}
                 {!imageLoaded && (

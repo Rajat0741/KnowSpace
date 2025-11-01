@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useLocation } from 'react-router-dom'
 import { Calendar, User, CheckCircle, XCircle, ArrowLeft, FileText } from 'lucide-react'
-import ProfilePicture from '../../ui/Custom/ProfilePicture/ProfilePicture'
+import ExternalProfilePicture from '../../ui/Custom/ProfilePicture/ExternalProfilePicture'
 import { SkeletonCard } from '../../ui/SkeletonCard'
 import { Postcard } from '../../ui/Custom/PostCard'
 import service from '@/appwrite/config'
@@ -46,7 +46,7 @@ function UserProfilePage() {
                     setUserIdState(userData.$id || '');
                     setUserName(userData.name || '');
                     setUserBio(userData.bio || '');
-                    setUserProfilePictureId(userData.profilePictureId?.url || '');
+                    setUserProfilePictureId(userData.profilePictureId || '');
                     setUserRegistrationDate(userData.registrationDate || '');
 
                     setPostsLoading(true);
@@ -208,7 +208,7 @@ function UserProfilePage() {
                                 
                                 {/* Profile Picture */}
                                 <div className='relative group'>
-                                    <ProfilePicture
+                                    <ExternalProfilePicture
                                         size="3xl"
                                         className="shadow-lg ring-4 ring-white/60 dark:ring-slate-700/60 transition-all duration-300 group-hover:ring-purple-400/60 group-hover:shadow-purple-400/20 group-hover:shadow-xl"
                                         profilePictureId={userProfilePictureId}

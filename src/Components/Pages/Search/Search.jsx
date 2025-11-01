@@ -32,7 +32,8 @@ const Search = () => {
     data,
     fetchNextPage,
     hasNextPage,
-    isFetching
+    isFetching,
+    refetch
   } = useInfiniteQuery({
     queryKey: ['searchUsers', activeSearchTerm],
     queryFn: async ({ pageParam = 0 }) => {
@@ -54,7 +55,8 @@ const Search = () => {
       return lastPage.pagination?.hasMore ? lastPage.nextOffset : undefined;
     },
     enabled: !!activeSearchTerm.trim(),
-    staleTime: Infinity, // Data never becomes stale - no background refetches
+    staleTime: 0, // Always consider data stale, so it refetches when search is triggered
+    gcTime: 5 * 60 * 1000, // Keep data in cache for 5 minutes (previously cacheTime)
   });
 
   // Flatten the paginated data
@@ -71,6 +73,8 @@ const Search = () => {
     } catch (error) {
       console.warn('Failed to save search term to sessionStorage:', error);
     }
+    // Trigger refetch to get fresh data
+    refetch();
   };
 
   const clearFilters = () => {

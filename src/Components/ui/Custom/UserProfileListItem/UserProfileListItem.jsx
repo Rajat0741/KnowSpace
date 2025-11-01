@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
-import ProfilePicture from '../ProfilePicture/ProfilePicture'
+import ExternalProfilePicture from '../ProfilePicture/ExternalProfilePicture'
 
 function UserProfileListItem({ user, className, variant = 'default' }) {
   const [isHovered, setIsHovered] = useState(false)
@@ -49,7 +49,7 @@ function UserProfileListItem({ user, className, variant = 'default' }) {
               isHovered && 'scale-110'
             )}>
               <div className="relative">
-                <ProfilePicture 
+                <ExternalProfilePicture 
                   size="2xl"
                   className={cn(
                     "shadow-lg ring-4 ring-white/60 dark:ring-slate-700/60 transition-all duration-300",
