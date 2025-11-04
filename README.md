@@ -1,9 +1,7 @@
 # KnowSpace - Modern Blog Platform 🚀# Blog Website with React + Vite + Appwrite + ImageKit
 
 
-
 <div align="center">A modern, feature-rich blog platform built with React, Vite, Appwrite for backend services, and ImageKit.io for optimized image delivery.
-
 
 
 ![KnowSpace Banner](https://img.shields.io/badge/KnowSpace-Blog%20Platform-purple?style=for-the-badge)## Features
@@ -18,7 +16,7 @@
 
 - 💬 Comments system
 
-*A feature-rich, AI-powered blog platform built with cutting-edge technologies*- 🔍 Search and filter posts
+*An AI-powered blog platform built with cutting-edge technologies*- 🔍 Search and filter posts
 
 - 📱 Responsive design
 
@@ -34,6 +32,28 @@
 
 - **Frontend**: React 19, Vite, TailwindCSS
 - **Backend**: Appwrite, Imagekit, Google AI studio
+
+---
+
+## Appwrite Functions (KnowSpace backend automation)
+
+KnowSpace uses Appwrite Cloud Functions to handle backend workflows and integrations.
+
+- Repository: [Knowspace_Appwrite_Functions](https://github.com/Rajat0741/Knowspace_Appwrite_Functions) (JavaScript)
+- What they do:
+  - Event-driven handlers for Appwrite Databases/Storage (e.g., when posts are created/updated)
+  - HTTP-triggered utilities (webhooks, metadata enrichment, notifications)
+  - Optional media-related tasks alongside ImageKit
+- How this app interacts:
+  - Triggers: database document create/update/delete events; optional scheduled jobs
+  - HTTP calls from the app for on-demand tasks when needed
+- Deployments:
+  - Managed via Appwrite Console or Appwrite CLI
+  - Function-specific environment variables and setup are documented in that repo
+
+Quick links:
+- Functions repo: [Knowspace_Appwrite_Functions](https://github.com/Rajat0741/Knowspace_Appwrite_Functions)
+- Appwrite: [appwrite.io](https://appwrite.io/)
 
 ---
 
