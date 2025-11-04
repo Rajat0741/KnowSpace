@@ -66,13 +66,7 @@ KnowSpace uses Appwrite Cloud Functions to handle backend workflows and integrat
 Quick links:
 - Functions repo: [Knowspace_Appwrite_Functions](https://github.com/Rajat0741/Knowspace_Appwrite_Functions)
 - Appwrite: [appwrite.io](https://appwrite.io/)
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License
-
+- 
 ---
 
 ## 👨‍💻 Author
