@@ -1,37 +1,49 @@
-# KnowSpace - Modern Blog Platform 🚀# Blog Website with React + Vite + Appwrite + ImageKit
+# KnowSpace - Modern Blog Platform
 
+## Blog Website with React + Vite + Appwrite + ImageKit
 
-<div align="center">A modern, feature-rich blog platform built with React, Vite, Appwrite for backend services, and ImageKit.io for optimized image delivery.
-
-
-![KnowSpace Banner](https://img.shields.io/badge/KnowSpace-Blog%20Platform-purple?style=for-the-badge)## Features
-
-[![React](https://img.shields.io/badge/React-19.1.1-61DAFB?style=flat&logo=react)](https://reactjs.org/)
-
-[![Vite](https://img.shields.io/badge/Vite-7.1.2-646CFF?style=flat&logo=vite)](https://vitejs.dev/)- 📝 Create, edit, and delete blog posts
-
-[![Appwrite](https://img.shields.io/badge/Appwrite-Backend-F02E65?style=flat&logo=appwrite)](https://appwrite.io/)- 🖼️ Optimized image uploads and delivery with ImageKit CDN
-
-[![TailwindCSS](https://img.shields.io/badge/Tailwind-4.1.12-38B2AC?style=flat&logo=tailwind-css)](https://tailwindcss.com/)- 👤 User authentication and profiles
-
-- 💬 Comments system
-
-*An AI-powered blog platform built with cutting-edge technologies*- 🔍 Search and filter posts
-
-- 📱 Responsive design
-
-[Features](#features) • [Tech Stack](#tech-stack) •- 🌙 Dark mode support
-
-- ⚡ Fast performance with Vite and ImageKit optimization
-
+<div align="center">
+  A modern, feature-rich blog platform built with React, Vite, Appwrite for backend services, and ImageKit.io for optimized image delivery.
+  <br /><br />
+  <img alt="KnowSpace Banner" src="https://img.shields.io/badge/KnowSpace-Blog%20Platform-purple?style=for-the-badge" />
+  <br /><br />
+  <a href="https://reactjs.org/">
+    <img alt="React" src="https://img.shields.io/badge/React-19.1.1-61DAFB?style=flat&logo=react" />
+  </a>
+  <a href="https://vitejs.dev/">
+    <img alt="Vite" src="https://img.shields.io/badge/Vite-7.1.2-646CFF?style=flat&logo=vite" />
+  </a>
+  <a href="https://appwrite.io/">
+    <img alt="Appwrite" src="https://img.shields.io/badge/Appwrite-Backend-F02E65?style=flat&logo=appwrite" />
+  </a>
+  <a href="https://tailwindcss.com/">
+    <img alt="TailwindCSS" src="https://img.shields.io/badge/Tailwind-4.1.12-38B2AC?style=flat&logo=tailwind-css" />
+  </a>
 </div>
 
-## Tech Stack
+<br />
+
+[Features](#features) • [Tech Stack](#tech-stack) • [Appwrite Functions](#appwrite-functions-knowspace-backend-automation) • [License](#-license) • [Support](#-support)
 
 ---
 
-- **Frontend**: React 19, Vite, TailwindCSS
-- **Backend**: Appwrite, Imagekit, Google AI studio
+## Features
+
+- 📝 Create, edit, and delete blog posts
+- 🖼️ Optimized image uploads and delivery with ImageKit CDN
+- 👤 User authentication and profiles
+- 💬 Comments system
+- 🔍 Search and filter posts
+- 📱 Responsive design
+- 🌙 Dark mode support
+- ⚡ Fast performance with Vite and ImageKit optimization
+
+---
+
+## Tech Stack
+
+- Frontend: React 19, Vite, TailwindCSS
+- Backend: Appwrite, ImageKit, Google AI Studio
 
 ---
 
@@ -73,11 +85,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **[Appwrite](https://appwrite.io/)** - Amazing BaaS platform
-- **[ImageKit](https://imagekit.io/)** - Powerful image CDN
-- **[TinyMCE](https://www.tiny.cloud/)** - Feature-rich editor
-- **[Radix UI](https://www.radix-ui.com/)** - Accessible component primitives
-- **Open Source Community** - For amazing tools and libraries
+- [Appwrite](https://appwrite.io/) — Amazing BaaS platform
+- [ImageKit](https://imagekit.io/) — Powerful image CDN
+- [TinyMCE](https://www.tiny.cloud/) — Feature-rich editor
+- [Radix UI](https://www.radix-ui.com/) — Accessible component primitives
+- Open Source Community — For amazing tools and libraries
 
 ---
 
@@ -93,9 +105,6 @@ If you encounter any issues or have questions:
 ---
 
 <div align="center">
-
-Made with ❤️ by [Rajat](https://github.com/Rajat0741)
-
-⭐ Star this repo if you find it helpful!
-
+  Made with ❤️ by <a href="https://github.com/Rajat0741">Rajat</a><br />
+  ⭐ Star this repo if you find it helpful!
 </div>
