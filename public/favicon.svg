@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9333ea;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background rounded square -->
+  <rect width="100" height="100" rx="20" fill="url(#grad)"/>
+  
+  <!-- BookOpen icon (simplified from lucide-react) -->
+  <g transform="translate(25, 25)" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Left page -->
+    <path d="M 2 6 C 2 6 7 4 12 4 C 17 4 22 6 22 6 L 22 44 C 22 44 17 42 12 42 C 7 42 2 44 2 44 Z"/>
+    <!-- Right page -->
+    <path d="M 28 6 C 28 6 33 4 38 4 C 43 4 48 6 48 6 L 48 44 C 48 44 43 42 38 42 C 33 42 28 44 28 44 Z"/>
+    <!-- Center line -->
+    <path d="M 25 4 L 25 44"/>
+  </g>
+  
+  <!-- Sparkle accent -->
+  <circle cx="80" cy="20" r="3" fill="#fcd34d"/>
+  <path d="M 80 14 L 80 26 M 74 20 L 86 20" stroke="#fcd34d" stroke-width="2" stroke-linecap="round"/>
+</svg>

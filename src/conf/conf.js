@@ -20,14 +20,6 @@ const conf = {
     appWriteFetchUserByIdFunctionId: String(import.meta.env.VITE_APPWRITE_FETCHUSERSBYID_FUNCTION_ID),
     appWriteAIGenerationFunctionId: String(import.meta.env.VITE_APPWRITE_AI_GENERATION_FUNCTION_ID),
 
-    // Helper methods to get full URLs
-    getEmailVerificationUrl() {
-        return `${this.appBaseUrl}${this.emailVerificationPath}`;
-    },
-    
-    getPasswordResetUrl() {
-        return `${this.appBaseUrl}${this.passwordResetPath}`;
-    }
 }
 
 export default conf

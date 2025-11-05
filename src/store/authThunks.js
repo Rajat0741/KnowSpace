@@ -8,31 +8,8 @@ import { setPreferences, clearPreferences, setPreferencesLoading, setPreferences
 export const initializeAuth = createAsyncThunk(
     'auth/initialize',
     async (_, { dispatch, getState }) => {
-        const { auth, preferences } = getState();
-        
-        // Skip full initialization if already initialized, but always refetch preferences
-        if (auth.isInitialized && auth.userData) {
-            // User is logged in but preferences need to be refetched on reload
-            if (!preferences.isLoading) {
-                try {
-                    dispatch(setPreferencesLoading(true));
-                    const freshPrefs = await authService.getPreferences();
-                    dispatch(setPreferences(freshPrefs));
-                    // Also reload profile picture on reload
-                    dispatch(loadProfilePicture());
-                } catch (prefsError) {
-                    console.log("Could not fetch preferences on reload:", prefsError);
-                    dispatch(setPreferencesError(prefsError.message));
-                }
-            }
-            return { success: true, userData: auth.userData };
-        }
-
         try {
             dispatch(setLoading(true));
-            
-            // Small delay to ensure Redux Persist has rehydrated
-            await new Promise(resolve => setTimeout(resolve, 50));
             
             const userData = await authService.getCurrentUser();
             
@@ -40,7 +17,8 @@ export const initializeAuth = createAsyncThunk(
                 // Login user without preferences in userData
                 dispatch(login({ userData }));
                 
-                // Fetch preferences separately into preferences slice (not persisted)
+                // ALWAYS fetch preferences when user is authenticated (even on reload)
+                // This ensures preferences are refreshed every time the app loads
                 try {
                     dispatch(setPreferencesLoading(true));
                     const freshPrefs = await authService.getPreferences();
