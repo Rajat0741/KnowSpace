@@ -6,7 +6,7 @@ import { initializeAuth } from "./store/authThunks"
 import { Outlet, useLocation } from "react-router-dom"
 import { useRoutePreloader } from "./hooks/useRoutePreloader"
 import { Toaster } from "@/Components/ui/sonner"
-import GlobalDarkModeToggle from "./Components/ui/GlobalDarkModeToggle"
+import DarkModeToggle from "./Components/ui/Custom/Dark-mode-button/Darkmode-button"
 import ScrollToTopButton from "./Components/ui/Custom/ScrollToTopButton/ScrollToTopButton"
 
 // ScrollToTopOnRouteChange component to automatically scroll to top on route change
@@ -22,7 +22,18 @@ function App() {
   const dispatch = useDispatch();
   const { preloadCommonRoutes } = useRoutePreloader();
   const authStatus = useSelector((state) => state.auth.status);
+  const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
   const location = useLocation();
+
+  // Sync dark mode with Redux state
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   // Define routes that shouldn't show sidebar/header
   const publicRoutes = ['/', '/auth/callback'];
@@ -53,7 +64,7 @@ function App() {
       {shouldHideSidebarHeader ? (
         // Public routes layout
         <>
-          <GlobalDarkModeToggle />
+          <DarkModeToggle className="fixed top-6 right-6 z-50 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm" />
           <div className="w-full min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-purple-900/10 dark:to-slate-900">
             <Outlet />
           </div>
