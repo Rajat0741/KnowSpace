@@ -56,106 +56,65 @@ function AppSidebar({ className }) {
 
   return (
     <Sidebar variant="sidebar" className={`${className} knowspace-sidebar`}>
-      <SidebarHeader className="relative">
-        {/* Gradient Background for Header */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/8 via-purple-500/6 to-indigo-500/8 dark:from-blue-700/15 dark:via-purple-700/12 dark:to-indigo-700/15 rounded-lg -z-10" />
-        
+      <SidebarHeader className="bg-purple-600/20 dark:bg-purple-700/25">
         {/* Brand Logo and Name */}
-        <div className="flex items-center gap-3 p-2 group cursor-pointer">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg blur-sm opacity-60 breathing-glow" />
-            <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg group-hover:scale-105 transition-transform duration-300 shadow-lg">
-              <BookOpen className="h-6 w-6 text-white" />
-              <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-yellow-300 animate-pulse" />
-            </div>
+        <div className="flex items-center gap-3 p-2">
+          <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg">
+            <BookOpen className="h-6 w-6 text-white" />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent group-hover:from-blue-500 group-hover:to-purple-500 transition-all duration-300">
+            <span className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
               KnowSpace
             </span>
-            <span className="text-xs text-sidebar-foreground/60 font-medium group-hover:text-sidebar-foreground/80 transition-colors duration-300">
+            <span className="text-xs text-sidebar-foreground/60 font-medium">
               Explore & Create
             </span>
           </div>
         </div>
       </SidebarHeader>
-      
-      <SidebarSeparator className="mx-4 bg-gradient-to-r from-transparent via-sidebar-border to-transparent" />
-      
+
+      <SidebarSeparator className="mx-4" />
+
       <SidebarContent className="px-2">
         <SidebarGroup>
-          <SidebarGroupLabel className="flex items-center gap-2 text-sidebar-foreground/80 font-semibold">
-            <Sparkles className="h-4 w-4" />
+          <SidebarGroupLabel className="text-sidebar-foreground/80 font-semibold">
             Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu 
-              className="space-y-1" 
+            <SidebarMenu
+              className="space-y-1"
               role="list"
               aria-label="Main navigation"
-              style={{ 
-                pointerEvents: isLoggedIn ? 'auto' : 'none', 
-                opacity: isLoggedIn ? 1 : 0.5 
+              style={{
+                pointerEvents: isLoggedIn ? 'auto' : 'none',
+                opacity: isLoggedIn ? 1 : 0.5
               }}
             >
               {menuItems.map((item) => {
                 const isActive = location.pathname === item.url;
                 return (
-                  <li 
-                    key={item.title} 
-                    className="relative group"
+                  <li
+                    key={item.title}
                     onMouseEnter={() => handleItemHover(item.preloader)}
                     role="listitem"
                   >
-                    {/* Active indicator */}
-                    {isActive && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r-full shadow-lg shadow-blue-500/30" />
-                    )}
-                    
-                    <SidebarMenuButton 
-                      asChild 
-                      className={`
-                        relative overflow-hidden transition-all duration-300 ease-out menu-item-glow
-                        hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-600/10
-                        hover:border-l-2 hover:border-blue-500/30 hover:transform hover:translate-x-1
-                        group-hover:shadow-md group-hover:shadow-blue-500/10
-                        ${isActive 
-                          ? 'bg-gradient-to-r from-blue-500/15 to-purple-600/15 border-l-2 border-blue-500/50 transform translate-x-1' 
-                          : ''
-                        }
-                      `}
+                    <SidebarMenuButton
+                      asChild
+                      className={isActive ? 'bg-purple-500/15 border-l-3 border-purple-500' : ''}
                     >
-                      <Link 
-                        to={item.url} 
-                        className="flex items-center gap-3 relative"
+                      <Link
+                        to={item.url}
+                        className="flex items-center gap-3"
                         onClick={handleNavigationClick}
                         aria-label={`Navigate to ${item.title}`}
                         aria-current={isActive ? 'page' : undefined}
                       >
-                        <div className={`
-                          p-1 rounded-lg transition-all duration-300 sparkle-effect
-                          ${isActive 
-                            ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg' 
-                            : 'group-hover:bg-gradient-to-br group-hover:from-blue-500/20 group-hover:to-purple-600/20 group-hover:scale-110'
-                          }
-                        `}>
+                        <div className={`p-1 rounded ${isActive ? 'bg-purple-500 text-white' : ''}`}>
                           <item.icon className="h-4 w-4" />
                         </div>
-                        <span className={`
-                          font-medium transition-colors duration-300
-                          ${isActive ? 'text-blue-600 dark:text-purple-400 font-semibold' : ''}
-                        `}>
+                        <span className={isActive ? 'text-purple-600 dark:text-purple-400 font-semibold' : 'font-medium'}>
                           {item.title}
                         </span>
-                        
-                        {/* Subtle interaction indicator */}
-                        <div className={`
-                          absolute right-2 w-2 h-2 rounded-full transition-all duration-300
-                          ${isActive 
-                            ? 'bg-gradient-to-r from-blue-500 to-purple-600 opacity-100' 
-                            : 'bg-sidebar-foreground/20 opacity-0 group-hover:opacity-60'
-                          }
-                        `} />
                       </Link>
                     </SidebarMenuButton>
                   </li>
@@ -165,21 +124,12 @@ function AppSidebar({ className }) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      
-      <SidebarFooter className="relative">
-        {/* Subtle gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-600/5 dark:from-purple-700/12 to-transparent rounded-lg -z-10" />
-        
-        <div className="flex flex-col items-center gap-2 p-2">
+
+      <SidebarFooter className="bg-purple-600/20 dark:bg-purple-700/25">
+        <div className="flex flex-col items-center gap-1 p-2">
           <div className="sidebar-divider w-16"></div>
-          <div className="flex items-center gap-2 group cursor-pointer">
-            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-400 to-purple-500 animate-pulse"></div>
-            <span className="text-xs text-sidebar-foreground/60 font-medium group-hover:text-sidebar-foreground/80 transition-colors duration-300">
-              © 2025 KnowSpace
-            </span>
-          </div>
-          <span className="text-xs text-sidebar-foreground/40 group-hover:text-sidebar-foreground/60 transition-colors duration-300">
-            Empowering Knowledge
+          <span className="text-xs text-sidebar-foreground/60">
+            © 2025 KnowSpace
           </span>
         </div>
       </SidebarFooter>
